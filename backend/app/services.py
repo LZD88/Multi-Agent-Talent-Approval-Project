@@ -82,14 +82,26 @@ def parse_version(db: Session, store: ObjectStore, version_id: UUID, job_id: UUI
     try:
         content = store.get_bytes(file_object.object_key)
         suffix = Path(file_object.original_name).suffix
-        with tempfile.NamedTemporaryFile(suffix=suffix) as temp:
-            temp.write(content)
-            temp.flush()
+        temp_path: Path | None = None
+        try:
+            with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as temp:
+                temp.write(content)
+                temp.flush()
+                temp_path = Path(temp.name)
             if parser_kind == ParserKind.MINERU:
-                result = parse_with_mineru(Path(temp.name))
+                try:
+                    result = parse_with_mineru(temp_path)
+                except Exception as exc:
+                    logger.warning(
+                        "mineru_parse_unavailable_fallback_pypdf job_id=%s filename=%s reason=%s",
+                        job.id,
+                        file_object.original_name,
+                        exc,
+                    )
+                    result = parse_document(temp_path)
             else:
                 try:
-                    result = parse_document(Path(temp.name))
+                    result = parse_document(temp_path)
                 except Exception as exc:
                     if suffix.lower() not in {".pdf", ".png", ".jpg", ".jpeg"}:
                         raise
@@ -99,7 +111,13 @@ def parse_version(db: Session, store: ObjectStore, version_id: UUID, job_id: UUI
                         file_object.original_name,
                         exc,
                     )
-                    result = parse_with_mineru(Path(temp.name))
+                    result = parse_with_mineru(temp_path)
+        finally:
+            if temp_path is not None:
+                try:
+                    temp_path.unlink(missing_ok=True)
+                except OSError:
+                    logger.warning("temp_file_cleanup_failed path=%s", temp_path, exc_info=True)
         markdown = result.text.encode("utf-8")
         structured = json.dumps(result.structured or result.metadata, ensure_ascii=False, indent=2).encode("utf-8")
         base = f"artifacts/{job.id}"

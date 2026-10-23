@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker --version)",
+      "Bash(docker compose *)",
+      "Bash(uv --version)",
+      "Bash(git --version)",
+      "Read(//c/Program Files/Docker/Docker/**)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Users/86178/**)",
+      "Bash(wsl --status)",
+      "Bash(uv python *)"
+    ]
+  }
+}

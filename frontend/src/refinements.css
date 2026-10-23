@@ -718,3 +718,345 @@ main {
 .evidencePackPanel .drawer { padding: 24px; overflow-y: auto; }
 .evidencePackPanel .citationText { white-space: pre-wrap; overflow-wrap: anywhere; }
 .evidencePackPanel .citationText mark { padding: 1px 2px; border-radius: 3px; background: #ffe58f; color: inherit; }
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px
+}
+
+.statCard {
+  position: relative;
+  min-height: 132px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+  overflow: hidden
+}
+
+.statCard > svg {
+  width: 22px;
+  height: 22px;
+  padding: 5px;
+  border-radius: 8px;
+  color: var(--green);
+  background: var(--mint);
+  box-sizing: content-box
+}
+
+.statCard span {
+  display: block;
+  margin-top: 13px;
+  color: var(--muted);
+  font-size: 12px
+}
+
+.statCard strong {
+  display: block;
+  margin-top: 3px;
+  color: #17231f;
+  font-size: 30px;
+  line-height: 1
+}
+
+.statCard small {
+  display: block;
+  margin-top: 9px;
+  color: #87938d;
+  font-size: 11px
+}
+
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start
+}
+
+.dashboardPanel,
+.readinessPanel,
+.dimensionPanel {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white
+}
+
+.dashboardPanel:first-child {
+  grid-column: 1 / -1
+}
+
+.panelHead {
+  margin-bottom: 13px
+}
+
+.panelHead h2 {
+  margin: 0 0 4px;
+  font-size: 16px
+}
+
+.panelHead p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px
+}
+
+.quickActions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px
+}
+
+.quickActions button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: #26362f;
+  text-align: left;
+  background: #fbfcfb;
+  cursor: pointer
+}
+
+.quickActions button:hover {
+  border-color: #91b5a5;
+  background: #f6faf8
+}
+
+.quickActions button > svg:first-child {
+  flex: 0 0 auto;
+  width: 21px;
+  color: var(--green)
+}
+
+.quickActions button > svg:last-child {
+  flex: 0 0 auto;
+  width: 16px;
+  margin-left: auto;
+  color: #8b9892
+}
+
+.quickActions span,
+.quickActions b,
+.quickActions small {
+  display: block;
+  min-width: 0
+}
+
+.quickActions b {
+  font-size: 14px
+}
+
+.quickActions small {
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+
+.listEmpty {
+  padding: 22px 16px;
+  border-radius: 10px;
+  color: var(--muted);
+  background: #f6f8f7;
+  font-size: 13px
+}
+
+.listGrid {
+  display: grid;
+  gap: 8px
+}
+
+.listItem {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px;
+  border: 1px solid #edf1ef;
+  border-radius: 10px;
+  background: #fbfcfb
+}
+
+.listItem > i {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  border-radius: 10px;
+  color: var(--green);
+  background: var(--mint);
+  font-style: normal;
+  font-weight: 800;
+  place-items: center
+}
+
+.listItem > svg {
+  width: 38px;
+  height: 38px;
+  padding: 9px;
+  border-radius: 10px;
+  color: var(--green);
+  background: var(--mint)
+}
+
+.listItem span,
+.listItem b,
+.listItem small {
+  display: block;
+  min-width: 0
+}
+
+.listItem span {
+  overflow: hidden
+}
+
+.listItem b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+
+.listItem small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px
+}
+
+.listItem em {
+  color: var(--muted);
+  font-size: 11px;
+  font-style: normal;
+  white-space: nowrap
+}
+
+.readinessPanel,
+.dimensionPanel {
+  margin-bottom: 20px
+}
+
+.readinessGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px
+}
+
+.readinessCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fbfcfb
+}
+
+.readinessCard > i {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: #c6cec9
+}
+
+.readinessCard.ready > i {
+  background: #69c78d;
+  box-shadow: 0 0 0 4px #e4f4ea
+}
+
+.readinessCard.notReady > i {
+  background: #e3a33a;
+  box-shadow: 0 0 0 4px #fff2dc
+}
+
+.readinessCard b {
+  display: block;
+  font-size: 14px
+}
+
+.readinessCard p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6
+}
+
+.dimensionGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px
+}
+
+.dimensionCard {
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fbfcfb
+}
+
+.dimensionCard > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px
+}
+
+.dimensionCard b {
+  font-size: 14px
+}
+
+.dimensionCard span {
+  padding: 4px 7px;
+  border-radius: 999px;
+  color: var(--green);
+  background: var(--mint);
+  font-size: 11px;
+  font-weight: 700
+}
+
+.dimensionCard p {
+  min-height: 42px;
+  margin: 9px 0 13px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55
+}
+
+.weightTrack {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8eeeb
+}
+
+.weightTrack i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #4f8a72
+}
+
+@media (max-width: 900px) {
+  .statGrid,
+  .quickActions,
+  .dimensionGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+  }
+
+  .dashboardGrid,
+  .readinessGrid {
+    grid-template-columns: 1fr
+  }
+
+  .dashboardPanel:first-child {
+    grid-column: auto
+  }
+}

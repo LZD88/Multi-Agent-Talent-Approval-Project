@@ -8,6 +8,7 @@ from docx import Document as WordDocument
 from docx.table import Table
 from docx.text.paragraph import Paragraph
 from langchain_community.document_loaders import BSHTMLLoader, CSVLoader, JSONLoader
+from pypdf import PdfReader
 
 from app.parsers import parse_xlsx, parse_pptx
 
@@ -89,6 +90,22 @@ def parse_docx_markdown(path: Path) -> ParseResult:
     )
 
 
+def parse_pdf_text(path: Path) -> ParseResult:
+    reader = PdfReader(str(path))
+    page_blocks: list[str] = []
+    content_list: list[dict[str, Any]] = []
+    for index, page in enumerate(reader.pages):
+        text = (page.extract_text() or "").strip()
+        page_blocks.append(f"## 第 {index + 1} 页\n\n{text}")
+        content_list.append({"type": "text", "page_idx": index, "text": text})
+    return ParseResult(
+        "pypdf_text",
+        "\n\n".join(page_blocks),
+        {"page_count": len(reader.pages)},
+        {"content_list": content_list},
+    )
+
+
 def transcript_segments_to_text(rows: list[dict[str, Any]]) -> tuple[str, dict[str, Any]]:
     segments: list[dict[str, Any]] = []
     blocks: list[str] = []
@@ -140,7 +157,7 @@ def parse_document(path: Path) -> ParseResult:
             text_parts.extend(" | ".join("" if value is None else str(value) for value in row) for row in sheet["rows"])
         return ParseResult("openpyxl", "\n".join(text_parts), {"sheet_count": len(structured["sheets"])}, structured)
     if suffix == ".pdf":
-        raise ValueError("PDF 统一交给 MinerU 保留标题层级、页码与 bbox")
+        return parse_pdf_text(path)
     if suffix in {".png", ".jpg", ".jpeg"}:
         raise ValueError("图片统一交给 MinerU 保留版面坐标与中文 OCR 结果")
     if suffix in {".wav", ".mp3", ".m4a"}:

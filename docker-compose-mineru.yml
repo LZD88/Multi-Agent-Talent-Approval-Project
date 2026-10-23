@@ -1,6 +1,8 @@
 services:
   postgres:
     image: docker.1ms.run/postgres:15-alpine
+    security_opt:
+      - seccomp:unconfined
     environment:
       POSTGRES_DB: talent_docs
       POSTGRES_USER: talent
@@ -17,7 +19,7 @@ services:
       retries: 20
 
   minio:
-    image: docker.1ms.run/minio/minio:latest
+    image: docker.1panel.live/minio/minio:latest
     command: server /data --console-address ":9001"
     environment:
       MINIO_ROOT_USER: talent_minio

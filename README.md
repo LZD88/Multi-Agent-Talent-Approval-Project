@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 多 Agent 人才评估与推荐系统
 
 课程贯穿项目的统一代码根目录
@@ -750,3 +751,7 @@ backend/logs/worker-error-YYYY-MM-DD.log
 - Milvus Health：`19091`
 - Backend API：`18080`
 - Frontend：`15173`
+=======
+# Multi-Agent-Talent-Approval-Project
+基于多agent的人才审批项目，可改造成制造业 供应链方向的：供应商寻源与准入审批，或是财务方向：智能报销与合规审计
+>>>>>>> 51b7348a83a0c519a40c55eb8202224aa086c747

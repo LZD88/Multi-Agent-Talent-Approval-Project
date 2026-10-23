@@ -524,7 +524,260 @@ function RecallLab({
   );
 }
 
+type NavKey = "workbench" | "roster" | "assessment" | "evaluation";
+
+function Workbench({
+  employees,
+  kbs,
+  docs,
+  onNavigate,
+}: {
+  employees: Employee[];
+  kbs: KB[];
+  docs: Doc[];
+  onNavigate: (key: NavKey) => void;
+}) {
+  const readyDocs = docs.filter((item) => item.pipeline_status === "ready").length;
+  const processingDocs = docs.filter((item) => ["parsing", "chunking", "indexing"].includes(item.pipeline_status || "")).length;
+  const failedDocs = docs.filter((item) => item.pipeline_status === "failed").length;
+  const stats = [
+    { label: "员工总数", value: employees.length, icon: UserSquare2, detail: "结构化人才档案" },
+    { label: "知识库", value: kbs.length, icon: BookOpen, detail: "按权限范围组织材料" },
+    { label: "档案材料", value: docs.length, icon: FileText, detail: `${processingDocs} 份处理中` },
+    { label: "可召回证据", value: readyDocs, icon: FileSearch, detail: `${failedDocs} 份处理失败` },
+  ];
+
+  return (
+    <>
+      <div className="pageHead">
+        <div>
+          <h1>工作台</h1>
+          <p>汇总人才档案、证据索引和评估推荐的整体运行状态</p>
+        </div>
+      </div>
+      <div className="statGrid">
+        {stats.map((item) => (
+          <article className="statCard" key={item.label}>
+            <item.icon />
+            <span>{item.label}</span>
+            <strong>{item.value}</strong>
+            <small>{item.detail}</small>
+          </article>
+        ))}
+      </div>
+      <div className="dashboardGrid">
+        <section className="dashboardPanel">
+          <div className="panelHead">
+            <h2>快捷入口</h2>
+            <p>继续常用的人才决策流程</p>
+          </div>
+          <div className="quickActions">
+            <button onClick={() => onNavigate("roster")}>
+              <UserSquare2 />
+              <span>
+                <b>人才档案</b>
+                <small>维护员工与档案材料</small>
+              </span>
+              <ChevronRight />
+            </button>
+            <button onClick={() => onNavigate("assessment")}>
+              <Sparkles />
+              <span>
+                <b>评估与推荐</b>
+                <small>检索证据并生成推荐</small>
+              </span>
+              <ChevronRight />
+            </button>
+            <button onClick={() => onNavigate("evaluation")}>
+              <FlaskConical />
+              <span>
+                <b>评测中心</b>
+                <small>检查评测准备状态</small>
+              </span>
+              <ChevronRight />
+            </button>
+          </div>
+        </section>
+        <section className="dashboardPanel">
+          <div className="panelHead">
+            <h2>最近员工</h2>
+            <p>最新维护的结构化人才档案</p>
+          </div>
+          {employees.length === 0 ? (
+            <div className="listEmpty">暂无员工档案，先到人才档案页新建员工。</div>
+          ) : (
+            <div className="listGrid">
+              {employees.slice(0, 5).map((item) => (
+                <div className="listItem" key={item.id}>
+                  <i>{item.name.slice(-2)}</i>
+                  <span>
+                    <b>{item.name}</b>
+                    <small>{item.current_position || item.department || item.employee_no}</small>
+                  </span>
+                  <em>{item.material_count} 份材料</em>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+        <section className="dashboardPanel">
+          <div className="panelHead">
+            <h2>最近材料</h2>
+            <p>最近上传的档案材料与处理状态</p>
+          </div>
+          {docs.length === 0 ? (
+            <div className="listEmpty">暂无档案材料，先创建知识库并上传文件。</div>
+          ) : (
+            <div className="listGrid">
+              {docs.slice(0, 5).map((item) => (
+                <div className="listItem" key={item.id}>
+                  <FileText />
+                  <span>
+                    <b>{item.title}</b>
+                    <small>{item.employee_name || item.candidate_id}</small>
+                  </span>
+                  <strong className={`status ${statusClass(item.pipeline_status)}`}>{formatPipeline(item.pipeline_status)}</strong>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
+    </>
+  );
+}
+
+function AssessmentPage({
+  employees,
+  onOpenDocument,
+}: {
+  employees: Employee[];
+  onOpenDocument: (id: string) => void;
+}) {
+  return (
+    <>
+      <div className="pageHead">
+        <div>
+          <h1>评估与推荐</h1>
+          <p>用自然语言描述人才需求，检索候选人和证据，并整理推荐材料。</p>
+        </div>
+      </div>
+      <RecallLab employees={employees} onOpenDocument={onOpenDocument} />
+    </>
+  );
+}
+
+function EvaluationCenter({ employees, docs }: { employees: Employee[]; docs: Doc[] }) {
+  const [modelState, setModelState] = useState<"idle" | "checking" | "ready" | "unavailable">("idle");
+  const [modelMessage, setModelMessage] = useState("尚未检查");
+  const readyDocs = docs.filter((item) => item.pipeline_status === "ready").length;
+
+  async function checkModel() {
+    setModelState("checking");
+    setModelMessage("正在检查查询计划模型…");
+    try {
+      await json(`${API}/talent-search/plan`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: "检查模型服务是否可用" }),
+      });
+      setModelState("ready");
+      setModelMessage("查询计划模型可用");
+    } catch (error) {
+      setModelState("unavailable");
+      setModelMessage(error instanceof Error ? error.message : "模型服务不可用");
+    }
+  }
+
+  const checks = [
+    {
+      label: "结构化员工数据",
+      ready: employees.length > 0,
+      detail: employees.length > 0 ? `${employees.length} 名员工可参与评测` : "请先在人才档案中维护员工",
+    },
+    {
+      label: "证据索引",
+      ready: readyDocs > 0,
+      detail: readyDocs > 0 ? `${readyDocs} 份材料已建立可召回索引` : "请先上传材料并完成证据索引",
+    },
+    {
+      label: "评测维度模板",
+      ready: true,
+      detail: "已内置专业能力、项目经验、协作交付、文化匹配",
+    },
+    {
+      label: "模型服务",
+      ready: modelState === "ready",
+      detail: modelMessage,
+    },
+  ];
+
+  const dimensions = [
+    { name: "专业能力", weight: 35, hint: "知识深度、技术判断与解决复杂问题的能力" },
+    { name: "项目经验", weight: 30, hint: "可验证的项目成果、业务影响与交付质量" },
+    { name: "协作交付", weight: 20, hint: "跨团队协作、主动推动与按期交付" },
+    { name: "文化匹配", weight: 15, hint: "价值取向、学习方式与团队协作偏好" },
+  ];
+
+  return (
+    <>
+      <div className="pageHead">
+        <div>
+          <h1>评测中心</h1>
+          <p>检查评测准备状态，确认结构化数据、证据索引和模型服务是否就绪。</p>
+        </div>
+        <div className="actions">
+          <button className="primary" onClick={checkModel} disabled={modelState === "checking"}>
+            <FlaskConical />
+            {modelState === "checking" ? "检查中…" : "检查模型服务"}
+          </button>
+        </div>
+      </div>
+
+      <section className="readinessPanel">
+        <div className="panelHead">
+          <h2>评测准备状态</h2>
+          <p>完整评测需要同时具备候选员工、可召回证据和可用模型。</p>
+        </div>
+        <div className="readinessGrid">
+          {checks.map((item) => (
+            <article className={`readinessCard ${item.ready ? "ready" : "notReady"}`} key={item.label}>
+              <i />
+              <div>
+                <b>{item.label}</b>
+                <p>{item.detail}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="dimensionPanel">
+        <div className="panelHead">
+          <h2>评测维度模板</h2>
+          <p>评测中心按统一维度组织人才证据，权重可在后续配置中调整。</p>
+        </div>
+        <div className="dimensionGrid">
+          {dimensions.map((item) => (
+            <article className="dimensionCard" key={item.name}>
+              <div>
+                <b>{item.name}</b>
+                <span>{item.weight}%</span>
+              </div>
+              <p>{item.hint}</p>
+              <div className="weightTrack">
+                <i style={{ width: `${item.weight}%` }} />
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </>
+  );
+}
+
 function App() {
+  const [nav, setNav] = useState<NavKey>("roster");
   const [page, setPage] = useState<"roster" | "library">("roster");
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [kbs, setKbs] = useState<KB[]>([]);
@@ -730,19 +983,19 @@ function App() {
           </div>
         </div>
         <nav>
-          <button>
+          <button className={nav === "workbench" ? "active" : ""} onClick={() => setNav("workbench")}>
             <LayoutGrid />
             <span>工作台</span>
           </button>
-          <button className="active">
+          <button className={nav === "roster" ? "active" : ""} onClick={() => setNav("roster")}>
             <UserSquare2 />
             <span>人才档案</span>
           </button>
-          <button>
+          <button className={nav === "assessment" ? "active" : ""} onClick={() => setNav("assessment")}>
             <Sparkles />
             <span>评估与推荐</span>
           </button>
-          <button>
+          <button className={nav === "evaluation" ? "active" : ""} onClick={() => setNav("evaluation")}>
             <FlaskConical />
             <span>评测中心</span>
           </button>
@@ -767,9 +1020,21 @@ function App() {
       <main>
         <header>
           <div>
-            <span>人才档案</span>
+            <span>
+              {nav === "workbench" ? "工作台" : nav === "assessment" ? "评估与推荐" : nav === "evaluation" ? "评测中心" : "人才档案"}
+            </span>
             <ChevronRight />
-            <b>{page === "roster" ? "员工花名册" : "档案资料库"}</b>
+            <b>
+              {nav === "workbench"
+                ? "运营总览"
+                : nav === "assessment"
+                  ? "人才检索与推荐"
+                  : nav === "evaluation"
+                    ? "评测准备"
+                    : page === "roster"
+                      ? "员工花名册"
+                      : "档案资料库"}
+            </b>
           </div>
           <div className="currentUser">
             <b>Will</b>
@@ -777,30 +1042,37 @@ function App() {
           </div>
         </header>
         <section className="content">
-          <div className="moduleTabs">
-            <button
-              className={page === "roster" ? "active" : ""}
-              onClick={() => {
-                setPage("roster");
-                setQuery("");
-                setRosterPage(1);
-              }}
-            >
-              员工花名册
-            </button>
-            <button
-              className={page === "library" ? "active" : ""}
-              onClick={() => {
-                setPage("library");
-                setQuery("");
-                setDocPage(1);
-              }}
-            >
-              档案资料库
-            </button>
-          </div>
+          {nav === "workbench" && <Workbench employees={employees} kbs={kbs} docs={docs} onNavigate={setNav} />}
+          {nav === "assessment" && (
+            <AssessmentPage employees={employees} onOpenDocument={(id) => void openDocument(id)} />
+          )}
+          {nav === "evaluation" && <EvaluationCenter employees={employees} docs={docs} />}
+          {nav === "roster" && (
+            <>
+              <div className="moduleTabs">
+                <button
+                  className={page === "roster" ? "active" : ""}
+                  onClick={() => {
+                    setPage("roster");
+                    setQuery("");
+                    setRosterPage(1);
+                  }}
+                >
+                  员工花名册
+                </button>
+                <button
+                  className={page === "library" ? "active" : ""}
+                  onClick={() => {
+                    setPage("library");
+                    setQuery("");
+                    setDocPage(1);
+                  }}
+                >
+                  档案资料库
+                </button>
+              </div>
 
-          {page === "roster" ? (
+              {page === "roster" ? (
             <>
               <div className="pageHead">
                 <div>
@@ -1031,6 +1303,8 @@ function App() {
                 </div>
                 <Pagination page={docPage} total={filteredDocs.length} onChange={setDocPage} />
               </div>
+            </>
+          )}
             </>
           )}
         </section>
