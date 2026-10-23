@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+ <<<<<<< HEAD
 # 多 Agent 人才评估与推荐系统
 
 课程贯穿项目的统一代码根目录
@@ -114,7 +114,7 @@ docker compose -p talent-eval-agents-course --profile app up -d --build
 | `POST /api/talent-search` | 输入自然语言查询，依次执行 Query Plan、SQL 候选筛选、混合检索和可选查询优化，返回 Chunk 列表 |
 | `POST /api/index-jobs/{id}/retry` | 为失败的 Milvus 索引任务创建新的幂等重试任务 |
 
-## 第 8 课复合人才检索
+## 第 8 复合人才检索
 
 | 路径 | 用途 |
 |---|---|
@@ -124,7 +124,7 @@ docker compose -p talent-eval-agents-course --profile app up -d --build
 
 查询计划把结构化硬条件、语义条件、偏好和待澄清条件分开。Pydantic Schema 提供输出结构，`FILTER_FIELD_REGISTRY` 同时维护字段说明、允许操作符和 SQL 构造函数，并生成提示词中的 Filter DSL。租户从请求头注入，模型不能生成权限条件或原始 SQL。`/talent-search/candidates` 返回 `employee_no` 作为后续 Milvus 检索的 `candidate_ids`。`execute_composite_search()` 在候选集为空时直接结束，不调用 Milvus，避免空列表退化为全库搜索；多个语义要求按 `requirement_id` 分别保存证据。`search_with_optimization()` 在首轮无有效命中时选择 Rewrite、Multi Query 或 Decompose，生成最多 3 条受约束查询，再次检索并按 `chunk_id` 去重合并
 
-## 第 9 课可信证据输出
+## 第 9 可信证据输出
 
 `POST /api/talent-search` 增加可选参数 `include_evidence_pack`。默认值为 `false`，原有调用继续返回 Query Plan、候选集、检索记录和 Chunk 列表。参数设为 `true` 时，接口从 PostgreSQL 重新读取并鉴权检索命中的 Chunk，再按候选人和 `requirement_id` 输出 `Candidate Evidence Pack`
 
@@ -152,7 +152,7 @@ uv run --no-sync python -m scripts.verify_evidence_pack
 uv run --no-sync python -m scripts.verify_evidence_pack --live-model
 ```
 
-## 第 10 课检索链路与引用展示
+## 第 10 检索链路与引用展示
 
 | 路径 | 用途 |
 |---|---|
@@ -162,9 +162,9 @@ uv run --no-sync python -m scripts.verify_evidence_pack --live-model
 
 引用接口为 `GET /api/evidence/citations/{chunk_id}?quote_start={start}&quote_end={end}`。事实来源打开引用时同时传递 quote 坐标；未指定坐标时仍可查看整个 Chunk。接口校验坐标成对出现且不超出 Chunk，并根据当前请求上下文重新检查 Chunk、材料版本、文档、资料库、候选人、租户和权限范围。历史版本仍可访问时返回 `version_state=historical`，权限撤销或材料不可用时统一返回 404。前端抽屉展示 `heading_path`、Chunk 起止位置和 quote 起止位置，并在完整 Chunk 中高亮 quote
 
-第 10 课把当前界面定位为档案知识库中的检索验收台。正式的人才评估与推荐 Chat 页面留到后续课程接入 LangGraph、SSE 和会话状态
+第 10 把当前界面定位为档案知识库中的检索验收台。正式的人才评估与推荐 Chat 页面留到后续课程接入 LangGraph、SSE 和会话状态
 
-第 10 课相关回归命令：
+第 10 相关回归命令：
 
 ```bash
 cd backend
@@ -184,7 +184,7 @@ uv run --no-sync pytest -q \
 
 结果说明：这组测试使用数据库、Milvus 和模型替身，只用于代码分支回归，不能替代开发模式联调
 
-第 10 课开发模式联调沿用 Compose 中已经启动的 PostgreSQL、Redis、MinIO、Milvus 和 etcd，并分别启动本地 backend、worker 和 frontend
+第 10 开发模式联调沿用 Compose 中已经启动的 PostgreSQL、Redis、MinIO、Milvus 和 etcd，并分别启动本地 backend、worker 和 frontend
 
 运行材料导入脚本：
 
@@ -214,7 +214,7 @@ C005  C005_郭思远_项目复盘  chunk=markdown  index=succeeded
 
 模型抽取结果具有不确定性。同一材料的另一轮请求返回 `partial`，并把缺失项目时间记录为 `period`。演示和评测需要保留每次运行输出，不能把一次输出写成固定结果
 
-## 第 11 课 LangGraph 状态模型与人才决策主图
+## 第 11  LangGraph 状态模型与人才决策主图
 
 | 路径 | 用途 |
 |---|---|
@@ -240,7 +240,7 @@ uv run --no-sync pytest -q tests/test_talent_decision_graph.py
 
 结果输出为 `6 passed in 0.16s`
 
-## 第 12 课人才数据工具与统一证据协议
+## 第 12 人才数据工具与统一证据协议
 
 | 路径 | 用途 |
 |---|---|
@@ -280,7 +280,7 @@ uv run --no-sync pytest -q tests/test_talent_tools.py tests/test_talent_decision
 
 结果输出为 `23 passed in 0.65s`。后端完整回归结果为 `151 passed, 3 warnings in 4.85s`
 
-## 第 13 课 MCP 人才能力服务
+## 第 13  MCP 人才能力服务
 
 | 路径 | 用途 |
 |---|---|
@@ -362,7 +362,7 @@ uv run --no-sync pytest -q tests/test_codestats_mcp_v2.py tests/test_talent_mcp_
 
 结果输出为 `38 passed in 2.05s`。后端完整回归结果为 `177 passed, 2 warnings in 6.69s`
 
-## 第 14 课人才任务理解、条件澄清与执行计划
+## 第 14 人才任务理解、条件澄清与执行计划
 
 | 路径 | 用途 |
 |---|---|
@@ -428,7 +428,7 @@ uv run --no-sync pytest -q \
 
 结果输出为 `24 passed, 1 warning in 1.19s`。后端完整回归结果为 `174 passed, 2 warnings in 8.40s`
 
-## 第 15 课动态评估维度与 Subagent 分发
+## 第 15 动态评估维度与 Subagent 分发
 
 | 路径 | 用途 |
 |---|---|
@@ -481,7 +481,7 @@ RUN_LIVE_MODEL_TESTS=1 uv run --no-sync pytest \
 
 该测试会把用例中的测试证据发送到项目配置的外部模型端点，应在已获得数据发送授权的环境中执行。不设置 `RUN_LIVE_MODEL_TESTS=1` 时默认跳过，避免普通回归依赖外部模型网络。
 
-## 第 16 课证据评估与报告合成
+## 第 16 证据评估与报告合成
 
 | 路径 | 用途 |
 |---|---|
@@ -522,7 +522,7 @@ uv run --no-sync pytest -q \
 
 结果输出为 `64 passed, 2 warnings in 2.32s`，后端完整回归为 `218 passed, 1 skipped, 2 warnings in 89.75s`
 
-## 第 18 课人才评估子图与决策引擎整合
+## 第 18 人才评估子图与决策引擎整合
 
 | 路径 | 用途 |
 |---|---|
@@ -589,7 +589,7 @@ PDF、图片、PPTX 和音频的辅助定位写入 `document_chunks.source_locat
 
 Markdown 和 DOCX 的 `source_locators` 为空数组
 
-## 第 5 课数据库变更
+## 第 5 数据库变更
 
 `005_chunking.sql` 集中包含第 5 课的全部数据库变更
 
@@ -602,7 +602,7 @@ Markdown 和 DOCX 的 `source_locators` 为空数组
 - `document_chunks` 新增 Markdown 起止偏移
 - `document_chunks` 新增原文件辅助定位集合
 
-### 从第 4 课迁移到第 5 课
+### 从第 4 迁移到第 5 
 
 先确保 PostgreSQL 已经通过同一个项目名启动：
 
