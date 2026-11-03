@@ -95,7 +95,11 @@ def build_runtime_graph():
         evidence_provider=build_branch_evidence_provider(
             search=search,
             load_sources=load_sources,
-            extract=model_extractor(model),
+            extract=model_extractor(
+                model,
+                max_attempts=3,
+                backoff_seconds=0.5,
+            ),
         ),
     )
     runtime_graph = build_talent_evaluation_dispatch_graph(
@@ -107,7 +111,7 @@ def build_runtime_graph():
                 tool_policies={
                     "search_candidate_evidence": ToolPolicy(
                         max_attempts=1,
-                        timeout_seconds=90,
+                        timeout_seconds=None,
                     )
                 }
             ),
@@ -116,7 +120,8 @@ def build_runtime_graph():
     )
     logger.info(
         "event=runtime_graph_build_completed function=build_runtime_graph "
-        "max_work_items=24 evidence_timeout_seconds=90"
+        "max_work_items=24 evidence_total_timeout=disabled "
+        "llm_tool_timeout=disabled"
     )
     return runtime_graph
 

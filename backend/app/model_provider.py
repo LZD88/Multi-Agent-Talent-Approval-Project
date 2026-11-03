@@ -8,14 +8,29 @@ def get_chat_model(model_name: str | None = None, temperature: float = 0.2, sett
     value = settings or get_settings()
     if not value.dashscope_api_key or value.dashscope_api_key == "请用户自行填写":
         return None
-    model=model_name or value.chat_model
+    model = model_name or value.chat_model
     return ChatOpenAI(
-        model=model,
-        api_key=value.dashscope_api_key,
-        base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
-        temperature=None if "kimi" in model else temperature, # kimi 模型不支持此参数
-    )
+            model=model,
+            api_key=value.dashscope_api_key,
+            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+            temperature=None if "kimi" in model else temperature,
+            extra_body={"enable_thinking": False},
+        )
+    
 
+def get_judge_model(model_name: str | None = None, temperature: float = 0.2, settings: Settings | None = None) -> ChatOpenAI | None:
+    value = settings or get_settings()
+    model=model_name or value.judge_model
+    if not value.judge_api_key or not value.judge_base_url or not model:
+        print("Judge model is not configured. Please set JUDGE_MODEL, JUDGE_API_KEY, and JUDGE_BASE_URL in the .env file.")
+        return None
+    
+    return ChatOpenAI(
+            model=model,
+            api_key=value.judge_api_key,
+            base_url=value.judge_base_url,
+            temperature=temperature
+        )
 
 def get_embedding_model(settings: Settings | None = None) -> DashScopeEmbeddings | None:
     value = settings or get_settings()
@@ -24,9 +39,9 @@ def get_embedding_model(settings: Settings | None = None) -> DashScopeEmbeddings
     return DashScopeEmbeddings(model=value.embedding_model, dashscope_api_key=value.dashscope_api_key)
 
 if __name__ == "__main__":
-    model = get_chat_model()
+    model = get_judge_model()
     # res = model.invoke(
-    #         [("user", "你是谁？")]
+    #         [("user", "你是什么模型？")]
     #     )
     from app.talent_evaluation_dispatch import EvaluationDimensionPlan, DIMENSION_GENERATOR_PROMPT
 

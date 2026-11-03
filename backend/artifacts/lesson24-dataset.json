@@ -1,0 +1,55 @@
+{
+  "id": "173f7809-5514-4515-8d3b-d07a954eb394",
+  "source_case_id": "58facde1-5ce9-4a9e-b1eb-5fa547fa2f0b",
+  "module_key": "request_understanding",
+  "input_payload": {
+    "messages": [
+      {
+        "role": "human",
+        "content": "筛选上海地区、至少 5 年开发经验，并且做过企业知识库 RAG 项目的高级 AI 应用工程师"
+      }
+    ],
+    "selected_job": null,
+    "previous_request": {},
+    "conversation_title": ""
+  },
+  "golden_output": {
+    "draft": {
+      "input_mode": "detailed_requirement",
+      "job_query": "高级 AI 应用工程师",
+      "filters": [
+        {
+          "field": "region",
+          "operator": "eq",
+          "value": "上海"
+        },
+        {
+          "field": "years_of_experience",
+          "operator": "gte",
+          "value": 5
+        }
+      ],
+      "semantic_requirements": [
+        {
+          "requirement_id": "S1",
+          "query": "做过企业知识库 RAG 项目",
+          "required": true
+        }
+      ],
+      "evaluation_preferences": [],
+      "clarifications": []
+    },
+    "revision_action": "initial",
+    "revision_summary": "建立初始人才要求：上海地区、至少5年开发经验、有企业知识库RAG项目经历的高级AI应用工程师",
+    "conversation_title": "上海高级AI应用工程师招聘"
+  },
+  "replay_context": {
+    "tenant_id": "course-demo",
+    "permission_scopes": [
+      "hr_private"
+    ]
+  },
+  "dataset_split": "dev",
+  "tags": [],
+  "created_at": "2026-10-18 09:35:22.455980+00:00"
+}

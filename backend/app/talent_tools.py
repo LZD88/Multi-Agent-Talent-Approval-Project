@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import time
+from contextvars import copy_context
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeoutError
 from dataclasses import dataclass
 from difflib import SequenceMatcher
@@ -31,7 +32,7 @@ class TalentToolContext:
 @dataclass(frozen=True)
 class ToolPolicy:
     max_attempts: int = 2
-    timeout_seconds: float = 3.0
+    timeout_seconds: float | None = 3.0
     backoff_seconds: float = 0.05
 
 
@@ -138,7 +139,7 @@ class ToolExecutor:
         for attempt in range(1, policy.max_attempts + 1):
             pool = ThreadPoolExecutor(max_workers=1)
             try:
-                future = pool.submit(operation)
+                future = pool.submit(copy_context().run, operation)
                 data = future.result(timeout=policy.timeout_seconds)
                 self.circuit_breaker.succeed(name)
                 logger.info(

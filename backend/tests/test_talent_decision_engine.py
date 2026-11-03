@@ -4,7 +4,9 @@ from typing import Any
 import json
 from pathlib import Path
 
+from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, StateGraph
+from langgraph.types import Command, interrupt
 
 from app.talent_decision_engine import build_talent_decision_engine
 from app.talent_decision_graph import DecisionContext
@@ -83,6 +85,42 @@ def test_decision_engine_stops_when_request_subgraph_is_cancelled():
     assert result["status"] == "cancelled"
 
 
+def test_decision_engine_accepts_parent_checkpointer_for_real_interrupt_resume():
+    request_builder = StateGraph(dict)
+
+    def choose_job(_: dict[str, Any]) -> dict[str, Any]:
+        decision = interrupt({"type": "job_selection"})
+        return {
+            "status": "candidates_ready",
+            "candidate_ids": [decision["job_code"]],
+        }
+
+    request_builder.add_node("choose_job", choose_job)
+    request_builder.add_edge(START, "choose_job")
+    request_builder.add_edge("choose_job", END)
+    graph = build_talent_decision_engine(
+        request_graph=request_builder.compile(),
+        evaluation_graph=_single_node_graph({"status": "stopped"}),
+        report_graph=_single_node_graph({"status": "stopped"}),
+        checkpointer=InMemorySaver(),
+    )
+    config = {"configurable": {"thread_id": "engine-hitl"}}
+    context = DecisionContext(
+        tenant_id="course-demo",
+        permission_scopes=("hr_private",),
+    )
+
+    paused = graph.invoke(
+        {"request_text": "AI 应用工程师"},
+        config,
+        context=context,
+    )
+    assert paused["__interrupt__"]
+
+    resumed = graph.invoke(Command(resume={"job_code": "JD-AI-001"}), config, context=context)
+    assert resumed["candidate_ids"] == ["JD-AI-001"]
+
+
 def test_langgraph_registers_integrated_talent_decision_engine():
     config = json.loads((Path(__file__).parents[1] / "langgraph.json").read_text())
 
@@ -97,6 +135,7 @@ def test_event_demo_prints_parent_and_child_nodes_in_execution_order():
     events = collect_demo_events()
 
     assert [(item["scope"], item["node"]) for item in events] == [
+        ("main", "begin_turn"),
         ("request_subgraph", "receive_request"),
         ("request_subgraph", "compile_request"),
         ("request_subgraph", "filter_candidates"),
@@ -108,7 +147,7 @@ def test_event_demo_prints_parent_and_child_nodes_in_execution_order():
         ("report_subgraph", "compose_report"),
         ("main", "report_subgraph"),
     ]
-    assert events[2]["update"]["status"] == "candidates_ready"
-    assert events[5]["update"]["status"] == "branches_ready"
-    assert events[8]["update"]["ranking"] == ["C001", "C002"]
+    assert events[3]["update"]["status"] == "candidates_ready"
+    assert events[6]["update"]["status"] == "branches_ready"
+    assert events[9]["update"]["ranking"] == ["C001", "C002"]
     assert events[-1]["update"]["status"] == "completed"

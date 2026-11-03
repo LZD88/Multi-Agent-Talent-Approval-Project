@@ -63,6 +63,9 @@ class TalentDecisionState(TypedDict, total=False):
 class DecisionContext:
     tenant_id: str
     permission_scopes: tuple[str, ...]
+    run_id: str = ""
+    conversation_id: str = ""
+    turn_no: int = 0
 
 
 CandidateProvider = Callable[[TalentRequest, DecisionContext], list[str]]

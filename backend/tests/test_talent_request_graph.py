@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from langchain.messages import HumanMessage
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import Command
 
 from app.query_plan import FilterCondition, SemanticRequirement
 from app.talent_decision_graph import DecisionContext
+from app.evaluation_case import EvaluationCaseDraft
 from app.talent_request_graph import TalentRequestDraft, build_talent_request_graph
 
 
@@ -93,8 +95,42 @@ def test_detailed_requirement_builds_plan_without_job_lookup():
     assert lookup_calls == []
 
 
+def test_request_understanding_is_automatically_captured_from_graph_execution():
+    captured: list[EvaluationCaseDraft] = []
+    graph = build_talent_request_graph(
+        request_interpreter=FixtureInterpreter(),
+        job_lookup=lambda query, context: [],
+        case_recorder=captured.append,
+    )
+    context = DecisionContext(
+        tenant_id="course-demo",
+        permission_scopes=("hr_private",),
+        run_id="run-22",
+        conversation_id="conversation-22",
+        turn_no=3,
+    )
+
+    result = graph.invoke(
+        {"request_text": "筛选上海且有企业知识库经验的人才"},
+        context=context,
+    )
+
+    assert result["status"] == "plan_ready"
+    assert len(captured) == 1
+    case = captured[0]
+    assert (case.source_run_id, case.conversation_id, case.turn_no) == (
+        "run-22",
+        "conversation-22",
+        3,
+    )
+    assert case.input_payload["messages"][0]["content"] == "筛选上海且有企业知识库经验的人才"
+    assert case.output_payload["draft"]["filters"][0]["value"] == "上海"
+    assert case.status == "succeeded"
+
+
 def test_unique_exact_job_match_continues_without_interrupt():
     interpreter = FixtureInterpreter()
+    captured: list[EvaluationCaseDraft] = []
     graph = build_talent_request_graph(
         request_interpreter=interpreter,
         job_lookup=lambda query, context: [
@@ -102,12 +138,19 @@ def test_unique_exact_job_match_continues_without_interrupt():
             _job("JD-AI-002", "AI 平台工程师", match_type="fuzzy", score=0.61),
         ],
         checkpointer=InMemorySaver(),
+        case_recorder=captured.append,
     )
 
     result = graph.invoke(
         {"request_text": "高级 AI 应用工程师"},
         {"configurable": {"thread_id": "lesson14-exact"}},
-        context=_context(),
+        context=DecisionContext(
+            tenant_id="course-demo",
+            permission_scopes=("hr_private",),
+            run_id="run-exact-job",
+            conversation_id="conversation-exact-job",
+            turn_no=1,
+        ),
     )
 
     assert result["status"] == "plan_ready"
@@ -117,6 +160,10 @@ def test_unique_exact_job_match_continues_without_interrupt():
         ("高级 AI 应用工程师", None),
         ("高级 AI 应用工程师", "JD-AI-001"),
     ]
+    assert len(captured) == 3
+    assert captured[1].output_payload["route"] == "select_exact_job"
+    assert captured[0].input_payload["selected_job"] is None
+    assert captured[2].input_payload["selected_job"]["job_code"] == "JD-AI-001"
 
 
 def test_ambiguous_job_match_interrupts_and_resumes_same_thread():
@@ -196,3 +243,43 @@ def test_no_job_match_ends_without_building_plan():
     assert result["clarifications"] == [
         {"expression": "量子招聘架构师", "reason": "未找到可确认的岗位 JD"}
     ]
+
+
+def test_model_interpreter_prompt_distinguishes_region_from_current_position(monkeypatch):
+    from app import talent_request_graph as module
+
+    captured: dict[str, object] = {}
+
+    class CapturingModel:
+        def with_structured_output(self, schema, **kwargs):
+            captured["schema"] = schema
+            return self
+
+        def invoke(self, messages):
+            captured["messages"] = messages
+            return {
+                "draft": {
+                    "input_mode": "detailed_requirement",
+                    "filters": [{"field": "region", "operator": "eq", "value": "上海"}],
+                    "semantic_requirements": [],
+                    "evaluation_preferences": [],
+                    "clarifications": [],
+                },
+                "revision_action": "initial",
+                "revision_summary": "建立初始要求",
+                "conversation_title": "上海人才筛选",
+            }
+
+    monkeypatch.setattr(module, "get_chat_model", lambda temperature=0: CapturingModel())
+
+    result = module.model_request_interpreter(
+        [HumanMessage(content="筛选地区在上海的候选人")],
+        {},
+    )
+
+    system_prompt = captured["messages"][0][1]
+    assert "结合最近消息窗口和 previous_request" in system_prompt
+    assert "region: 工作地区" in system_prompt
+    assert "current_position: 当前岗位" in system_prompt
+    assert "地名只能映射为 region" in system_prompt
+    assert result.draft.filters[0].field.value == "region"

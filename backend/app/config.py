@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     mineru_url: str = "http://127.0.0.1:18001"
     dashscope_api_key: str = ""
     chat_model: str = "qwen-plus"
+    judge_model: str = ""
+    judge_api_key: str = ""
+    judge_base_url: str = ""
     embedding_model: str = "text-embedding-v3"
     embedding_dimension: int = 1024
     rerank_model: str = "gte-rerank-v2"

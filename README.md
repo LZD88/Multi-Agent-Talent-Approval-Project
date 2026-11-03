@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 多 Agent 人才评估与推荐系统
 
 课程贯穿项目的统一代码根目录
@@ -12,12 +11,18 @@
 | `database/migrations/005_chunking.sql` | 第 4 课到第 5 课的唯一幂等增量迁移 |
 | `database/migrations/007_milvus_evidence_index.sql` | 第 6 课 Milvus 索引任务表的幂等增量迁移 |
 | `database/migrations/012_talent_tools.sql` | 第 12 课岗位 JD 与人才工具调用审计表的幂等增量迁移 |
+| `database/migrations/020_run_history.sql` | 第 20 课 Run 与步骤历史表的幂等增量迁移 |
+| `database/migrations/021_conversation_history.sql` | 第 21 课会话列表投影的幂等增量迁移 |
 | `frontend/` | React 前端 |
 | `docker-compose.yml` | 默认启动 PostgreSQL、MinIO、Redis；`app` profile 启动 backend、worker、frontend |
 
 ## 产品定位
 
-前端是多 Agent 人才评估与推荐系统的统一应用壳层，人才档案模块包含员工花名册和档案资料库。花名册维护结构化员工数据，提供新建员工和每页 10 人分页。档案资料库支持新建知识库、切换知识库、查看文件数量和删除空知识库；非空知识库需要先删除或迁移材料。文件表按每页 10 条分页，上传后自动排入解析、切片和 Milvus 索引链路，同时支持批量删除材料与关联数据。文件详情展示原文件、解析结果、索引记录、切片预览与基础元数据。档案资料库页面内置证据召回测试，可输入查询并附带候选人、材料类型和权限范围过滤项，直接查看匹配 Chunk、相似度分数和来源材料
+前端是多 Agent 人才评估与推荐系统的统一应用壳层。人才档案模块包含员工花名册、档案资料库和证据召回验收台，评估与推荐模块提供多轮人才要求、SSE 修订反馈、运行步骤、HITL、Markdown 报告、证据回查和按状态筛选的会话列表。后端使用 `AsyncPostgresSaver` 保存 Graph State，Run 与会话 API 负责实时事件、人工恢复、幂等取消和历史读模型查询
+
+多轮入口继续使用 `POST /api/runs`，后续请求携带同一 `conversation_id`。父图 `_begin_turn` 返回局部更新，保留消息、当前输入、完整要求和标题，仅清理运行产物。请求子图输入显式声明 `messages`、`request_text`、`talent_request`、`conversation_title`，人工澄清也作为消息返回父图。首次理解生成标题，后续模型使用不含标题字段的修订 Schema。`requirement.revised` 的 `data` 只包含 `action`、`summary`。持久化 Run 的轮次从历史记录递增，后端重启后继续原会话不会重置编号
+
+报告输出出现 Pydantic 结构校验错误时，报告写作器将校验信息交回模型纠正一次；再次失败仍上报错误，不截断证据或放宽引用校验。相关回归覆盖 `tests/test_talent_conversation.py`、`tests/test_talent_run_stream.py` 和 `tests/test_talent_evaluation_report.py`，在 `backend/` 执行 `uv run pytest -q`
 
 ## 运行模式
 
@@ -113,6 +118,10 @@ docker compose -p talent-eval-agents-course --profile app up -d --build
 | `POST /api/talent-search/candidates` | 校验 Query Plan，并用确定性 SQL Builder 返回候选人编号集合 |
 | `POST /api/talent-search` | 输入自然语言查询，依次执行 Query Plan、SQL 候选筛选、混合检索和可选查询优化，返回 Chunk 列表 |
 | `POST /api/index-jobs/{id}/retry` | 为失败的 Milvus 索引任务创建新的幂等重试任务 |
+| `POST /api/runs` | 创建人才评估 Run |
+| `GET /api/runs/{id}/events` | 订阅当前 Run 的 SSE 事件 |
+| `POST /api/runs/{id}/resume` | 提交 HITL 选项并恢复运行 |
+| `DELETE /api/runs/{id}` | 幂等取消 Run |
 
 ## 第 8 课复合人才检索
 
@@ -438,7 +447,7 @@ uv run --no-sync pytest -q \
 | `backend/tests/test_talent_evaluation_dispatch.py` | 覆盖权重校验、候选人 × 维度分发、reducer 聚合、可信上下文、工具边界、任务上限与失败隔离 |
 | `backend/tests/test_talent_evaluation_branch_agent_live.py` | 使用真实 Chat Model 验证事实抽取、连续原文引用、Evidence Pack 与 Branch Worker 的完整传递 |
 
-本节接收第 14 课的 `TalentRequest` 与 `QueryPlan`。硬条件决定候选人范围，语义要求和评估偏好用于生成动态评估维度。每个维度包含定义、整数权重、证据要求、0/3/5 分锚点、检索提示和需求来源。模型输出不包含维度标识，程序按照维度列表顺序生成 `dimension_number=1..N`，避免模型生成重复标识。Pydantic 负责字段结构约束，`validate_dimension_plan` 只检查权重合计是否为 100。
+本节接收第 14 课的 `TalentRequest` 与 `QueryPlan`。硬条件决定候选人范围，语义要求和评估偏好用于生成动态评估维度。每个维度包含定义、整数权重、证据要求、0/3/5 分锚点、检索提示和需求来源。维度生成 Prompt 要求一般不超过 4 个维度，同一主题的要求合并为一个维度，并通过多个 `retrieval_hints` 扩展检索。模型输出不包含维度标识，程序按照维度列表顺序生成 `dimension_number=1..N`，避免模型生成重复标识。Pydantic 负责字段结构约束，`validate_dimension_plan` 只检查权重合计是否为 100。
 
 候选人与评估维度组成笛卡尔积任务矩阵。LangGraph `Send` 将每个任务发送给独立评估分支，`branch_results` 使用 `operator.add` reducer 聚合结果。验证脚本默认允许 6 个分支并发执行，分支内部再并发处理当前维度的全部 `evidence_requirements`。每条要求组合 `retrieval_hints` 后调用 `search_candidate_evidence`，Future 按提交顺序聚合，因而完成顺序不会改变输出顺序。结果保留 Candidate Evidence Pack 2.0 的事实、来源、冲突、缺失信息和引用指针。`get_candidate_profiles` 不再在候选人 × 维度分支中重复调用。
 
@@ -462,7 +471,9 @@ uv run --no-sync pytest -q \
   tests/test_talent_request_graph.py
 ```
 
-原链路把分支执行状态、事实抽取状态和证据充分性合并成一个 `status`，同时使用 3 秒工具超时包裹包含模型抽取的证据调用，导致真实链路稳定出现全量 `degraded`。当前输出使用顶层 `execution_status` 描述调用是否完成，每条 `RequirementEvidence` 分别保留 `status`、`reason`、`extraction_status`、`facts`、`conflicts`、`missing_information` 和 `citations`。真实并发运行观察到单次证据调用最长耗时 59.13 秒，证据检索工具因此单独使用一次 90 秒超时，避免线程超时后重复发出未终止的模型请求。模型抽取失败不再改写为分支执行失败。
+Chat Model 保持同步 `invoke` 调用方式，全链路仅使用 `CHAT_MODEL`。凡是包含外部 LLM 调用的工具和复合链路，都不在项目的 `ToolExecutor` 中设置额外超时。
+
+`execution_status` 描述分支调用是否完整。每条 `RequirementEvidence` 分别保留 `status`、`reason`、`extraction_status`、`facts`、`conflicts`、`missing_information` 和 `citations`。模型输出校验失败或两个模型均不可用时，取证分支标记为 `degraded`，保留从 PostgreSQL 重读并通过权限校验的原始 `citations`，丢弃未通过校验的模型 `facts`。降级结果不会伪造事实，报告只能使用仍然通过证据门禁的内容。
 
 两组可比实测都包含 6 个候选人 × 维度任务项和 12 次要求级模型调用。外层并发为 3 且分支内串行时，总耗时为 164.30 秒，分支阶段约 147.6 秒。外层默认并发改为 6 且分支内并发后，总耗时为 72.53 秒，分支阶段约 57.5 秒，总耗时降低约 55.9%。12 次要求级调用在约 14 毫秒内全部进入执行，分支阶段最终受最慢一次 57.48 秒的模型调用限制。
 
@@ -563,6 +574,84 @@ uv run --no-sync pytest -q \
 结果输出为 `57 passed, 2 warnings in 1.71s`
 
 后端完整回归结果为 `230 passed, 1 skipped, 2 warnings in 10.57s`
+
+## 第 19 课会话式交互与 SSE 事件协议
+
+| 路径 | 用途 |
+|---|---|
+| `backend/app/talent_run_stream.py` | 驱动真实决策主图，维护 Run 状态、活动连接事件缓冲、HITL 恢复、取消和引用投影 |
+| `backend/app/talent_event_projection.py` | 将内部图更新投影为稳定的 SSE 业务事件和白名单节点输出 |
+| `backend/app/talent_run_api.py` | 提供 Run 创建、SSE 订阅、HITL 恢复和取消接口 |
+| `backend/scripts/verify_talent_run_live.py` | 实际调用 PostgreSQL、Milvus、Rerank 和模型验收完整链路 |
+| `frontend/src/TalentChatPage.tsx` | 完成输入锁定、进度与耗时展示、节点输出抽屉、HITL、取消、Markdown 报告和引用抽屉交互 |
+| `frontend/src/talentRunState.ts` | 使用幂等事件投影构建 Run 状态，累计步骤耗时并冻结暂停或取消步骤 |
+
+默认 Run 并发上限为 6。Chat Model 保持同步调用，全链路仅使用 `CHAT_MODEL`，代码不额外施加 LLM 工具超时。模型取证在连接错误、限流和短暂失败时执行受控重试。条件解析 Prompt 注入 DSL 字段语义，地名约束映射到 `region`，不误写为 `current_position`。决策图返回 `capacity_exceeded`、`dimension_invalid` 或 `failed` 时，Run 服务发送 `run.failed` 并保留具体错误，前端停止运行中步骤动画并显示失败原因
+
+运行真实链路验收：
+
+```bash
+cd backend
+uv run python -m scripts.verify_talent_run_live
+```
+
+该脚本先用完整自然语言岗位问题触发岗位确认并提交真实 JD，再用带地区、年限、现任岗位和能力要求的自然语言问题完成小候选集评估。两个场景都读取已入库的合成业务材料，候选人筛选、证据检索、模型取证、评分、报告和引用回查都由正式链路执行，不在 API 层构造固定候选人或报告
+
+## 第 20 课运行记录持久化与结果回看
+
+| 路径 | 用途 |
+|---|---|
+| `database/migrations/020_run_history.sql` | 创建 `talent_runs` 与 `talent_run_steps` 的幂等迁移 |
+| `backend/app/talent_run_history.py` | 将 Run 业务事件合并为 Run 与步骤最新快照 |
+| `backend/tests/test_talent_run_history.py` | 验证快照合并、排序与 HITL 耗时 |
+| `frontend/src/talent-run-history.css` | 运行历史列表样式 |
+
+`TalentRunManager` 在生成 `RunEvent` 后同步调用运行记录 Store。`run.started` 创建 Run，`step.started` `step.progress` `step.completed` 按 `run_id + step_id` 更新同一行，`report.completed` 保存 Markdown 报告、引用和 Trace ID。SSE 仍然只承担当前连接的实时交付
+
+| 接口 | 用途 |
+|---|---|
+| `GET /api/runs/history` | 按开始时间倒序返回 Run 列表 |
+| `GET /api/runs/history/{run_id}` | 返回 Run、有序步骤、报告和引用快照 |
+
+前端通过 `historyDetailToRunView()` 将历史详情转换为第 19 课已有的 `RunView`，继续复用步骤时间线、节点输出抽屉、Markdown 报告和证据抽屉
+
+## 第 21 课多轮对话与人才要求修订
+
+| 路径 | 用途 |
+|---|---|
+| `backend/app/talent_checkpoint.py` | 管理 `AsyncPostgresSaver` 连接池、`setup()` 与应用生命周期 |
+| `backend/app/talent_request_graph.py` | 使用历史 `messages` 和当前结构化要求完成增删改 |
+| `backend/scripts/verify_postgres_checkpointer.py` | 用最小 Graph 验证两轮恢复与四张 Checkpoint 表 |
+| `database/migrations/021_conversation_history.sql` | 创建会话标题、状态与更新时间投影 |
+| `frontend/src/talent-conversation.css` | 会话状态筛选、多轮消息与修订反馈的页面样式 |
+
+同一会话复用 `conversation_id` 作为 `thread_id`，`AsyncPostgresSaver` 恢复父图的 `messages` 与当前结构化要求，请求子图合并本轮修订后继续完整执行评估与报告链路
+
+创建后续 Run 时提交当前会话标识：
+
+```json
+{
+  "message": "地区要求删除",
+  "conversation_id": "9cf60af0-0f74-4ec4-b887-29f29ed43ee7"
+}
+```
+
+前端通过 `GET /api/conversations?status=completed` 按状态读取会话标题、状态和更新时间，要求增删改通过 `requirement.revised` SSE 事件实时展示。打开会话时，历史详情接口一次返回截至当前轮的所有 Run、步骤和报告快照，前序轮次答案默认收起，最后一轮默认展开
+
+## 第 22 课 Agent 模块评测与可复现 Case 设计
+
+| 路径 | 用途 |
+|---|---|
+| `backend/app/evaluation_case.py` | 定义首期四个评测模块、可重放 Case 协议与 SQL 存储器 |
+| `backend/app/talent_request_graph.py` | 在人才要求理解的真实调用边界自动记录输入与实际输出 |
+| `backend/app/talent_run_stream.py` | 为每个 Run 注入 `run_id`、`conversation_id` 和 `turn_no` |
+| `database/migrations/022_evaluation_cases.sql` | 创建四个模块共用的 `evaluation_cases` 原始 Case 表 |
+| `backend/scripts/verify_evaluation_case.py` | 调用真实 FastAPI Run 和 SSE，完成后从 PostgreSQL 读回自动采集结果 |
+| `backend/tests/test_evaluation_case_store.py` | 使用开发环境 PostgreSQL 验证持久化与调用序号，测试后删除自身记录 |
+
+完整消息继续保存在 LangGraph Checkpoint 中，人才要求理解模块使用最近四轮消息和上一轮完整 `TalentRequest` 形成独立输入。每次 Graph 调用都自动落库，新 Case 的标注状态为 `unlabeled`
+
+执行第 22 课真实链路验证前，需要按开发模式启动后端 API，并完成 `022_evaluation_cases.sql` 迁移。验证脚本会实际调用模型、检索服务和全部人才评估 Graph，直到接收 `run.completed`
 
 ## Chunk 模块
 
@@ -751,7 +840,140 @@ backend/logs/worker-error-YYYY-MM-DD.log
 - Milvus Health：`19091`
 - Backend API：`18080`
 - Frontend：`15173`
-=======
-# Multi-Agent-Talent-Approval-Project
-基于多agent的人才审批项目，可改造成制造业 供应链方向的：供应商寻源与准入审批，或是财务方向：智能报销与合规审计
->>>>>>> 51b7348a83a0c519a40c55eb8202224aa086c747
+
+## 第 23 课线上 Case 采集与评测中心
+
+四个模块共用 `evaluation_cases`。`capture_call` 保存调用前深拷贝的输入与返回结果或异常，`safe_record` 隔离写入失败；PostgreSQL 事务锁串行分配同一 Run/模块的调用序号。事实抽取在每次模型尝试边界采集，保留短 Chunk 标识、冻结文本、输出 Schema、来源映射和候选人/维度/要求身份。冲突与引用校验属于后处理，不写成模型输出。
+
+| 路径 | 用途、关键接口 |
+| --- | --- |
+| `backend/app/evaluation_case.py` | `capture_call(call, context, module_key, input_payload, ...)` 返回原业务结果；`extraction_scope` 管理线程内业务身份 |
+| `backend/app/talent_request_graph.py` | 岗位候选及路由采集、要求理解采集失败隔离 |
+| `backend/app/talent_evaluation_dispatch.py` | 维度生成采集、证据要求线程设置身份 |
+| `backend/app/evidence_pack.py` | 模型输入与原始短标识输出采集，模型重试逐次记录 |
+| `backend/app/talent_tools.py` | `copy_context().run` 将调用方上下文传给工具执行线程 |
+| `backend/app/models.py` | `EvaluationFeedbackRecord`，反馈外键关联 Run 与可选 Case |
+| `backend/app/evaluation_api.py` | Case 分页筛选、详情和反馈创建接口 |
+| `database/migrations/023_evaluation_feedback.sql` | 幂等新增反馈表与索引、范围组合约束 |
+| `frontend/src/EvaluationCenter.tsx` | 评测中心、步骤调用选择与反馈表单 |
+| `frontend/src/evaluation.css` | 评测中心与反馈表单样式 |
+| `backend/scripts/verify_evaluation_case.py` | 第 22 课验收继续明确筛选要求理解模块，避免其他模块加入后读取错误记录 |
+| `backend/scripts/verify_evaluation_center.py` | 真实模型 Run → 四模块采集 → 两种反馈 → PostgreSQL 关联断言 |
+| `backend/tests/test_lesson23_collection.py` | PostgreSQL 并发、异常隔离、跨工具线程身份验证 |
+| `backend/tests/test_evaluation_feedback.py` | 请求范围、关联有效性、原始载荷不变与查询验证 |
+
+接口：
+
+- `GET /api/evaluation/cases`：支持 `source_run_id`、`module_key`、`status`、`has_feedback`、`offset`、`limit`，返回 `items` 与 `has_more`
+- `GET /api/evaluation/cases/{case_id}`：原始输入输出、上下文、版本和关联反馈
+- `POST /api/evaluation/feedback`：`source_run_id`、`case_id`、`feedback_scope`、`note`，模块必须引用同 Run 的 Case，报告级 Case 为空
+
+`has_feedback` 仅表示模块直接反馈，`run_has_feedback` 单独表示报告反馈。反馈不会自动标注得分或修改 `annotation_status`。页面每页 100 条调用，同 Run 可跨页；步骤抽屉按每页 200 条读取当前 Run 的全部记录，再按步骤模块筛选。
+
+工程根目录执行迁移：
+
+```bash
+docker compose -p talent-eval-agents-course exec -T postgres \
+  psql -U talent -d talent_docs -v ON_ERROR_STOP=1 -f /dev/stdin \
+  < database/migrations/023_evaluation_feedback.sql
+```
+
+按开发模式启动后端 18080 与前端 15173，进入评测中心；真实验收要求已有岗位、人才材料及 Milvus 索引，且模型、Embedding 和 Rerank 配置有效。
+
+```bash
+cd backend
+uv run --no-sync python -m scripts.verify_evaluation_center
+```
+
+验收 Run `1e5a2d03-4db3-4897-86dc-b041277213fd` 完成报告，共采集 58 条 Case，其中事实抽取 54 条、失败 Case 1 条，两种反馈各 1 条。模型结果与数量可能变化。
+
+当前沿用课程单租户开发访问边界，没有新增身份认证；原文 Case 访问需要在部署前与既有 Run、人才材料接口统一实施授权。采集采用尽力写入，数据库失败会记录 `case_collection_failed`，不会阻断业务，也没有持久化补偿队列。岗位 Case 保存候选版本与规则版本，严格重放还需要固定当时岗位库。
+
+## 第 24 课 LLM Judge、Golden 审核与模块重放
+
+复用现有评测中心，新增两张表和手动批次接口，每批最多 20 条顺序执行，不引入队列、定时任务或实验平台。
+
+| 文件 | 用途与接口 |
+| --- | --- |
+| `backend/app/evaluation_judge.py` | `judge_case(case, golden_output=None)`：四模块评分、候选答案与 Judge Prompt 脱敏；`replay_output(item)`：调用当前人才要求理解函数 |
+| `backend/app/evaluation_api.py` | `POST /api/evaluation/judge` 接收 `case_ids`；`POST /cases/{case_id}/confirm` 接收完整 `golden_output`、`dataset_split` 和 `tags`；`GET /dataset`；`POST /replay` 接收 `dataset_item_ids`，以上均在 `/api/evaluation` 前缀下 |
+| `backend/app/models.py` | Annotation 以 Case 为主键，Dataset Item 以来源 Case 唯一，确认在同一事务中完成 |
+| `database/migrations/024_evaluation_judge.sql` | 幂等新增标注、数据集表及评分索引；`database/init.sql` 同步支持新库 |
+| `frontend/src/EvaluationCenter.tsx` | 模块、反馈、状态、时间、未标注及 0—2 分筛选，选择最多 20 条 Case 批量 Judge |
+| `frontend/src/EvaluationReview.tsx` | Golden 编辑和确认、数据集分页、选择条目与手动重放 |
+| `backend/tests/test_evaluation_judge.py` | 独立模型、错误隔离、审核入集、原始数据不变、固定输入及重放分母测试 |
+| `backend/scripts/verify_evaluation_judge.py` | `judge CASE_ID...`、`confirm CASE_ID GOLDEN_FILE`、`replay DATASET_ITEM_ID...` 三个手动步骤，不自动确认模型答案 |
+
+配置沿用 `.env` 中用户提供的 `get_judge_model()` 配置：`JUDGE_MODEL`、`JUDGE_API_KEY`、`JUDGE_BASE_URL`，通常使用不同于 `CHAT_MODEL` 的评判模型。缺少 Judge 配置时报错，不回退至 Chat 模型。四个业务模块重放仍调用 `get_chat_model()` 或模块原有确定性实现。修复 Chat 工厂 `model` 未定义的问题，未更改用户的模型选择。
+
+Judge 输入使用 JSON 区分 `task_spec`、`input`、`actual_output` 和可选 `reference_output`。人才要求理解、动态维度生成和事实抽取直接复用各自运行时的原始任务 Prompt，岗位匹配使用对应的确定性路由规则；每次只发送当前模块的任务规范，不发送 `output_schema`。实际输出在模型调用前通过模块 Schema 校验；Golden 候选在调用后校验，候选无效时保留评分并记录 `golden_candidate_invalid`。`verdict` 由程序根据分数生成。
+
+工程根目录迁移：
+
+```bash
+docker compose -p talent-eval-agents-course exec -T postgres \
+  psql -U talent -d talent_docs -v ON_ERROR_STOP=1 -f /dev/stdin \
+  < database/migrations/024_evaluation_judge.sql
+```
+
+启动 API 18080 和现有前端 15173，打开评测中心，筛选未标注 Case，选择条目后点击批量 Judge；查看原始输入、输出、得分和原因，编辑完整 Golden 后选择开发集或测试集并确认。数据集区可查看冻结快照并选择四个模块的条目重放。
+
+脚本从 `backend/` 运行，帮助入口：
+
+```bash
+uv run --no-sync python -m scripts.verify_evaluation_judge --help
+```
+
+`--api-base` 位于子命令之前，默认 `http://127.0.0.1:18080`。Case 和 Dataset ID 从页面或列表接口读取；`confirm` 显式读取经过复核的 JSON 文件。
+
+行为边界：
+
+- 原始 Case 不修改，标注状态以关联 Annotation 为准，历史 `annotation_status` 不参与新逻辑
+- 每条 Case 保留一次 Annotation，已有标注跳过，Judge 服务失败仍可手动重试
+- 原始模块失败规则标 0 分、候选为空；Judge 失败不产生质量分数
+- 人工可以不经过 Judge 直接填写 Golden，分数留空，结构校验不能代替业务复核
+- 确认后的 Dataset Item 不可覆盖，唯一来源约束防止重复确认，候选答案保留在 Annotation
+- 岗位评价不具备完整历史岗位库，不能评价完整召回率，规则明确唯一 exact 的优先级
+- 人才要求理解、岗位匹配、维度生成和事实抽取均按冻结输入重放，只执行对应模块，不运行整个 Graph
+- 重放失败的业务模块计 0 分；Judge 失败无分数；`complete=false` 时平均分仅代表已评分部分
+- 开发集用于调试，测试集用于固定回归，划分时应人工避免同一会话或近似样本跨集合
+- 继续使用课程现有访问边界，未新增用户认证和审核人审计体系
+
+验收产物在 `backend/artifacts/lesson24-annotations.json`、`lesson24-dataset.json`、`lesson24-replay.json` 和 `lesson24-replay-judge-error.json`，开发集样本由本次开发验收复核生成，不能等同于业务专家审核数据。
+
+验收结果：四模块成功 Case 分别得到 4、4、4、3 分，失败 Case 由规则标 0 分；固定开发集重放完成，单条及平均分为 3，业务模型 `qwen3.8-max`、Judge `gpt-5.5`。精简后的 Judge 使用真实人才要求理解 Case 返回 4 分、完整候选和 0.98 置信度。后端回归 293 passed、1 skipped，前端 15 passed，构建通过。
+
+### 评测中心页面布局
+
+评测中心沿用全局侧栏图标、品牌、环境标识和折叠状态，顶部区分“评测样例”和“数据集”。样例页默认展示全部 Case，“按 Run 分组查看”复选框与筛选项位于同一区域，低分 Case（0—2 分）可直接勾选筛选，支持整行打开详情，复选框独立选中。
+
+`GET /api/evaluation/cases?group_by=run&limit=10` 先对符合筛选的 Case 按 Run 聚合，再按 `completed_at` 倒序分页；返回会话标题、完成时间、Run ID 和筛选后的 Case 数。缺少完成时间的 Run 排在最后。每页 10 个 Run，分组默认折叠，展开后按每页 10 条懒加载 Case；默认列表每页 10 条。
+
+数据集 Tab 每页 10 条，以表格展示 split、模块、source_case_id 和创建时间，支持 split 与模块筛选，点击行查看固定输入与 Golden。所有模块的条目均可通过复选框选择，并沿用原有重放接口。更新后需要重启后端以加载分组查询参数，不涉及数据库迁移。
+
+工作台通过 `GET /api/dashboard/metrics` 展示员工数量、档案数量、总评估会话数、总评估轮次数、评测样例数和数据集条目数。指标直接基于现有业务表聚合，不新增缓存或统计表。
+
+## 第 25 课外部模型数据脱敏与出站防护
+
+| 路径 | 用途 |
+| --- | --- |
+| `backend/scripts/verify_langchain_pii.py` | 使用本地回显模型展示 `PIIMiddleware` 的 `redact`、`mask`、`hash` 和 `block` 实际输出 |
+| `backend/app/prompt_sanitizer.py` | `sanitize_prompt(original_prompt)` 把原始 Prompt 字符串转换为脱敏字符串 |
+| `backend/app/evaluation_judge.py` | Judge 在调用外部模型前对用户 Prompt 执行一次脱敏 |
+| `backend/tests/test_prompt_sanitizer.py` | 覆盖姓名、手机号、邮箱、身份证号和重复值替换 |
+| `backend/tests/test_verify_langchain_pii.py` | 固定 LangChain 四种 PII 策略的演示输出 |
+
+默认规则检测带标签的中文姓名、中国大陆手机号、邮箱和身份证号。函数只接收一个 `str`，并返回一个脱敏后的 `str`。同一原值在一次转换中使用同一占位符。
+
+定向验证：
+
+```bash
+cd backend
+uv run --no-sync python -m scripts.verify_langchain_pii
+
+uv run --no-sync pytest -q \
+  tests/test_prompt_sanitizer.py \
+  tests/test_evaluation_judge.py::test_judge_redacts_pii_before_external_model_call
+```
+
+全量后端回归为 `297 passed, 1 skipped`。当本机设置 SOCKS 代理但当前 `httpx` 未安装 `socksio` 时，构造 `ChatOpenAI` 的工厂测试会先因代理依赖失败；应补齐 `httpx[socks]` 或在本次本地回归中取消该代理环境变量。

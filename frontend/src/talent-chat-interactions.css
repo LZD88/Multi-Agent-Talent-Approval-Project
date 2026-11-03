@@ -1,0 +1,230 @@
+.hitlRevision {
+  display: grid;
+  gap: 8px;
+}
+
+.hitlRevision textarea {
+  width: 100%;
+  min-height: 82px;
+  resize: vertical;
+  border: 1px solid #d8c98f;
+  border-radius: 8px;
+  padding: 10px;
+  outline: 0;
+  background: #fff;
+}
+
+.hitlRevision button {
+  justify-self: start;
+  border: 0;
+  background: #8a6418;
+  color: #fff;
+  border-radius: 8px;
+  padding: 9px 13px;
+  font-weight: 700;
+}
+
+.hitlRevision button:disabled {
+  opacity: 0.45;
+}
+
+.reportMarkdown h4 {
+  margin: 14px 0 6px;
+  color: #52675e;
+  font-size: 12px;
+}
+
+.citationPath {
+  display: block;
+  margin-top: 16px;
+  padding: 9px;
+  border-radius: 7px;
+  background: #f4f6f5;
+  color: #63726b;
+  font-size: 10px;
+  word-break: break-all;
+}
+
+.timelineStep {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #eef2f0;
+  background: #fff;
+  text-align: left;
+  color: inherit;
+}
+
+.timelineStep:hover,
+.timelineStep.selected {
+  background: #f6faf8;
+}
+
+.timelineStep.paused > span {
+  background: #fff0c9;
+  color: #976517;
+}
+
+.timelineStep.cancelled > span,
+.timelineStep.failed > span {
+  background: #f9e9e6;
+  color: #a4493e;
+}
+
+.timelineStep small {
+  display: grid;
+  justify-items: end;
+  gap: 3px;
+}
+
+.timelineStep small em {
+  font-style: normal;
+}
+
+.timelineStep small time {
+  color: #52675e;
+  font: 10px ui-monospace;
+}
+
+.reportMarkdown h1 {
+  margin: 0 0 15px;
+  font-size: 20px;
+}
+
+.reportMarkdown h2 {
+  margin: 20px 0 10px;
+  font-size: 16px;
+}
+
+.reportMarkdown ul,
+.reportMarkdown ol {
+  padding-left: 22px;
+}
+
+.reportMarkdown li {
+  margin: 5px 0;
+}
+
+.reportMarkdown table {
+  width: 100%;
+  margin: 14px 0;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.reportMarkdown th,
+.reportMarkdown td {
+  border: 1px solid #dfe7e3;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.reportMarkdown th {
+  background: #f2f7f4;
+}
+
+.reportMarkdown code {
+  border-radius: 4px;
+  background: #f0f4f2;
+  padding: 2px 5px;
+}
+
+.reportMarkdown pre {
+  overflow: auto;
+  border-radius: 8px;
+  background: #17231e;
+  color: #e8f3ee;
+  padding: 14px;
+}
+
+.composer.locked textarea {
+  background: #f1f4f2;
+  color: #89948f;
+  cursor: not-allowed;
+}
+
+.composer.locked > div {
+  background: #f8faf9;
+}
+
+.stepOutputOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  justify-content: flex-end;
+  background: #07171066;
+}
+
+.stepOutputDrawer {
+  position: relative;
+  width: min(470px, 94vw);
+  overflow: auto;
+  background: #fff;
+  padding: 28px;
+  box-shadow: -18px 0 50px #10271f24;
+}
+
+.stepOutputDrawer > small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--green);
+  font-weight: 800;
+}
+
+.stepOutputDrawer > small svg {
+  width: 15px;
+}
+
+.stepOutputDrawer h2 {
+  margin: 8px 0 2px;
+}
+
+.stepOutputMeta {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0 20px;
+}
+
+.stepOutputMeta span {
+  border-radius: 99px;
+  background: #e7f3ed;
+  color: #17684d;
+  padding: 5px 8px;
+  font-size: 10px;
+}
+
+.stepOutputDrawer pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  border-radius: 10px;
+  background: #17231e;
+  color: #dcebe4;
+  padding: 16px;
+  font: 11px/1.7 ui-monospace;
+}
+
+.emptyStepOutput {
+  border: 1px dashed #cfdbd5;
+  border-radius: 10px;
+  background: #f7faf8;
+  color: var(--muted);
+  padding: 18px;
+}
+
+.stepOutputDrawer .close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: #f1f5f3;
+}
+
+.stepOutputDrawer .close svg {
+  width: 16px;
+}

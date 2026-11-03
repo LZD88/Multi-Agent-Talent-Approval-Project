@@ -1,0 +1,47 @@
+{
+  "items": [
+    {
+      "dataset_item_id": "173f7809-5514-4515-8d3b-d07a954eb394",
+      "status": "judge_error",
+      "output": {
+        "draft": {
+          "input_mode": "detailed_requirement",
+          "job_query": "高级 AI 应用工程师",
+          "filters": [
+            {
+              "field": "region",
+              "operator": "eq",
+              "value": "上海"
+            },
+            {
+              "field": "years_of_experience",
+              "operator": "gte",
+              "value": 5
+            }
+          ],
+          "semantic_requirements": [
+            {
+              "requirement_id": "S1",
+              "query": "做过企业知识库 RAG 项目",
+              "required": true
+            }
+          ],
+          "evaluation_preferences": [],
+          "clarifications": []
+        },
+        "revision_action": "initial",
+        "revision_summary": "建立初始人才要求：上海地区、至少5年开发经验、有企业知识库RAG项目经历的高级AI应用工程师",
+        "conversation_title": "上海高级AI应用工程师招聘"
+      },
+      "error_type": "BadRequestError"
+    }
+  ],
+  "requested_count": 1,
+  "scored_count": 0,
+  "complete": false,
+  "average_score": null,
+  "minimum_score": null,
+  "judge_version": "module-judge-v1",
+  "judge_model": "gpt-5.5",
+  "chat_model": "qwen3.8-max"
+}

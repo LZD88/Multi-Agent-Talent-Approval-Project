@@ -1,0 +1,10 @@
+.conversationGroup .emptyHistory {
+  color: #86938d;
+  font-size: 12px;
+  margin: 10px 8px;
+}
+
+.conversationGroup button {
+  overflow: hidden;
+  word-break: break-word;
+}

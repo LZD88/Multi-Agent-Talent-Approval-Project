@@ -31,13 +31,13 @@
 D:\VirualMachine\CentOS 7 64\CentOS 7 64 位.vmx
 ```
 
-确认 IP 是否仍然可用：
+确认 SSH 端口是否仍然可用：
 
 ```powershell
-ping 192.168.200.130
+Test-NetConnection 192.168.200.130 -Port 22
 ```
 
-如果虚拟机 IP 变了，需要把下面的 `192.168.200.130` 全部替换成新 IP。
+确认 `TcpTestSucceeded` 为 `True`。这台虚拟机可能禁用 ICMP，因此 `ping` 失败不代表虚拟机不可用。如果虚拟机 IP 变了，需要把下面的 `192.168.200.130` 全部替换成新 IP。
 
 ## 2. 启动本地 PostgreSQL
 
@@ -129,8 +129,10 @@ ssh -N `
 ```powershell
 cd D:\Workspace\PycharmProjects\PythonProject\talent-eval-agents\backend
 uv sync --dev
-uv run uvicorn app.main:app --reload --host 127.0.0.1 --port 18080
+uv run python run_windows.py --reload
 ```
+
+新版运行历史使用 PostgreSQL 异步 Checkpointer。Windows 默认的 `ProactorEventLoop` 与 psycopg 异步连接不兼容，必须通过 `run_windows.py` 让 Uvicorn 使用 `SelectorEventLoop`；不要直接运行 `uvicorn app.main:app`。
 
 验证：
 

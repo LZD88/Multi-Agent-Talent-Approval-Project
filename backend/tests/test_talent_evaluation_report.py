@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pytest
+
 
 def _dimension(dimension_name: str, weight_percent: int):
     from app.talent_evaluation_dispatch import EvaluationDimension, ScoreAnchor
@@ -474,7 +476,7 @@ def test_structured_dimension_scorer_uses_anchors_and_evidence_without_counter_f
         def __init__(self):
             self.messages = None
 
-        def with_structured_output(self, schema):
+        def with_structured_output(self, schema, **kwargs):
             assert schema is DimensionJudgement
             return self
 
@@ -523,7 +525,7 @@ def test_structured_dimension_scorer_uses_short_evidence_refs_and_restores_chunk
         def __init__(self):
             self.messages = None
 
-        def with_structured_output(self, schema):
+        def with_structured_output(self, schema, **kwargs):
             assert schema is DimensionJudgement
             return self
 
@@ -593,7 +595,7 @@ def test_structured_report_writer_receives_ranked_assessments_and_verified_evide
         def __init__(self):
             self.messages = None
 
-        def with_structured_output(self, schema):
+        def with_structured_output(self, schema, **kwargs):
             assert schema is ReportDraft
             return self
 
@@ -641,6 +643,37 @@ def test_structured_report_writer_receives_ranked_assessments_and_verified_evide
     assert "citation_url" not in model.messages[1][1]
 
 
+@pytest.mark.parametrize("invalid_attempts", [1, 2])
+def test_report_writer_retries_schema_validation_once(invalid_attempts):
+    from pydantic import ValidationError
+    from app.talent_evaluation_report import ReportDraft, build_structured_report_writer
+
+    class Model:
+        calls = 0
+
+        def with_structured_output(self, schema, **kwargs):
+            return self
+
+        def invoke(self, messages):
+            self.calls += 1
+            if self.calls > 1:
+                assert "校验" in messages[-1][1]
+            return ReportDraft.model_validate({
+                "title": "评估报告", "overview": "结果概述",
+                "candidates": [{"candidate_id": "C001", "summary": "证据摘要",
+                    "highlights": [{"text": "匹配依据", "evidence_refs": [f"E{i}" for i in range(9)]}] if self.calls <= invalid_attempts else []}],
+            })
+
+    model = Model()
+    writer = build_structured_report_writer(lambda: model)
+    if invalid_attempts == 2:
+        with pytest.raises(ValidationError):
+            writer([], [])
+    else:
+        assert writer([], []).title == "评估报告"
+    assert model.calls == 2
+
+
 def test_structured_report_writer_restores_short_refs_before_validation():
     from app.talent_evaluation_report import (
         CandidateAssessment,
@@ -658,7 +691,7 @@ def test_structured_report_writer_restores_short_refs_before_validation():
         def __init__(self):
             self.messages = None
 
-        def with_structured_output(self, schema):
+        def with_structured_output(self, schema, **kwargs):
             assert schema is ReportDraft
             return self
 
@@ -808,7 +841,7 @@ def test_structured_consistency_reviewer_uses_only_scored_evidence():
         def __init__(self):
             self.messages = None
 
-        def with_structured_output(self, schema):
+        def with_structured_output(self, schema, **kwargs):
             assert schema is ConsistencyReview
             return self
 
@@ -882,7 +915,7 @@ def test_structured_consistency_reviewer_restores_short_refs():
         def __init__(self):
             self.messages = None
 
-        def with_structured_output(self, schema):
+        def with_structured_output(self, schema, **kwargs):
             assert schema is ConsistencyReview
             return self
 

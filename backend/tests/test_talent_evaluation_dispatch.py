@@ -274,7 +274,7 @@ def test_structured_dimension_generator_sends_request_and_query_plan_to_model():
         def __init__(self):
             self.messages = None
 
-        def with_structured_output(self, schema):
+        def with_structured_output(self, schema, **kwargs):
             assert schema is EvaluationDimensionPlan
             return self
 
@@ -300,6 +300,9 @@ def test_structured_dimension_generator_sends_request_and_query_plan_to_model():
     assert "query_plan" in model.messages[1][1]
     assert "review_feedback" not in model.messages[1][1]
     assert "hard_conditions" in model.messages[0][1]
+    assert "一般不超过 4 个" in model.messages[0][1]
+    assert "同一主题的多条要求合并为一个维度" in model.messages[0][1]
+    assert "retrieval_hints" in model.messages[0][1]
 
 
 def test_query_plan_candidate_provider_uses_only_trusted_runtime_context():
@@ -643,7 +646,7 @@ def test_branch_evidence_provider_builds_reviewed_pack_from_trusted_sources():
     assert requirement["facts"][0]["sources"][0]["source_label"] == "项目复盘"
 
 
-def test_evidence_extraction_failure_does_not_relabel_successful_branch_execution():
+def test_evidence_extraction_failure_marks_branch_degraded_and_keeps_raw_citations():
     from app.talent_decision_graph import DecisionContext
     from app.talent_evaluation_dispatch import (
         AssessmentWorkItem,
@@ -701,9 +704,11 @@ def test_evidence_extraction_failure_does_not_relabel_successful_branch_executio
         DecisionContext(tenant_id="tenant-a", permission_scopes=("hr_private",)),
     )
 
-    assert result.execution_status == "succeeded"
+    assert result.execution_status == "degraded"
     assert result.requirements[0].extraction_status == "failed"
     assert result.requirements[0].reason == "extraction_failed"
+    assert result.requirements[0].facts == []
+    assert result.requirements[0].citations[0].chunk_id == "chunk-1"
 
 
 def test_branch_draft_rejects_removed_parallel_summary_fields():

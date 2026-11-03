@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from app.evaluation_case import capture_call, EvaluationModule, extraction_scope
+
 import json
 import logging
 import operator
@@ -133,10 +135,13 @@ DIMENSION_GENERATOR_PROMPT = """你负责把已编译的人才要求转成可取
 只允许根据 semantic_conditions 和 evaluation_preferences 生成维度。
 hard_conditions 已用于候选人过滤，不得再生成评分维度。
 语义要求的来源使用原 requirement_id，偏好按顺序使用 preference:1、preference:2。
-维度之间不得重复，必须能通过候选人档案或原始材料取证。
+评估维度一般不超过 4 个，维度之间不得重复，必须能通过候选人档案或原始材料取证。
+同一主题的多条要求合并为一个维度，并在 retrieval_hints 中提供多个检索词组合。
+每个 semantic_condition 或 evaluation_preference 只生成一个维度，不得把同一条要求拆成多个维度。
 权重使用整数百分比且合计为 100。评分锚点固定为 0、3、5 分。
 retrieval_hints 应给出可直接用于候选人证据检索的关键词组合。
 """.strip()
+
 
 class BranchExecutionError(RuntimeError):
     def __init__(self, code: str, message: str):
@@ -251,7 +256,10 @@ def build_structured_dimension_generator(
             "talent_request": talent_request,
             "query_plan": query_plan,
         }
-        result = model.with_structured_output(EvaluationDimensionPlan).invoke(
+        result = model.with_structured_output(
+            EvaluationDimensionPlan,
+            method="function_calling",
+        ).invoke(
             [
                 ("system", DIMENSION_GENERATOR_PROMPT),
                 ("user", json.dumps(payload, ensure_ascii=False)),
@@ -354,19 +362,22 @@ def build_evidence_branch_worker(service: Any, executor: ToolExecutor) -> Branch
                 work_item.task_id, work_item.candidate_id,
                 work_item.dimension_number, requirement_id, len(query),
             )
-            envelope = executor.execute(
-                "search_candidate_evidence",
-                lambda query=query: service.search_candidate_evidence(
-                    query,
-                    [work_item.candidate_id],
+            with extraction_scope(context, candidate_id=work_item.candidate_id,
+                                  dimension_number=work_item.dimension_number,
+                                  requirement_id=requirement_id, task_id=work_item.task_id):
+                envelope = executor.execute(
+                    "search_candidate_evidence",
+                    lambda query=query: service.search_candidate_evidence(
+                        query,
+                        [work_item.candidate_id],
+                        context=tool_context,
+                    ),
                     context=tool_context,
-                ),
-                context=tool_context,
-                arguments={
-                    "query": query,
-                    "candidate_ids": [work_item.candidate_id],
-                },
-            )
+                    arguments={
+                        "query": query,
+                        "candidate_ids": [work_item.candidate_id],
+                    },
+                )
             meta = envelope.get("meta") or {}
             call_id = meta.get("call_id")
             normalized_call_id = call_id if isinstance(call_id, str) and call_id else None
@@ -443,7 +454,11 @@ def build_evidence_branch_worker(service: Any, executor: ToolExecutor) -> Branch
                 result.status, result.reason, result.extraction_status,
                 len(result.facts), len(result.citations),
             )
-            return result, normalized_call_id, bool(meta.get("degraded"))
+            return (
+                result,
+                normalized_call_id,
+                bool(meta.get("degraded")) or result.extraction_status == "failed",
+            )
 
         indexed_requirements = list(
             enumerate(work_item.dimension.evidence_requirements, start=1)
@@ -556,10 +571,18 @@ def _receive_input(
 
 
 def _generate_dimensions(dimension_generator: DimensionGenerator):
-    def generate_dimensions(state: TalentEvaluationDispatchState) -> dict[str, Any]:
-        plan = dimension_generator(
-            state["talent_request"],
-            state["query_plan"],
+    def generate_dimensions(state: TalentEvaluationDispatchState, runtime: Runtime[DecisionContext]) -> dict[str, Any]:
+        from app.config import get_settings
+
+        # 维度生成 Case 必须在确定性校验前采集模型的原始结构化输出。
+        # talent_request 与 query_plan 组成可重放输入，输出保留完整维度、
+        # 权重、证据要求、评分锚点、检索提示和来源需求编号。
+        # 校验结果继续由下游 validate_dimensions 生成，不混入当前 Case。
+        plan = capture_call(
+            lambda: dimension_generator(state["talent_request"], state["query_plan"]),
+            context=runtime.context, module_key=EvaluationModule.DIMENSION_GENERATION,
+            input_payload={"talent_request": state["talent_request"], "query_plan": state["query_plan"]},
+            version_snapshot={"prompt": "dimension-generator-v1", "model": get_settings().chat_model},
         )
         logger.info(
             "event=graph_node_completed function=generate_dimensions "

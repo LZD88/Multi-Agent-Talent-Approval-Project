@@ -225,3 +225,135 @@ COMMENT ON TABLE parse_artifacts IS 'Markdown、JSON、图片、转写等解析�
 COMMENT ON TABLE chunking_runs IS '一次可复现的文档切片运行及其自动判定策略';
 COMMENT ON TABLE document_chunks IS '带来源定位、父子关系、相邻关系和权限信息的人才证据单元';
 COMMENT ON TABLE evidence_index_jobs IS 'PostgreSQL 与 Milvus 之间的证据索引任务及一致性状态';
+
+CREATE TABLE talent_runs (
+    run_id VARCHAR(64) PRIMARY KEY,
+    conversation_id VARCHAR(64) NOT NULL,
+    turn_no INTEGER NOT NULL CHECK (turn_no > 0),
+    message TEXT NOT NULL,
+    status VARCHAR(32) NOT NULL,
+    report TEXT,
+    citations JSONB NOT NULL DEFAULT '[]'::jsonb,
+    trace_id VARCHAR(128),
+    error_message TEXT,
+    started_at TIMESTAMPTZ NOT NULL,
+    completed_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ NOT NULL
+);
+
+CREATE INDEX idx_talent_runs_status ON talent_runs (status);
+CREATE INDEX idx_talent_runs_started_at ON talent_runs (started_at DESC);
+CREATE INDEX idx_talent_runs_trace_id ON talent_runs (trace_id);
+CREATE INDEX idx_talent_runs_conversation_turn
+ON talent_runs (conversation_id, turn_no);
+
+CREATE TABLE talent_run_steps (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    run_id VARCHAR(64) NOT NULL REFERENCES talent_runs(run_id) ON DELETE CASCADE,
+    step_id VARCHAR(64) NOT NULL,
+    position INTEGER NOT NULL CHECK (position > 0),
+    title VARCHAR(255) NOT NULL,
+    kind VARCHAR(32),
+    status VARCHAR(32) NOT NULL,
+    completed INTEGER,
+    total INTEGER,
+    summary TEXT,
+    output JSONB NOT NULL DEFAULT '{}'::jsonb,
+    started_at TIMESTAMPTZ,
+    active_started_at TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ,
+    duration_ms BIGINT,
+    CONSTRAINT uq_talent_run_step UNIQUE (run_id, step_id)
+);
+
+CREATE INDEX idx_talent_run_steps_run_position
+ON talent_run_steps (run_id, position);
+
+COMMENT ON TABLE talent_runs IS '人才评估 Run 的最新状态、报告与引用快照';
+COMMENT ON TABLE talent_run_steps IS 'Run 内各业务步骤的最新可见结果';
+
+CREATE TABLE talent_conversations (
+    conversation_id VARCHAR(64) PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    status VARCHAR(32) NOT NULL,
+    latest_run_id VARCHAR(64),
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL
+);
+
+CREATE INDEX idx_talent_conversations_status_updated
+ON talent_conversations (status, updated_at DESC);
+
+COMMENT ON TABLE talent_conversations IS '前端会话列表的业务投影，不用于恢复 LangGraph State';
+
+CREATE TABLE evaluation_cases (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    source_run_id VARCHAR(64) NOT NULL,
+    conversation_id VARCHAR(64) NOT NULL,
+    turn_no INTEGER NOT NULL CHECK (turn_no > 0),
+    module_key VARCHAR(64) NOT NULL,
+    invocation_no INTEGER NOT NULL CHECK (invocation_no > 0),
+    input_payload JSONB NOT NULL,
+    output_payload JSONB NOT NULL,
+    replay_context JSONB NOT NULL DEFAULT '{}'::jsonb,
+    version_snapshot JSONB NOT NULL DEFAULT '{}'::jsonb,
+    status VARCHAR(32) NOT NULL DEFAULT 'succeeded',
+    error_code VARCHAR(64),
+    duration_ms BIGINT,
+    annotation_status VARCHAR(32) NOT NULL DEFAULT 'unlabeled',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT uq_evaluation_case_invocation
+        UNIQUE (source_run_id, module_key, invocation_no)
+);
+
+CREATE INDEX idx_evaluation_cases_run
+ON evaluation_cases (source_run_id, created_at);
+
+CREATE INDEX idx_evaluation_cases_module
+ON evaluation_cases (module_key, created_at DESC);
+
+CREATE INDEX idx_evaluation_cases_conversation_turn
+ON evaluation_cases (conversation_id, turn_no);
+
+COMMENT ON TABLE evaluation_cases IS '从真实 Graph 模块调用边界自动采集的待评测样例';
+
+CREATE TABLE IF NOT EXISTS evaluation_feedback (
+    id UUID PRIMARY KEY,
+    source_run_id VARCHAR(64) NOT NULL REFERENCES talent_runs(run_id),
+    case_id UUID REFERENCES evaluation_cases(id),
+    feedback_scope VARCHAR(16) NOT NULL,
+    note TEXT NOT NULL DEFAULT '',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT ck_feedback_scope CHECK (
+        (feedback_scope = 'module' AND case_id IS NOT NULL) OR
+        (feedback_scope = 'run' AND case_id IS NULL)
+    )
+);
+CREATE INDEX IF NOT EXISTS ix_evaluation_feedback_run ON evaluation_feedback(source_run_id);
+CREATE INDEX IF NOT EXISTS ix_evaluation_feedback_case ON evaluation_feedback(case_id);
+CREATE TABLE IF NOT EXISTS evaluation_annotations (
+    case_id UUID PRIMARY KEY REFERENCES evaluation_cases(id),
+    annotator_type VARCHAR(16) NOT NULL,
+    judge_version VARCHAR(64) NOT NULL,
+    judge_model VARCHAR(128),
+    score INTEGER CHECK (score BETWEEN 0 AND 4),
+    verdict VARCHAR(32) NOT NULL,
+    error_types JSON NOT NULL DEFAULT '[]',
+    reason TEXT NOT NULL,
+    golden_candidate JSON,
+    confidence DOUBLE PRECISION CHECK (confidence BETWEEN 0 AND 1),
+    review_status VARCHAR(16) NOT NULL DEFAULT 'pending' CHECK (review_status IN ('pending', 'confirmed')),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS ix_evaluation_annotations_score ON evaluation_annotations(score);
+CREATE TABLE IF NOT EXISTS evaluation_dataset_items (
+    id UUID PRIMARY KEY,
+    source_case_id UUID NOT NULL UNIQUE REFERENCES evaluation_cases(id),
+    module_key VARCHAR(64) NOT NULL,
+    input_payload JSON NOT NULL,
+    golden_output JSON NOT NULL,
+    replay_context JSON NOT NULL,
+    dataset_split VARCHAR(16) NOT NULL DEFAULT 'test' CHECK (dataset_split IN ('dev', 'test')),
+    tags JSON NOT NULL DEFAULT '[]',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

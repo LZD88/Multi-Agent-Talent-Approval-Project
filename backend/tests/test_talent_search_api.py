@@ -44,7 +44,7 @@ class FakeStructuredModel:
 
 
 class FakeModel:
-    def with_structured_output(self, schema):
+    def with_structured_output(self, schema, **kwargs):
         return FakeStructuredModel(schema)
 
 
@@ -133,7 +133,7 @@ def test_talent_search_endpoint_retries_with_optimized_queries_when_first_search
             return super().invoke(messages)
 
     class OptimizingModel:
-        def with_structured_output(self, schema):
+        def with_structured_output(self, schema, **kwargs):
             return OptimizingStructuredModel(schema)
 
     class AnyQueryEmbedder:

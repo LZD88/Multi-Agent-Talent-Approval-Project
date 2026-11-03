@@ -16,3 +16,5 @@ dist/
 *.zip
 logs/
 backend/.langgraph_api/
+docs/
+

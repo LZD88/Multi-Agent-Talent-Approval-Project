@@ -1,18 +1,38 @@
 from __future__ import annotations
 
+from app.evaluation_case import capture_call, EvaluationModule, safe_record
+
 from collections.abc import Callable
+import inspect
 from operator import add
+from time import perf_counter
 from typing import Annotated, Any, Literal
 
+from langchain.messages import AnyMessage, HumanMessage
 from langgraph.graph import END, START, StateGraph
+from langgraph.graph.message import add_messages
 from langgraph.runtime import Runtime
 from langgraph.types import interrupt
 from pydantic import BaseModel, Field, ValidationError
 from typing_extensions import TypedDict
 
 from app.database import SessionLocal
+from app.config import get_settings
+from app.evaluation_case import (
+    EvaluationCaseDraft,
+    SqlEvaluationCaseStore,
+    build_request_understanding_case,
+    recent_request_messages,
+)
 from app.model_provider import get_chat_model
-from app.query_plan import Clarification, FilterCondition, QueryPlan, SemanticRequirement, TaskType
+from app.query_plan import (
+    Clarification,
+    FilterCondition,
+    QueryPlan,
+    SemanticRequirement,
+    TaskType,
+    filter_dsl_catalog,
+)
 from app.talent_decision_graph import DecisionContext
 from app.talent_tools import TalentToolContext, TalentToolService
 
@@ -58,11 +78,25 @@ class TalentRequestDraft(BaseModel):
     clarifications: list[Clarification] = Field(default_factory=list)
 
 
-class TalentRequestInput(TypedDict):
+class TalentRequestRevision(BaseModel):
+    draft: TalentRequestDraft
+    revision_action: Literal["initial", "add", "update", "remove"] = "initial"
+    revision_summary: str = "建立初始人才要求"
+
+
+class TalentRequestUnderstanding(TalentRequestRevision):
+    conversation_title: str = Field(min_length=1, max_length=80)
+
+
+class TalentRequestInput(TypedDict, total=False):
+    messages: Annotated[list[AnyMessage], add_messages]
     request_text: str
+    talent_request: dict[str, Any]
+    conversation_title: str
 
 
 class TalentRequestOutput(TypedDict):
+    messages: Annotated[list[AnyMessage], add_messages]
     status: RequestStatus
     input_mode: RequestInputMode
     job_matches: list[JobMatch]
@@ -74,9 +108,13 @@ class TalentRequestOutput(TypedDict):
     plan_version: int
     clarifications: list[dict[str, str]]
     errors: list[str]
+    conversation_title: str
+    revision_action: str
+    revision_summary: str
 
 
 class TalentRequestState(TypedDict, total=False):
+    messages: Annotated[list[AnyMessage], add_messages]
     request_text: str
     input_mode: RequestInputMode
     draft: dict[str, Any]
@@ -90,11 +128,15 @@ class TalentRequestState(TypedDict, total=False):
     clarifications: list[dict[str, str]]
     status: RequestStatus
     errors: list[str]
+    conversation_title: str
+    revision_action: str
+    revision_summary: str
 
 
-RequestInterpreter = Callable[[str, JobMatch | None], TalentRequestDraft]
+RequestInterpreter = Callable[..., TalentRequestUnderstanding | TalentRequestDraft]
 JobLookup = Callable[[str, DecisionContext], list[JobMatch]]
 CandidateFilter = Callable[[list[FilterCondition], DecisionContext], list[str]]
+CaseRecorder = Callable[[EvaluationCaseDraft], Any]
 
 
 def _receive_request(state: TalentRequestState, runtime: Runtime[DecisionContext]) -> dict[str, Any]:
@@ -102,14 +144,16 @@ def _receive_request(state: TalentRequestState, runtime: Runtime[DecisionContext
         raise ValueError("Runtime Context 中的 tenant_id 不能为空")
     if not runtime.context.permission_scopes:
         raise ValueError("Runtime Context 中的 permission_scopes 不能为空")
-    request_text = state["request_text"].strip()
+    messages = list(state.get("messages", []))
+    request_text = str(state.get("request_text", "")).strip()
+    if messages:
+        request_text = str(messages[-1].content).strip()
     if not request_text:
         raise ValueError("request_text 不能为空")
-    return {
+    update: dict[str, Any] = {
         "request_text": request_text,
         "job_matches": [],
         "selected_job": None,
-        "talent_request": {},
         "query_plan": {},
         "candidate_ids": [],
         "condition_revisions": [],
@@ -118,15 +162,112 @@ def _receive_request(state: TalentRequestState, runtime: Runtime[DecisionContext
         "status": "received",
         "errors": [],
     }
+    if not messages:
+        update["messages"] = [HumanMessage(content=request_text)]
+    return update
 
 
-def _interpret_input(request_interpreter: RequestInterpreter):
-    def interpret_input(state: TalentRequestState) -> dict[str, Any]:
-        draft = request_interpreter(state["request_text"], None)
+def _call_request_interpreter(
+    interpreter: RequestInterpreter,
+    state: TalentRequestState,
+    selected_job: JobMatch | None,
+    context: DecisionContext,
+    case_recorder: CaseRecorder | None,
+) -> TalentRequestUnderstanding:
+    started_at = perf_counter()
+    try:
+        parameters = inspect.signature(interpreter).parameters
+        if len(parameters) <= 2:
+            legacy = interpreter(state["request_text"], selected_job)
+            if isinstance(legacy, TalentRequestUnderstanding):
+                understanding = legacy
+            else:
+                understanding = TalentRequestUnderstanding(
+                    draft=TalentRequestDraft.model_validate(legacy),
+                    conversation_title=state.get("conversation_title") or state["request_text"][:30],
+                )
+        else:
+            result = interpreter(
+                recent_request_messages(list(state.get("messages", []))),
+                dict(state.get("talent_request", {})),
+                selected_job,
+                state.get("conversation_title", ""),
+            )
+            understanding = TalentRequestUnderstanding.model_validate(result)
+    except Exception as exc:
+        if case_recorder is not None and context.run_id:
+            safe_record(case_recorder,
+                build_request_understanding_case(
+                    source_run_id=context.run_id,
+                    conversation_id=context.conversation_id,
+                    turn_no=context.turn_no,
+                    messages=list(state.get("messages", [])),
+                    previous_request=dict(state.get("talent_request", {})),
+                    conversation_title=state.get("conversation_title", ""),
+                    selected_job=selected_job,
+                    output_payload={},
+                    replay_context={
+                        "tenant_id": context.tenant_id,
+                        "permission_scopes": list(context.permission_scopes),
+                    },
+                    version_snapshot={
+                        "prompt": "request-understanding-v1",
+                        "model": get_settings().chat_model,
+                    },
+                    status="failed",
+                    error_code=type(exc).__name__,
+                    duration_ms=round((perf_counter() - started_at) * 1000),
+                )
+            )
+        raise
+    if case_recorder is not None and context.run_id:
+        safe_record(case_recorder,
+            build_request_understanding_case(
+                source_run_id=context.run_id,
+                conversation_id=context.conversation_id,
+                turn_no=context.turn_no,
+                messages=list(state.get("messages", [])),
+                previous_request=dict(state.get("talent_request", {})),
+                conversation_title=state.get("conversation_title", ""),
+                selected_job=selected_job,
+                output_payload=understanding.model_dump(mode="json"),
+                replay_context={
+                    "tenant_id": context.tenant_id,
+                    "permission_scopes": list(context.permission_scopes),
+                },
+                version_snapshot={
+                    "prompt": "request-understanding-v1",
+                    "model": get_settings().chat_model,
+                },
+                duration_ms=round((perf_counter() - started_at) * 1000),
+            )
+        )
+    return understanding
+
+
+def _interpret_input(
+    request_interpreter: RequestInterpreter,
+    case_recorder: CaseRecorder | None,
+):
+    def interpret_input(
+        state: TalentRequestState,
+        runtime: Runtime[DecisionContext],
+    ) -> dict[str, Any]:
+        understanding = _call_request_interpreter(
+            request_interpreter,
+            state,
+            None,
+            runtime.context,
+            case_recorder,
+        )
+        draft = understanding.draft
         return {
             "draft": draft.model_dump(mode="json"),
             "input_mode": draft.input_mode,
             "status": "request_understood",
+            "conversation_title": state.get("conversation_title") or understanding.conversation_title,
+            "revision_action": understanding.revision_action,
+            "revision_summary": understanding.revision_summary,
         }
 
     return interpret_input
@@ -136,10 +277,21 @@ def _route_input(state: TalentRequestState) -> Literal["lookup_jobs", "build_pla
     return "lookup_jobs" if state["input_mode"] == "job_name" else "build_plan"
 
 
-def _lookup_jobs(job_lookup: JobLookup):
+def _lookup_jobs(job_lookup: JobLookup, case_recorder=None):
     def lookup_jobs(state: TalentRequestState, runtime: Runtime[DecisionContext]) -> dict[str, Any]:
         job_query = str(state["draft"].get("job_query") or state["request_text"])
-        matches = job_lookup(job_query, runtime.context)
+
+        # 岗位匹配 Case 要在查询完成后、Graph 路由前采集。
+        # 输出同时保存完整候选列表和本次路由结果，避免后续只看到最终岗位，无法判断问题来自名称匹配还是岗位确认分支。
+        def match_and_route():
+            matches = job_lookup(job_query, runtime.context)
+            return {"matches": matches, "route": _route_job_matches({"job_matches": matches})}
+
+        result = capture_call(match_and_route, context=runtime.context,
+            module_key=EvaluationModule.JOB_MATCHING,
+            input_payload={"job_query": job_query}, recorder=case_recorder,
+            version_snapshot={"matching_rules": "job-lookup-v1"})
+        matches = result["matches"]
         return {"job_matches": matches, "status": "jobs_found"}
 
     return lookup_jobs
@@ -200,12 +352,26 @@ def _route_job_confirmation(state: TalentRequestState) -> str:
     return "compile_selected_job" if state["status"] == "job_confirmed" else END
 
 
-def _compile_selected_job(request_interpreter: RequestInterpreter):
-    def compile_selected_job(state: TalentRequestState) -> dict[str, Any]:
-        draft = request_interpreter(state["request_text"], state["selected_job"])
+def _compile_selected_job(
+    request_interpreter: RequestInterpreter,
+    case_recorder: CaseRecorder | None,
+):
+    def compile_selected_job(
+        state: TalentRequestState,
+        runtime: Runtime[DecisionContext],
+    ) -> dict[str, Any]:
+        understanding = _call_request_interpreter(
+            request_interpreter,
+            state,
+            state["selected_job"],
+            runtime.context,
+            case_recorder,
+        )
+        draft = understanding.draft
         return {
             "draft": draft.model_dump(mode="json"),
             "input_mode": "job_name",
+            "conversation_title": state.get("conversation_title") or understanding.conversation_title,
         }
 
     return compile_selected_job
@@ -409,6 +575,7 @@ def _resolve_requirements():
         }
         return {
             "request_text": revision_text,
+            "messages": [HumanMessage(content=revision_text)],
             "selected_job": None,
             "job_matches": [],
             "candidate_ids": [],
@@ -596,6 +763,7 @@ def build_talent_request_graph(
     request_interpreter: RequestInterpreter,
     job_lookup: JobLookup,
     candidate_filter: CandidateFilter | None = None,
+    case_recorder: CaseRecorder | None = None,
     checkpointer: Any | None = None,
 ):
     builder = StateGraph(
@@ -605,11 +773,14 @@ def build_talent_request_graph(
         output_schema=TalentRequestOutput,
     )
     builder.add_node("receive_request", _receive_request)
-    builder.add_node("interpret_input", _interpret_input(request_interpreter))
-    builder.add_node("lookup_jobs", _lookup_jobs(job_lookup))
+    builder.add_node("interpret_input", _interpret_input(request_interpreter, case_recorder))
+    builder.add_node("lookup_jobs", _lookup_jobs(job_lookup, case_recorder))
     builder.add_node("select_exact_job", _select_exact_job)
     builder.add_node("confirm_job", _confirm_job)
-    builder.add_node("compile_selected_job", _compile_selected_job(request_interpreter))
+    builder.add_node(
+        "compile_selected_job",
+        _compile_selected_job(request_interpreter, case_recorder),
+    )
     builder.add_node("build_plan", _build_plan)
     builder.add_node("no_job_match", _no_job_match)
     builder.add_edge(START, "receive_request")
@@ -649,28 +820,58 @@ def build_talent_request_graph(
     return builder.compile(checkpointer=checkpointer) if checkpointer is not None else builder.compile()
 
 
-MODEL_SYSTEM_PROMPT = """你是人才评估任务编译器。输出 TalentRequestDraft。
+MODEL_SYSTEM_PROMPT = """你是人才评估任务编译器。按照给定 Schema 输出结构化结果。
+结合最近消息窗口和 previous_request，输出本轮修订后的完整 TalentRequestDraft。
+首轮 revision_action 为 initial，conversation_title 为空时生成不超过 20 个中文字的标题。
+已有 conversation_title 时不生成标题，后续轮根据最新消息在 add、update、remove 中选择，保留未被修改的既有条件。
+用 revision_summary 简要说明变化。
 如果输入只有岗位名称或岗位简称，input_mode 使用 job_name，只填写 job_query，不根据岗位名称猜测条件。
 如果输入包含地区、年限、职级、技能、项目经验或偏好，input_mode 使用 detailed_requirement。
-结构化硬条件只能写入 filters。技能、经历和成果写入 semantic_requirements。优先项写入 evaluation_preferences。
+结构化硬条件只能写入 filters，字段定义与允许的操作符如下：
+{filter_dsl}
+地名只能映射为 region，current_position 只表示当前岗位名称，禁止将地名写入 current_position。
+技能、经历和成果写入 semantic_requirements。优先项写入 evaluation_preferences。
 只有歧义或矛盾导致无法形成可执行查询计划时才写入 clarifications。资深、经验丰富等可以用于语义检索或排序的描述写入 semantic_requirements 或 evaluation_preferences，不要求补充年龄等结构化阈值。租户和权限不得从用户文本提取。
 当输入中包含 confirmed_job 时，按照已确认岗位 JD 编译条件，并保留用户补充要求。"""
 
 
-def model_request_interpreter(request_text: str, selected_job: JobMatch | None = None) -> TalentRequestDraft:
+def model_request_interpreter(
+    messages: list[AnyMessage],
+    previous_request: dict[str, Any],
+    selected_job: JobMatch | None = None,
+    conversation_title: str = "",
+) -> TalentRequestUnderstanding:
     model = get_chat_model(temperature=0)
     if model is None:
         raise RuntimeError("任务理解模型未配置，请设置 DASHSCOPE_API_KEY")
-    user_content = request_text
+    messages = recent_request_messages(messages)
+    history = "\n".join(
+        f"{getattr(message, 'type', 'user')}: {message.content}" for message in messages
+    )
+    user_content = (
+        f"message_history=\n{history}\n"
+        f"previous_request={previous_request}\n"
+        f"conversation_title={conversation_title}"
+    )
     if selected_job is not None:
-        user_content = (
-            f"original_request={request_text}\n"
+        user_content += (
+            "\n"
             f"confirmed_job={selected_job['name']}\n"
             f"job_description={selected_job['content']}"
         )
-    return model.with_structured_output(TalentRequestDraft).invoke(
-        [("system", MODEL_SYSTEM_PROMPT), ("user", user_content)]
+    result = model.with_structured_output(
+        TalentRequestRevision if conversation_title else TalentRequestUnderstanding,
+        method="function_calling",
+    ).invoke(
+        [
+            ("system", MODEL_SYSTEM_PROMPT.format(filter_dsl=filter_dsl_catalog())),
+            ("user", user_content),
+        ]
     )
+    if conversation_title:
+        revision = TalentRequestRevision.model_validate(result)
+        return TalentRequestUnderstanding(**revision.model_dump(), conversation_title=conversation_title)
+    return TalentRequestUnderstanding.model_validate(result)
 
 
 def database_job_lookup(query: str, context: DecisionContext) -> list[JobMatch]:
@@ -700,4 +901,5 @@ graph = build_talent_request_graph(
     request_interpreter=model_request_interpreter,
     job_lookup=database_job_lookup,
     candidate_filter=database_candidate_filter,
+    case_recorder=SqlEvaluationCaseStore(SessionLocal).record,
 )

@@ -1,18 +1,22 @@
 {
     "scripts": {
         "dev": "vite --host 127.0.0.1 --port 15173",
-        "build": "tsc -b && vite build"
+        "build": "tsc -b && vite build",
+        "test": "vitest run"
     },
     "dependencies": {
         "@vitejs/plugin-react": "latest",
-        "vite": "latest",
-        "typescript": "latest",
+        "lucide-react": "latest",
         "react": "latest",
         "react-dom": "latest",
-        "lucide-react": "latest"
+        "react-markdown": "^10.1.0",
+        "remark-gfm": "^4.0.1",
+        "typescript": "latest",
+        "vite": "latest"
     },
     "devDependencies": {
         "@types/react": "latest",
-        "@types/react-dom": "latest"
+        "@types/react-dom": "latest",
+        "vitest": "^5.0.2"
     }
 }

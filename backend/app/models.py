@@ -2,7 +2,7 @@ from datetime import date, datetime
 from enum import StrEnum
 from uuid import UUID, uuid4
 
-from sqlalchemy import BigInteger, Boolean, Date, DateTime, Enum, Float, ForeignKey, Integer, JSON, String, Text, func
+from sqlalchemy import BigInteger, Boolean, Date, DateTime, Enum, Float, ForeignKey, Integer, JSON, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -91,6 +91,89 @@ class ToolCallAudit(Base):
     duration_ms: Mapped[float] = mapped_column(Float)
     error_code: Mapped[str | None] = mapped_column(String(64))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class TalentRunRecord(Base):
+    __tablename__ = "talent_runs"
+
+    run_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    conversation_id: Mapped[str] = mapped_column(String(64), index=True)
+    turn_no: Mapped[int] = mapped_column(Integer)
+    message: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(32), index=True)
+    report: Mapped[str | None] = mapped_column(Text)
+    citations: Mapped[list[dict]] = mapped_column(JSON, default=list)
+    trace_id: Mapped[str | None] = mapped_column(String(128), index=True)
+    error_message: Mapped[str | None] = mapped_column(Text)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class TalentConversationRecord(Base):
+    __tablename__ = "talent_conversations"
+
+    conversation_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    title: Mapped[str] = mapped_column(String(255))
+    status: Mapped[str] = mapped_column(String(32), index=True)
+    latest_run_id: Mapped[str | None] = mapped_column(String(64), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+
+
+class TalentRunStepRecord(Base):
+    __tablename__ = "talent_run_steps"
+    __table_args__ = (UniqueConstraint("run_id", "step_id", name="uq_talent_run_step"),)
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    run_id: Mapped[str] = mapped_column(
+        ForeignKey("talent_runs.run_id", ondelete="CASCADE"),
+        index=True,
+    )
+    step_id: Mapped[str] = mapped_column(String(64))
+    position: Mapped[int] = mapped_column(Integer)
+    title: Mapped[str] = mapped_column(String(255))
+    kind: Mapped[str | None] = mapped_column(String(32))
+    status: Mapped[str] = mapped_column(String(32))
+    completed: Mapped[int | None] = mapped_column(Integer)
+    total: Mapped[int | None] = mapped_column(Integer)
+    summary: Mapped[str | None] = mapped_column(Text)
+    output: Mapped[dict] = mapped_column(JSON, default=dict)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    active_started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    duration_ms: Mapped[int | None] = mapped_column(BigInteger)
+
+
+class EvaluationCaseRecord(Base):
+    __tablename__ = "evaluation_cases"
+    __table_args__ = (
+        UniqueConstraint(
+            "source_run_id",
+            "module_key",
+            "invocation_no",
+            name="uq_evaluation_case_invocation",
+        ),
+    )
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    source_run_id: Mapped[str] = mapped_column(String(64), index=True)
+    conversation_id: Mapped[str] = mapped_column(String(64), index=True)
+    turn_no: Mapped[int] = mapped_column(Integer)
+    module_key: Mapped[str] = mapped_column(String(64), index=True)
+    invocation_no: Mapped[int] = mapped_column(Integer)
+    input_payload: Mapped[dict] = mapped_column(JSON)
+    output_payload: Mapped[dict] = mapped_column(JSON)
+    replay_context: Mapped[dict] = mapped_column(JSON, default=dict)
+    version_snapshot: Mapped[dict] = mapped_column(JSON, default=dict)
+    status: Mapped[str] = mapped_column(String(32), default="succeeded")
+    error_code: Mapped[str | None] = mapped_column(String(64))
+    duration_ms: Mapped[int | None] = mapped_column(BigInteger)
+    annotation_status: Mapped[str] = mapped_column(String(32), default="unlabeled")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )
 
 
 class KnowledgeBase(Base):
@@ -265,4 +348,43 @@ class EvidenceIndexJob(Base):
     error_message: Mapped[str | None] = mapped_column(Text)
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class EvaluationFeedbackRecord(Base):
+    __tablename__ = 'evaluation_feedback'
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    source_run_id: Mapped[str] = mapped_column(ForeignKey('talent_runs.run_id'), index=True)
+    case_id: Mapped[UUID | None] = mapped_column(ForeignKey('evaluation_cases.id'), index=True)
+    feedback_scope: Mapped[str] = mapped_column(String(16))
+    note: Mapped[str] = mapped_column(Text, default='')
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class EvaluationAnnotationRecord(Base):
+    __tablename__ = 'evaluation_annotations'
+    case_id: Mapped[UUID] = mapped_column(ForeignKey('evaluation_cases.id'), primary_key=True)
+    annotator_type: Mapped[str] = mapped_column(String(16))
+    judge_version: Mapped[str] = mapped_column(String(64))
+    judge_model: Mapped[str | None] = mapped_column(String(128))
+    score: Mapped[int | None] = mapped_column(Integer)
+    verdict: Mapped[str] = mapped_column(String(32))
+    error_types: Mapped[list] = mapped_column(JSON, default=list)
+    reason: Mapped[str] = mapped_column(Text)
+    golden_candidate: Mapped[dict | None] = mapped_column(JSON)
+    confidence: Mapped[float | None] = mapped_column(Float)
+    review_status: Mapped[str] = mapped_column(String(16), default='pending')
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class EvaluationDatasetItemRecord(Base):
+    __tablename__ = 'evaluation_dataset_items'
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    source_case_id: Mapped[UUID] = mapped_column(ForeignKey('evaluation_cases.id'), unique=True)
+    module_key: Mapped[str] = mapped_column(String(64))
+    input_payload: Mapped[dict] = mapped_column(JSON)
+    golden_output: Mapped[dict] = mapped_column(JSON)
+    replay_context: Mapped[dict] = mapped_column(JSON)
+    dataset_split: Mapped[str] = mapped_column(String(16), default='test')
+    tags: Mapped[list] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

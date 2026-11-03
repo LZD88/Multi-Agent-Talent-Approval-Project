@@ -32,17 +32,33 @@ from app.models import (
     DocumentVersion,
     EmployeeProfile,
     EvidenceIndexJob,
+    EvaluationCaseRecord,
+    EvaluationDatasetItemRecord,
     FileObject,
     IndexStatus,
     KnowledgeBase,
     ParseArtifact,
     ParseJob,
+    TalentConversationRecord,
+    TalentRunRecord,
 )
 from app.object_store import ObjectStore
 from app.services import current_version, parse_version, upload_document
 
 router = APIRouter(prefix="/api")
 logger = logging.getLogger(__name__)
+
+
+@router.get("/dashboard/metrics")
+def dashboard_metrics(db: Session = Depends(get_db)) -> dict[str, int]:
+    return {
+        "employee_count": db.scalar(select(func.count()).select_from(EmployeeProfile)) or 0,
+        "document_count": db.scalar(select(func.count()).select_from(Document)) or 0,
+        "conversation_count": db.scalar(select(func.count()).select_from(TalentConversationRecord)) or 0,
+        "run_count": db.scalar(select(func.count()).select_from(TalentRunRecord)) or 0,
+        "case_count": db.scalar(select(func.count()).select_from(EvaluationCaseRecord)) or 0,
+        "dataset_count": db.scalar(select(func.count()).select_from(EvaluationDatasetItemRecord)) or 0,
+    }
 
 
 class EmployeeInput(BaseModel):

@@ -1,0 +1,46 @@
+.evaluationMain{min-width:0;overflow:auto;flex:1;background:#f8fafc}
+.evaluationContent{padding:24px 32px 40px;max-width:1600px;margin:auto}
+.evaluationContent [hidden]{display:none!important}
+.evaluationToolbar{background:white;border:1px solid #e2e8f0;border-radius:12px;margin:24px 0 22px;overflow:hidden}
+.evaluationToolbarRow{display:flex;align-items:center;gap:18px;padding:16px 20px;border-bottom:1px solid #edf0f4}
+.evaluationFieldLabel,.evaluationFilterFields legend{font-size:12px;font-weight:600;color:#64748b}
+.evaluationSegment{display:flex;gap:4px;background:#f1f5f9;padding:4px;border-radius:8px}
+.evaluationContent button,.evaluationOverlay button{cursor:pointer}
+.evaluationContent button:disabled,.evaluationOverlay button:disabled{cursor:not-allowed;opacity:.5}
+.evaluationContent button:focus-visible,.evaluationClickableRow:focus-visible{outline:2px solid #176b55;outline-offset:2px}
+.evaluationToolbar button,.evaluationPagination button,.evaluationOverlay button{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 14px;border:1px solid #dbe3ee;border-radius:7px;background:white;color:#334155;font-size:13px}
+.evaluationSegment button{border:0;background:transparent}
+.evaluationSegment button[aria-pressed=true]{background:white;color:#176b55;box-shadow:0 1px 4px #0f172a12;font-weight:600}
+.evaluationFilterFields{display:flex;flex-wrap:wrap;align-items:end;gap:14px 16px;border:0;padding:18px 20px;margin:0;min-width:0}
+.evaluationGroupCheck{font-weight:650;color:#176b55!important;white-space:nowrap}
+.evaluationFilterFields label{display:flex;flex-direction:column;gap:7px;font-size:12px;color:#64748b;min-width:150px}
+.evaluationFilterFields select,.evaluationFilterFields input:not([type=checkbox]){height:37px;max-width:100%;padding:7px 10px;border:1px solid #dbe3ee;border-radius:7px;background:white;color:#334155;font:inherit;font-size:13px}
+.evaluationFilterFields .evaluationCheckLabel{flex-direction:row;align-items:center;min-height:37px}
+.evaluationContent input[type=checkbox]{width:16px;height:16px;accent-color:#176b55;cursor:pointer}
+.evaluationActions{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 20px;background:#fafbfc;border-top:1px solid #edf0f4}
+.evaluationActions>span,.evaluationPagination>span{color:#64748b;font-size:12px}
+.evaluationActions>div,.evaluationPagination>div{display:flex;gap:9px}
+.evaluationActions .evaluationPrimary{background:#176b55;border-color:#176b55;color:white}
+.evaluationRunGroup{border:1px solid #e2e8f0;border-radius:10px;background:white;margin:12px 0;overflow:hidden}
+.evaluationRunHeading{width:100%;display:flex;align-items:center;gap:16px;border:0;text-align:left;background:white;padding:18px 20px;color:#475569}
+.evaluationRunHeading:hover{background:#f5faf7}
+.evaluationRunTitle{flex:1;min-width:0}.evaluationRunTitle b{display:block;color:#1e293b;font-size:14px;margin-bottom:7px}.evaluationRunTitle small{font-size:12px;color:#94a3b8;overflow-wrap:anywhere}
+.evaluationRunTime{font-size:12px;color:#475569;white-space:nowrap}.evaluationRunTime small{display:block;color:#94a3b8;margin-bottom:6px}
+.evaluationCount{background:#edf6f0;color:#176b55;border-radius:20px;padding:5px 10px;font-size:12px;white-space:nowrap}
+.evaluationTableWrap{width:100%;overflow-x:auto;border:1px solid #e2e8f0;border-radius:10px;background:white}.evaluationRunGroup .evaluationTableWrap{border:0;border-radius:0}
+.evaluationContent table{width:100%;border-collapse:collapse;text-align:left;font-size:13px}
+.evaluationContent th{padding:12px 16px;background:#f8fafc;color:#64748b;font-weight:500;white-space:nowrap}
+.evaluationContent td{padding:14px 16px;border-top:1px solid #edf0f4;color:#334155}.evaluationContent td small{display:block;color:#94a3b8;font-size:11px;margin-top:5px}
+.evaluationClickableRow{cursor:pointer}.evaluationClickableRow:hover{background:#f3f8f5}
+.evaluationBadge{display:inline-block;padding:4px 8px;background:#f1f5f9;border-radius:5px;font-size:12px}.evaluationBadge.succeeded{background:#ecfdf5;color:#047857}.evaluationBadge.failed{background:#fff1f2;color:#be123c}
+.evaluationId{font-family:monospace;font-size:12px;overflow-wrap:anywhere}
+.evaluationPagination{display:flex;align-items:center;justify-content:space-between;padding:16px 4px;gap:12px}.evaluationRunGroup .evaluationPagination{padding:12px 20px;border-top:1px solid #edf0f4}
+.evaluationEmpty{padding:36px;text-align:center;color:#94a3b8;font-size:14px}.evaluationError{padding:14px 20px;color:#be123c;background:#fff1f2;border-radius:8px}
+.evaluationResult{padding:18px;margin:18px 0;border:1px solid #e2e8f0;border-radius:10px;background:white}.evaluationResult h2{font-size:16px}
+.evaluationOverlay{position:fixed;inset:0;background:#0f172a55;z-index:100;display:flex;justify-content:flex-end}
+.evaluationOverlay aside{width:min(780px,90vw);padding:28px;background:white;overflow:auto;box-shadow:-8px 0 40px #0f172a18}
+.evaluationClose{float:right}.evaluationOverlay h2{font-size:20px}.evaluationOverlay h3{font-size:14px;margin-top:24px}.evaluationOverlay p{font-size:13px;color:#64748b;overflow-wrap:anywhere}
+.evaluationOverlay pre,.evaluationContent pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f8fafc;padding:16px;border-radius:8px;font-size:12px}.evaluationContent pre{max-height:450px;overflow:auto}
+.goldenEditor{width:100%;min-height:280px;font-family:monospace;border:1px solid #dbe3ee;border-radius:8px;padding:12px;margin-bottom:12px}
+.feedbackForm{padding:10px 0}.feedbackForm button{padding:8px 12px;border:1px solid #dbe3ee;border-radius:8px;background:white;color:#334155}.feedbackForm textarea{display:block;width:100%;min-height:70px;margin:8px 0;border:1px solid #cbd5e1;border-radius:8px;padding:10px}.feedbackForm small{padding:0 8px;color:#64748b}
+@media(max-width:1000px){.evaluationContent{padding:20px}.evaluationRunHeading{flex-wrap:wrap;gap:12px}.evaluationRunTime{margin-left:34px}.evaluationActions{flex-wrap:wrap}.evaluationFilterFields label{flex:1;min-width:160px}}

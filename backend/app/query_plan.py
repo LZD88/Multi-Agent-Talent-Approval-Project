@@ -199,7 +199,7 @@ def choose_optimization_strategy(*, hit_count: int, requirement_count: int, expr
 
 
 def optimize_semantic_query(requirement: SemanticRequirement, *, strategy: str, model: Any) -> QueryOptimizationPlan:
-    structured_model = model.with_structured_output(QueryOptimizationPlan)
+    structured_model = model.with_structured_output(QueryOptimizationPlan, method="function_calling")
     return structured_model.invoke(
         [
             ("system", "根据指定策略生成检索查询。保留原始人才条件，不增加年限、职级或技能要求。最多返回 3 条查询。"),
@@ -256,7 +256,7 @@ QUERY_PLAN_SYSTEM_PROMPT = """你是人才查询计划编译器。只把用户�
 
 
 def compile_query_plan(query: str, model: Any) -> QueryPlan:
-    structured_model = model.with_structured_output(QueryPlan)
+    structured_model = model.with_structured_output(QueryPlan, method="function_calling")
     return structured_model.invoke(
         [("system", QUERY_PLAN_SYSTEM_PROMPT.format(filter_dsl=filter_dsl_catalog())), ("user", query)]
     )

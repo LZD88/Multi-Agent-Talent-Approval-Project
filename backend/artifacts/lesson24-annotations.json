@@ -1,0 +1,254 @@
+[
+  {
+    "case_id": "58facde1-5ce9-4a9e-b1eb-5fa547fa2f0b",
+    "annotator_type": "llm",
+    "judge_version": "module-judge-v1",
+    "judge_model": "gpt-5.5",
+    "score": 4,
+    "verdict": "pass",
+    "error_types": [],
+    "reason": "实际输出完整覆盖了用户首轮需求：将“上海地区”正确映射为 region=上海、eq；“至少5年开发经验”正确映射为 years_of_experience>=5；“做过企业知识库 RAG 项目”作为必需语义经历写入 semantic_requirements；“高级 AI 应用工程师”作为岗位查询 job_query，未错误拆为结构化字段。输入包含地区、年限和项目经历，input_mode=detailed_requirement 正确；首轮 revision_action=initial、生成标题且不超长，summary 合理；无歧义所以 clarifications 为空。未见条件遗漏或不当猜测。",
+    "golden_candidate": {
+      "draft": {
+        "input_mode": "detailed_requirement",
+        "job_query": "高级 AI 应用工程师",
+        "filters": [
+          {
+            "field": "region",
+            "operator": "eq",
+            "value": "上海"
+          },
+          {
+            "field": "years_of_experience",
+            "operator": "gte",
+            "value": 5
+          }
+        ],
+        "semantic_requirements": [
+          {
+            "requirement_id": "S1",
+            "query": "做过企业知识库 RAG 项目",
+            "required": true
+          }
+        ],
+        "evaluation_preferences": [],
+        "clarifications": []
+      },
+      "revision_action": "initial",
+      "revision_summary": "建立初始人才要求：上海地区、至少5年开发经验、有企业知识库RAG项目经历的高级AI应用工程师",
+      "conversation_title": "上海高级AI应用工程师招聘"
+    },
+    "confidence": 0.96,
+    "review_status": "confirmed",
+    "created_at": "2026-10-18 09:32:56.564042+00:00"
+  },
+  {
+    "case_id": "19f2ec6a-eeda-4a43-8c69-6d113ef48a0a",
+    "annotator_type": "llm",
+    "judge_version": "module-judge-v1",
+    "judge_model": "gpt-5.5",
+    "score": 3,
+    "verdict": "pass",
+    "error_types": [
+      "minor_overextraction",
+      "duplicate_sources",
+      "claim_scope_issue"
+    ],
+    "reason": "实际输出整体围绕企业知识库/RAG项目和检索增强生成策略抽取，主要事实均可由 sources 连续原文支持，period 格式符合 schema，yes/no 与 fully_supported 基本合理。问题是第1条 claim 写成“负责检索策略与优化措施说明”并非原文直接事实，来源只支持项目描述和实现能力，表述略有概括/任务化；多处重复引用 source_6/source_7、source_1/source_2 等重复 chunk，虽不严重但冗余；遗漏了 ChatBI 企业级项目描述中“企业级 ChatBI/指标 RAG”的总体事实，且第5条未抽取“MD5 复用已有索引、支持增量更新”等优化措施。没有明显捏造，证据引用均为连续原文，因此评为轻微问题。",
+    "golden_candidate": {
+      "facts": [
+        {
+          "event": "灵枢智服 - 电商智能客服 Agent",
+          "period": "2026-01/2026-05",
+          "claim": "构建融合意图路由、分层记忆与企业知识库 RAG 的智能客服 Agent，实现 Query 改写、混合召回、LLM Rerank 和可溯源证据生成",
+          "answer": "yes",
+          "sources": [
+            {
+              "chunk_id": "source_6",
+              "quote": "【项目描述】 面向汽车电商平台选车咨询、购车政策、订单交付、地址修改、退款退订及售后投诉场景，构建融合意图路由、分层记忆与企业知识库 RAG 的智能客服 Agent，覆盖多类核心业务意图，实现 Query 改写、混合召回、LLM Rerank 和可溯源证据生成；项目文档评测口径下，知识召回率 95%+、自主解决率 86%，长对话 Token 消耗降低约 35%。"
+            }
+          ]
+        },
+        {
+          "event": "灵枢智服 - 电商智能客服 Agent",
+          "period": "2026-01/2026-05",
+          "claim": "基于 LangChain + PyMuPDF 完成 PDF 文档解析，采用递归切分与上下文重叠策略构建知识片段，完成 Embedding 向量化、Milvus 持久化及来源/页码 metadata 关联，通过 MD5 复用已有索引并支持知识库增量更新",
+          "answer": "yes",
+          "sources": [
+            {
+              "chunk_id": "source_1",
+              "quote": "• RAG 索引构建：基于 LangChain + PyMuPDF 完成 PDF 文档解析，采用递归切分与上下文重叠策略构建知识片段，完成Embedding 向量化、Milvus 持久化及来源/页码 metadata 关联；通过 MD5 复用已有索引，支持知识库增量更新。"
+            }
+          ]
+        },
+        {
+          "event": "灵枢智服 - 电商智能客服 Agent",
+          "period": "2026-01/2026-05",
+          "claim": "RAG 增强生成实现指代消解与条件式 Query 改写，采用 BM25 关键词检索与 MMR 多样性向量检索双路召回，并使用 RRF 融合排序结果",
+          "answer": "yes",
+          "sources": [
+            {
+              "chunk_id": "source_1",
+              "quote": "• RAG 增强生成：实现指代消解与条件式 Query 改写，采用混合检索策略，通过 BM25 关键词检索与 MMR 多样性向量检索完成双路召回，并使用 RRF 融合两路排序结果；对融合候选执行长度过滤、内容去重和 LLM Rerank，保留高相关证据进入回答模型，使上下文证据量减少 60%。"
+            }
+          ]
+        },
+        {
+          "event": "灵枢智服 - 电商智能客服 Agent",
+          "period": "2026-01/2026-05",
+          "claim": "对融合候选执行长度过滤、内容去重和 LLM Rerank，保留高相关证据进入回答模型，使上下文证据量减少 60%",
+          "answer": "yes",
+          "sources": [
+            {
+              "chunk_id": "source_1",
+              "quote": "• RAG 增强生成：实现指代消解与条件式 Query 改写，采用混合检索策略，通过 BM25 关键词检索与 MMR 多样性向量检索完成双路召回，并使用 RRF 融合两路排序结果；对融合候选执行长度过滤、内容去重和 LLM Rerank，保留高相关证据进入回答模型，使上下文证据量减少 60%。"
+            }
+          ]
+        },
+        {
+          "event": "灵枢智服 - 电商智能客服 Agent",
+          "period": "2026-01/2026-05",
+          "claim": "通过优化 RAG 检索与重排链路，引入 Hybrid Search 与 Rerank，将知识召回率提升至 95%+，客服自主解决率达到 86%",
+          "answer": "yes",
+          "sources": [
+            {
+              "chunk_id": "source_1",
+              "quote": "• 准确率优化：通过优化 RAG 检索与重排链路，引入 Hybrid Search 与 Rerank，将知识召回率提升至 95%+，客服自主解决率达到 86%。"
+            }
+          ]
+        },
+        {
+          "event": "新能源电池制造业经营分析 ChatBI",
+          "period": "2025-07/2025-12",
+          "claim": "面向新能源电池制造企业构建覆盖意图理解、Schema Linking、指标 RAG、Text2SQL、数据库执行和复杂分析 Agent 的企业级 ChatBI",
+          "answer": "yes",
+          "sources": [
+            {
+              "chunk_id": "source_10",
+              "quote": "【项目描述】 面向新能源电池制造企业销售、财务及管理部门，构建覆盖意图理解、Schema Linking、指标 RAG、\n\nText2SQL、数据库执行和复杂分析 Agent 的企业级 ChatBI，支持利润、毛利率、区域收入及费用趋势等指标查询与多轮归因分析。"
+            }
+          ]
+        },
+        {
+          "event": "新能源电池制造业经营分析 ChatBI",
+          "period": "2025-07/2025-12",
+          "claim": "建设包含 13 项核心经营指标的知识库，沉淀指标定义、计算公式、统计口径和依赖字段；生成 SQL 前检索指标口径并自动展开依赖",
+          "answer": "yes",
+          "sources": [
+            {
+              "chunk_id": "source_5",
+              "quote": "• 指标 RAG：建设包含 13 项核心经营指标的知识库，沉淀指标定义、计算公式、统计口径和依赖字段；生成 SQL 前检索指标口径并自动展开依赖。"
+            }
+          ]
+        }
+      ],
+      "fully_supported": true,
+      "missing_information": []
+    },
+    "confidence": 0.82,
+    "review_status": "pending",
+    "created_at": "2026-10-18 09:33:43.430519+00:00"
+  },
+  {
+    "case_id": "554a14d8-e39e-4659-8369-1c7fb56778b8",
+    "annotator_type": "rule",
+    "judge_version": "module-judge-v1",
+    "judge_model": null,
+    "score": 0,
+    "verdict": "failed",
+    "error_types": [
+      "execution_error"
+    ],
+    "reason": "模块调用失败：ValidationError",
+    "golden_candidate": null,
+    "confidence": 1.0,
+    "review_status": "pending",
+    "created_at": "2026-10-18 09:33:53.755024+00:00"
+  },
+  {
+    "case_id": "b5c61359-1b92-489f-8044-6419622a1bdd",
+    "annotator_type": "llm",
+    "judge_version": "module-judge-v1",
+    "judge_model": "gpt-5.5",
+    "score": 4,
+    "verdict": "pass",
+    "error_types": [],
+    "reason": "输入 job_query 为“高级 AI 应用工程师”。actual_output 中第一条候选名称与查询完全一致，match_type=exact，match_score=1.0；第二条“AI 应用工程师（平台方向）”与查询名称相关但不完全一致，标为 fuzzy 可接受。exact 候选数量恰好为 1，因此按规则 route 应为 select_exact_job，即使存在 fuzzy 候选也应自动采用该 exact；实际 route 正确。候选字段完整且符合 schema。由于未提供完整岗位库快照，只能检查已返回候选的名称相关性、match_type 与 route，无法验证是否遗漏其他岗位或召回完整性，因此 confidence 降低。",
+    "golden_candidate": {
+      "matches": [
+        {
+          "job_code": "JD-AI-001",
+          "name": "高级 AI 应用工程师",
+          "content": "负责企业知识库、Agent 应用与评测体系建设。要求具备 RAG 项目落地经验，能够设计检索质量与回答质量评测方案。",
+          "version": 2,
+          "match_type": "exact",
+          "match_score": 1.0
+        },
+        {
+          "job_code": "JD-AI-002",
+          "name": "AI 应用工程师（平台方向）",
+          "content": "负责模型服务、Agent 平台与可观测性建设。要求具备大模型应用工程经验，能够建设运行监控与故障定位能力。",
+          "version": 1,
+          "match_type": "fuzzy",
+          "match_score": 0.6364
+        }
+      ],
+      "route": "select_exact_job"
+    },
+    "confidence": 0.78,
+    "review_status": "pending",
+    "created_at": "2026-10-18 09:35:24.242833+00:00"
+  },
+  {
+    "case_id": "050e18e7-0634-49f8-8662-7ec8722474d4",
+    "annotator_type": "llm",
+    "judge_version": "module-judge-v1",
+    "judge_model": "gpt-5.5",
+    "score": 4,
+    "verdict": "pass",
+    "error_types": [],
+    "reason": "实际输出符合 schema；仅针对输入中的语义需求 S1（做过企业知识库 RAG 项目）生成评价维度，source_requirement_ids 正确为 S1。权重合计为 100。证据要求包含项目描述、架构/代码、检索优化、成果数据等，具备可验证性。0/3/5 三档锚点齐全且区分清晰，能覆盖无经验、参与经验、主导深度负责并有成果的不同水平。硬条件（上海、5年以上经验）属于筛选条件而非评价维度，未纳入维度是合理的。",
+    "golden_candidate": {
+      "dimensions": [
+        {
+          "name": "企业知识库RAG项目实战经验",
+          "definition": "评估候选人是否具备企业知识库场景下 RAG（检索增强生成）项目的实际设计、开发、落地与优化经验。",
+          "weight_percent": 100,
+          "evidence_requirements": [
+            "企业知识库 RAG 项目经历、案例或职责说明",
+            "可验证的系统架构、技术方案、代码/文档或交付物",
+            "检索、切分、向量化、重排、评估等关键技术实践与优化证据",
+            "项目上线效果、业务指标、用户反馈或其他成果证明"
+          ],
+          "score_anchors": [
+            {
+              "score": 0,
+              "description": "没有企业知识库 RAG 项目经验，或只有学习、Demo、玩具项目，无法提供可验证企业项目证据。"
+            },
+            {
+              "score": 3,
+              "description": "参与过企业知识库 RAG 项目，能说明基本流程、技术栈和个人职责，但核心设计、优化或成果证据有限。"
+            },
+            {
+              "score": 5,
+              "description": "主导或深度负责企业知识库 RAG 项目，能提供完整架构、关键优化、效果评估和可验证业务成果。"
+            }
+          ],
+          "retrieval_hints": [
+            "企业知识库 RAG",
+            "RAG 知识库 项目",
+            "检索增强生成 企业",
+            "knowledge base RAG",
+            "RAG system enterprise"
+          ],
+          "source_requirement_ids": [
+            "S1"
+          ]
+        }
+      ]
+    },
+    "confidence": 0.95,
+    "review_status": "pending",
+    "created_at": "2026-10-18 09:35:28.483465+00:00"
+  }
+]

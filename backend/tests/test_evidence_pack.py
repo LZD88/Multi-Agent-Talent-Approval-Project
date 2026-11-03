@@ -222,3 +222,41 @@ def test_model_extractor_uses_short_source_refs_and_restores_real_chunk_ids():
 
     assert calls['payload']['sources'][0]['chunk_id'] == 'source_1'
     assert result.facts[0].sources[0].chunk_id == 'a-real-uuid'
+
+
+def test_model_extractor_retries_transient_provider_failure():
+    calls = {"count": 0}
+
+    class StructuredModel:
+        def invoke(self, messages):
+            del messages
+            calls["count"] += 1
+            if calls["count"] < 3:
+                raise ConnectionError("temporary provider failure")
+            return module().EvidenceExtraction(
+                facts=[],
+                fully_supported=False,
+                missing_information=["材料未说明职责"],
+            )
+
+    class Model:
+        def with_structured_output(self, schema, **kwargs):
+            del schema, kwargs
+            return StructuredModel()
+
+    extract = module().model_extractor(
+        Model(),
+        max_attempts=3,
+        backoff_seconds=0,
+        retryable_exceptions=(ConnectionError,),
+    )
+
+    result = extract(
+        {"requirement_id": "S1", "query": "负责过星河项目"},
+        [source()],
+    )
+
+    assert calls["count"] == 3
+    assert result.missing_information == ["材料未说明职责"]
+
+

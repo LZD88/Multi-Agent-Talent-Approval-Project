@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Literal
 
 from langgraph.graph import END, START, StateGraph
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 from typing_extensions import TypedDict
 
 from app.talent_evaluation_dispatch import BranchEvidenceDraft, EvaluationDimension
@@ -351,7 +351,7 @@ def build_structured_dimension_scorer(
             "branch": _branch_model_payload(branch, chunk_to_model),
             "evidence_items": safe_evidence,
         }
-        result = model.with_structured_output(DimensionJudgement).invoke(
+        result = model.with_structured_output(DimensionJudgement, method="function_calling").invoke(
             [
                 ("system", DIMENSION_SCORER_PROMPT),
                 ("user", json.dumps(payload, ensure_ascii=False)),
@@ -375,6 +375,7 @@ REPORT_WRITER_PROMPT = """你负责将已排序的候选人评估结果组织为
 输入中的证据使用 E1、E2 这类短编号。ReportPoint.evidence_refs 只能逐字复制当前候选人已评分结果中的短编号。
 title 是整份报告标题，overview 按当前排名概括总体差异，candidates 必须与输入候选人数量和顺序一致。
 CandidateReportDraft.summary 概括当前候选人的得分、覆盖率与置信度，highlights 只整理有证据的主要依据。
+每名候选人最多 8 条 highlights、8 条 risks，每条 highlight 最多引用 8 个 evidence_refs，选择直接支撑该判断的证据。
 risks 只整理输入中已有的缺失、冲突、执行失败和置信度风险，不得推测新风险。
 报告草稿只负责概述、主要依据和风险表达，Markdown 与可点击链接由程序渲染。
 """.strip()
@@ -411,30 +412,42 @@ def build_structured_report_writer(
             "candidate_assessments": candidate_payloads,
             "evidence_items": safe_evidence,
         }
-        result = model.with_structured_output(ReportDraft).invoke(
-            [
-                ("system", REPORT_WRITER_PROMPT),
-                ("user", json.dumps(payload, ensure_ascii=False)),
-            ]
-        )
-        draft = ReportDraft.model_validate(result)
+        messages = [
+            ("system", REPORT_WRITER_PROMPT),
+            ("user", json.dumps(payload, ensure_ascii=False)),
+        ]
+        writer = model.with_structured_output(ReportDraft, method="function_calling")
+        try:
+            draft = ReportDraft.model_validate(writer.invoke(messages))
+        except ValidationError as exc:
+            # 仅修复一次结构错误，保留全部输入证据，不截断或放宽引用校验。
+            issues = exc.errors(include_input=False, include_url=False, include_context=False)
+            messages.append(("user", "上次输出未通过结构校验，请按约束重新生成：" + json.dumps(issues, ensure_ascii=False)))
+            draft = ReportDraft.model_validate(writer.invoke(messages))
+        allowed_refs_by_candidate = {
+            candidate.candidate_id: {
+                ref_id
+                for dimension in candidate.dimensions
+                for ref_id in dimension.evidence_refs
+            }
+            for candidate in candidates
+        }
         restored_candidates = []
         for candidate in draft.candidates:
+            allowed_refs = allowed_refs_by_candidate.get(candidate.candidate_id, set())
+            restored_highlights = []
+            for point in candidate.highlights:
+                restored_refs = _restore_evidence_refs(
+                    point.evidence_refs,
+                    model_to_chunk,
+                )
+                if restored_refs and all(ref_id in allowed_refs for ref_id in restored_refs):
+                    restored_highlights.append(
+                        point.model_copy(update={"evidence_refs": restored_refs})
+                    )
             restored_candidates.append(
                 candidate.model_copy(
-                    update={
-                        "highlights": [
-                            point.model_copy(
-                                update={
-                                    "evidence_refs": _restore_evidence_refs(
-                                        point.evidence_refs,
-                                        model_to_chunk,
-                                    )
-                                }
-                            )
-                            for point in candidate.highlights
-                        ]
-                    }
+                    update={"highlights": restored_highlights}
                 )
             )
         return draft.model_copy(update={"candidates": restored_candidates})
@@ -476,7 +489,7 @@ def build_structured_consistency_reviewer(
             "dimension_assessments": assessment_payloads,
             "evidence_items": safe_evidence,
         }
-        result = model.with_structured_output(ConsistencyReview).invoke(
+        result = model.with_structured_output(ConsistencyReview, method="function_calling").invoke(
             [
                 ("system", CONSISTENCY_REVIEW_PROMPT),
                 ("user", json.dumps(payload, ensure_ascii=False)),

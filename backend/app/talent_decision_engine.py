@@ -1,18 +1,25 @@
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
+from langchain.messages import AnyMessage, HumanMessage
 from langgraph.graph import END, START, StateGraph
+from langgraph.graph.message import add_messages
 from typing_extensions import TypedDict
 
 from app.talent_decision_graph import DecisionContext
 
 
-class TalentDecisionEngineInput(TypedDict):
+class TalentDecisionEngineInput(TypedDict, total=False):
+    messages: Annotated[list[AnyMessage], add_messages]
     request_text: str
 
 
 class TalentDecisionEngineOutput(TypedDict, total=False):
+    messages: list[AnyMessage]
+    revision_action: str
+    revision_summary: str
+    conversation_title: str
     status: str
     candidate_ids: list[str]
     ranking: list[str]
@@ -21,7 +28,11 @@ class TalentDecisionEngineOutput(TypedDict, total=False):
 
 
 class TalentDecisionEngineState(TypedDict, total=False):
+    messages: Annotated[list[AnyMessage], add_messages]
     request_text: str
+    revision_action: str
+    revision_summary: str
+    conversation_title: str
     input_mode: str
     job_matches: list[dict[str, Any]]
     selected_job: dict[str, Any] | None
@@ -64,17 +75,53 @@ def _route_after_evaluation(
     )
 
 
-def build_talent_decision_engine(*, request_graph: Any, evaluation_graph: Any, report_graph: Any):
+def _begin_turn(state: TalentDecisionEngineState) -> dict[str, Any]:
+    """返回局部更新：未返回的消息、当前输入、要求和标题均保留。"""
+
+    update: dict[str, Any] = {
+        "candidate_ids": [],
+        "dimensions": [],
+        "work_items": [],
+        "branch_results": [],
+        "evidence_items": [],
+        "dimension_assessments": [],
+        "consistency_issues": [],
+        "candidate_assessments": [],
+        "ranking": [],
+        "report_draft": {},
+        "report": "",
+        "errors": [],
+        "status": "received",
+    }
+    if not state.get("messages") and state.get("request_text"):
+        # 兼容早期单轮脚本的纯文本输入，正常多轮 API 已经提交 HumanMessage。
+        update["messages"] = [HumanMessage(content=state["request_text"])]
+    return update
+
+
+def build_talent_decision_engine(
+    *,
+    request_graph: Any,
+    evaluation_graph: Any,
+    report_graph: Any,
+    checkpointer: Any | None = None,
+):
+    """构建人才决策引擎的主图构建入口"""
     builder = StateGraph(
         TalentDecisionEngineState,
         context_schema=DecisionContext,
         input_schema=TalentDecisionEngineInput,
         output_schema=TalentDecisionEngineOutput,
     )
+    builder.add_node(
+        "begin_turn",
+        _begin_turn,
+    )
     builder.add_node("request_subgraph", request_graph)
     builder.add_node("evaluation_subgraph", evaluation_graph)
     builder.add_node("report_subgraph", report_graph)
-    builder.add_edge(START, "request_subgraph")
+    builder.add_edge(START, "begin_turn")
+    builder.add_edge("begin_turn", "request_subgraph")
     builder.add_conditional_edges(
         "request_subgraph",
         _route_after_request,
@@ -86,4 +133,8 @@ def build_talent_decision_engine(*, request_graph: Any, evaluation_graph: Any, r
         {"report": "report_subgraph", "stop": END},
     )
     builder.add_edge("report_subgraph", END)
-    return builder.compile()
+    return (
+        builder.compile(checkpointer=checkpointer)
+        if checkpointer is not None
+        else builder.compile()
+    )

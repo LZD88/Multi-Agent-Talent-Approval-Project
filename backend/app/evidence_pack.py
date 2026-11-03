@@ -1,10 +1,15 @@
 """Lesson 9: evidence organization. Model judgments remain reviewable hypotheses."""
 from __future__ import annotations
 
+from app.evaluation_case import capture_call, current_extraction_scope, EvaluationModule
+
 import json
 import logging
+import time
 from typing import Annotated, Literal
+from openai import APIConnectionError, APITimeoutError, RateLimitError
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
+
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +75,21 @@ fully_supported 仅表示当前材料直接覆盖当前要求全部要素，缺�
 原文引用正确不代表事实已经独立核实。不评分、不推荐候选人。"""
 
 
-def model_extractor(model):
+def model_extractor(
+    model,
+    *,
+    max_attempts: int = 1,
+    backoff_seconds: float = 0.5,
+    retryable_exceptions: tuple[type[Exception], ...] | None = None,
+):
+    if max_attempts < 1:
+        raise ValueError("max_attempts 必须大于等于 1")
+    retryable = retryable_exceptions or (
+        APIConnectionError,
+        APITimeoutError,
+        RateLimitError,
+    )
+
     def extract(requirement, sources):
         source_aliases = {
             f'source_{index}': row['chunk_id']
@@ -84,13 +103,45 @@ def model_extractor(model):
             ],
             'output_schema': EvidenceExtraction.model_json_schema(),
         }
-        raw = model.with_structured_output(
+        structured_model = model.with_structured_output(
             EvidenceExtraction,
             method='json_mode',
-        ).invoke([
+        )
+        messages = [
             ('system', EXTRACTION_PROMPT),
             ('user', json.dumps(payload, ensure_ascii=False)),
-        ])
+        ]
+        for attempt in range(1, max_attempts + 1):
+            try:
+                scope = current_extraction_scope()
+                if scope is None:
+                    raw = structured_model.invoke(messages)
+                else:
+                    from app.config import get_settings
+                    context, identity = scope
+
+                    # 事实抽取 Case 在模型返回结构化结果后、真实 Chunk ID 还原和
+                    # 引用校验前采集。input_payload 保存模型实际看到的冻结文本、
+                    # source_1 等短标识及候选人/维度/证据要求身份，replay_context
+                    # 保存短标识到真实 Chunk ID 的映射和完整来源上下文。
+                    # 后续事实合并、引用校验和冲突推导属于确定性后处理，不回写
+                    # 模型原始输出；每次模型重试通过 attempt 形成独立 Case。
+                    raw = capture_call(lambda: structured_model.invoke(messages),
+                        context=context, module_key=EvaluationModule.FACT_EXTRACTION,
+                        input_payload={**payload, **identity, "attempt": attempt},
+                        replay_extra={"source_aliases": source_aliases, "sources": sources},
+                        version_snapshot={"prompt": "evidence-extraction-v1", "model": get_settings().chat_model})
+                break
+            except retryable as exc:
+                if attempt >= max_attempts:
+                    raise
+                logger.warning(
+                    'event=evidence_model_retry function=model_extractor '
+                    'attempt=%s max_attempts=%s error_type=%s',
+                    attempt, max_attempts, type(exc).__name__,
+                )
+                if backoff_seconds:
+                    time.sleep(backoff_seconds * (2 ** (attempt - 1)))
         data = raw if isinstance(raw, EvidenceExtraction) else EvidenceExtraction.model_validate(raw)
         facts = [
             fact.model_copy(

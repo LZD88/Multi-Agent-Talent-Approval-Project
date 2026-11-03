@@ -1,0 +1,62 @@
+{
+  "items": [
+    {
+      "dataset_item_id": "173f7809-5514-4515-8d3b-d07a954eb394",
+      "status": "scored",
+      "output": {
+        "draft": {
+          "input_mode": "detailed_requirement",
+          "job_query": "高级 AI 应用工程师",
+          "filters": [
+            {
+              "field": "region",
+              "operator": "eq",
+              "value": "上海"
+            },
+            {
+              "field": "years_of_experience",
+              "operator": "gte",
+              "value": 5
+            }
+          ],
+          "semantic_requirements": [
+            {
+              "requirement_id": "S1",
+              "query": "企业知识库 RAG 项目经验",
+              "required": true
+            },
+            {
+              "requirement_id": "S2",
+              "query": "AI 应用开发相关经验",
+              "required": true
+            }
+          ],
+          "evaluation_preferences": [
+            "RAG 系统落地经验优先",
+            "企业级知识库项目经验优先"
+          ],
+          "clarifications": []
+        },
+        "revision_action": "initial",
+        "revision_summary": "建立初始人才要求：上海地区、至少5年开发经验、具备企业知识库RAG项目经历的高级AI应用工程师",
+        "conversation_title": "上海高级AI应用工程师招聘"
+      },
+      "score": 3,
+      "verdict": "pass",
+      "error_types": [
+        "over_extraction",
+        "unnecessary_preference"
+      ],
+      "reason": "实际输出覆盖了用户明确条件：岗位为高级 AI 应用工程师，地区上海映射为 region，至少5年开发经验映射为 years_of_experience gte 5，企业知识库 RAG 项目经验作为必需语义要求；首轮 revision_action、标题和摘要也基本正确。主要问题是额外添加了用户未明确提出的语义要求“AI 应用开发相关经验”和偏好“RAG 系统落地经验优先/企业级知识库项目经验优先”。其中岗位名称可放在 job_query，不应再拆出未明确的必需语义条件；用户说“做过企业知识库 RAG 项目”是硬性经历要求而非优先项，evaluation_preferences 应为空。额外项会轻微改变筛选/排序意图，但核心条件完整且字段映射正确。",
+      "confidence": 0.9
+    }
+  ],
+  "requested_count": 1,
+  "scored_count": 1,
+  "complete": true,
+  "average_score": 3.0,
+  "minimum_score": 3,
+  "judge_version": "module-judge-v1",
+  "judge_model": "gpt-5.5",
+  "chat_model": "qwen3.8-max"
+}

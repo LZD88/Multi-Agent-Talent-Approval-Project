@@ -94,7 +94,7 @@ def test_filter_registry_is_also_sent_to_query_compiler():
             return _plan()
 
     class Model:
-        def with_structured_output(self, schema):
+        def with_structured_output(self, schema, **kwargs):
             seen["schema"] = schema
             return StructuredModel()
 
@@ -119,7 +119,7 @@ def test_optimizer_uses_structured_output_and_keeps_strategy():
             return {"strategy": "multi_query", "queries": ["AI 项目经历", "大模型项目经验"], "reason": "无召回"}
 
     class Model:
-        def with_structured_output(self, schema):
+        def with_structured_output(self, schema, **kwargs):
             class Adapter(StructuredModel):
                 def invoke(self, messages):
                     return schema.model_validate(super().invoke(messages))

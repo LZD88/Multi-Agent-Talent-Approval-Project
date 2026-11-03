@@ -367,6 +367,22 @@ def test_timeout_policy_changes_slow_operation_result(context):
     assert protected_elapsed < direct_elapsed
 
 
+def test_policy_without_total_timeout_waits_for_completed_operation(context):
+    executor = ToolExecutor(
+        policy=ToolPolicy(max_attempts=1, timeout_seconds=None, backoff_seconds=0)
+    )
+
+    result = executor.execute(
+        "llm_backed_evidence",
+        lambda: (time.sleep(0.03), {"facts": ["kept"]})[1],
+        context=context,
+        arguments={},
+    )
+
+    assert result["ok"] is True
+    assert result["data"] == {"facts": ["kept"]}
+
+
 def test_circuit_breaker_stops_repeated_dependency_calls(context):
     calls = {"without": 0, "with": 0}
 

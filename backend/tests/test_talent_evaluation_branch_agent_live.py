@@ -66,7 +66,7 @@ def test_real_model_extraction_is_preserved_in_branch_evidence_pack():
             tool_policies={
                 "search_candidate_evidence": ToolPolicy(
                     max_attempts=1,
-                    timeout_seconds=30,
+                    timeout_seconds=None,
                     backoff_seconds=0,
                 )
             }

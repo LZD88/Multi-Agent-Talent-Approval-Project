@@ -1,0 +1,142 @@
+.conversationTurn {
+  margin-top: 16px;
+  text-align: right;
+}
+
+.turnAnswer {
+  margin-top: 10px;
+  overflow: hidden;
+  border: 1px solid #dbe5e0;
+  border-radius: 14px;
+  background: #f9fbfa;
+  text-align: left;
+}
+
+.turnAnswerToggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 13px 16px;
+  color: #30443b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  text-align: left;
+}
+
+.turnAnswerToggle > span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.turnAnswerToggle > span:first-child > svg {
+  width: 18px;
+  color: #17684d;
+}
+
+.turnAnswerToggle b,
+.turnAnswerToggle small {
+  display: block;
+}
+
+.turnAnswerToggle small {
+  margin-top: 3px;
+  color: #7b8982;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.turnAnswerToggle em {
+  border-radius: 99px;
+  background: #e5f1eb;
+  color: #17684d;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-style: normal;
+  white-space: nowrap;
+}
+
+.turnAnswerToggle > span:last-child > svg {
+  width: 16px;
+  transition: transform .2s ease;
+}
+
+.turnAnswer.expanded .turnAnswerToggle > span:last-child > svg {
+  transform: rotate(180deg);
+}
+
+.turnAnswer.collapsed .turnAnswerToggle:hover {
+  background: #f2f7f4;
+}
+
+.turnAnswerBody {
+  padding: 0 14px 14px;
+  border-top: 1px solid #e7eeea;
+}
+
+.turnAnswerBody > .resolvedRequest,
+.turnAnswerBody > .runTimeline,
+.turnAnswerBody > .hitlCard,
+.turnAnswerBody > .reportCard {
+  margin-top: 14px;
+}
+
+.turnBadge {
+  display: inline-block;
+  margin: 0 6px 5px 0;
+  color: #728179;
+  font-size: 10px;
+}
+
+.conversationTurn > small {
+  display: block;
+  margin: 5px 5px 0;
+  color: #718078;
+  font-size: 10px;
+}
+
+.resolvedRequest {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px solid #cfe1d8;
+  border-radius: 14px;
+  background: #f5faf7;
+}
+
+.resolvedRequest > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.resolvedRequest span {
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: #dcefe5;
+  color: #17684d;
+  font-size: 10px;
+}
+
+.resolvedRequest p {
+  margin: 9px 0 0;
+  color: #42564d;
+  line-height: 1.65;
+}
+.conversationFilter {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px 4px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.conversationFilter select {
+  width: 100%;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  background: #fff;
+  padding: 8px 10px;
+  color: #334155;
+}
