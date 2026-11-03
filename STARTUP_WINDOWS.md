@@ -69,6 +69,23 @@ Password: talent_dev_password
 D:\PostgreSQL\17\bin\psql.exe
 ```
 
+首次拉取包含数据库变更的新代码后，在项目根目录执行增量迁移：
+
+```powershell
+$env:PGPASSWORD = "talent_dev_password"
+$migrations = 20..24 | ForEach-Object { "database/migrations/0${_}_*.sql" }
+foreach ($pattern in $migrations) {
+  Get-ChildItem $pattern | ForEach-Object {
+    & "D:\PostgreSQL\17\bin\psql.exe" `
+      -h 127.0.0.1 -p 5432 -U talent -d talent_docs `
+      -v ON_ERROR_STOP=1 -f $_.FullName
+  }
+}
+Remove-Item Env:PGPASSWORD
+```
+
+这些迁移是幂等的，重复执行会跳过已经存在的表、列或索引。
+
 ## 3. 启动 Docker 基础设施
 
 用 FinalShell 或 PowerShell SSH 连接虚拟机：
