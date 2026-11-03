@@ -305,3 +305,27 @@ def test_human_waiting_time_is_excluded_from_step_duration():
     assert detail is not None
     assert detail["steps"][0]["duration_ms"] == 3500
 
+
+def test_legacy_provider_quota_error_is_sanitized_when_reading_history():
+    store = _store()
+    store.record(_event(1, "run.started", {"message": "评估 AI 人才"}, "2026-10-11T01:00:00+00:00"))
+    store.record(
+        _event(
+            2,
+            "run.failed",
+            {
+                "message": (
+                    "Error code: 403 - {'error': {'message': 'Free quota exhausted.', "
+                    "'code': 'AllocationQuota.FreeTierOnly'}, 'request_id': 'secret-request-id'}"
+                )
+            },
+            "2026-10-11T01:00:01+00:00",
+        )
+    )
+
+    detail = store.get_run("run-1")
+
+    assert detail is not None
+    assert "免费额度已用完" in detail["error"]
+    assert "secret-request-id" not in detail["error"]
+

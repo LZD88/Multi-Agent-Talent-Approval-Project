@@ -7,6 +7,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import sessionmaker
 
 from app.models import TalentConversationRecord, TalentRunRecord, TalentRunStepRecord
+from app.talent_run_stream import public_run_error
 
 
 def _timestamp(value: str) -> datetime:
@@ -266,7 +267,7 @@ class SqlTalentRunHistoryStore:
                 "report": run.report or "",
                 "citations": list(run.citations or []),
                 "trace_id": run.trace_id or "",
-                "error": run.error_message or "",
+                "error": public_run_error(RuntimeError(run.error_message)) if run.error_message else "",
                 "steps": [
                     self._step_detail(step) for step in steps_by_run[run.run_id]
                 ],
@@ -303,7 +304,7 @@ class SqlTalentRunHistoryStore:
             "report": run.report or "",
             "citations": list(run.citations or []),
             "trace_id": run.trace_id or "",
-            "error": run.error_message or "",
+            "error": public_run_error(RuntimeError(run.error_message)) if run.error_message else "",
             "steps": [SqlTalentRunHistoryStore._step_detail(step) for step in steps],
         }
 

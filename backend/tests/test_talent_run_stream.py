@@ -269,6 +269,21 @@ async def test_capacity_exceeded_marks_run_and_active_step_failed():
     }
 
 
+def test_provider_free_tier_error_is_actionable_and_sanitized():
+    from app.talent_run_stream import public_run_error
+
+    raw = (
+        "Error code: 403 - {'error': {'message': 'Free quota exhausted.', "
+        "'code': 'AllocationQuota.FreeTierOnly'}, 'request_id': 'secret-request-id'}"
+    )
+
+    result = public_run_error(RuntimeError(raw))
+
+    assert "免费额度已用完" in result
+    assert "DASHSCOPE_API_KEY" in result
+    assert "secret-request-id" not in result
+
+
 @pytest.mark.anyio
 async def test_two_new_turns_continue_numbering_after_process_restart():
     class ExistingHistory:
