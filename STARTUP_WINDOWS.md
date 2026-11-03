@@ -5,7 +5,7 @@
 - 本地代码目录：`D:\Workspace\PycharmProjects\PythonProject\talent-eval-agents`
 - VMware 虚拟机：`D:\VirualMachine\CentOS 7 64\CentOS 7 64 位.vmx`
 - 虚拟机 IP：`192.168.200.130`
-- 虚拟机 SSH：`root` / `123456`
+- 虚拟机 SSH：`root`（使用本机 SSH Key 或在启动时交互输入密码）
 - 虚拟机项目目录：`/root/talent-eval-agents`
 - Docker Compose 项目名：`talent-eval-agents-course`
 - 本地 PostgreSQL：`D:\PostgreSQL\17`
@@ -94,11 +94,7 @@ Remove-Item Env:PGPASSWORD
 ssh root@192.168.200.130
 ```
 
-密码：
-
-```text
-123456
-```
+不要在仓库中保存虚拟机密码。建议配置 SSH Key；使用密码登录时请在终端提示后手动输入。
 
 进入虚拟机项目目录并启动基础设施：
 
