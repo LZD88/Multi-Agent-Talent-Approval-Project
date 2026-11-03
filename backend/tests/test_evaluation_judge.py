@@ -14,6 +14,20 @@ def test_chat_factory_uses_selected_model():
     from app.config import Settings
     assert get_chat_model(settings=Settings(_env_file=None, dashscope_api_key='test', chat_model='qwen-plus')).model_name == 'qwen-plus'
 
+def test_chat_factory_supports_separate_openai_compatible_provider():
+    from app.model_provider import get_chat_model
+    from app.config import Settings
+    model = get_chat_model(settings=Settings(
+        _env_file=None,
+        chat_api_key='deepseek-test',
+        chat_base_url='https://api.deepseek.com',
+        chat_model='deepseek-chat',
+    ))
+    assert model is not None
+    assert model.model_name == 'deepseek-chat'
+    assert str(model.openai_api_base).rstrip('/') == 'https://api.deepseek.com'
+    assert model.model_kwargs == {}
+
 def test_failed_case_does_not_call_judge(monkeypatch):
     from app import evaluation_judge as j
     monkeypatch.setattr(j, 'get_judge_model', lambda **kw: pytest.fail('failed Case must not call model'))

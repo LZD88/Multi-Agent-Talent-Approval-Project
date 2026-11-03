@@ -843,7 +843,7 @@ def model_request_interpreter(
 ) -> TalentRequestUnderstanding:
     model = get_chat_model(temperature=0)
     if model is None:
-        raise RuntimeError("任务理解模型未配置，请设置 DASHSCOPE_API_KEY")
+        raise RuntimeError("任务理解模型未配置，请设置 CHAT_API_KEY、CHAT_BASE_URL 和 CHAT_MODEL")
     messages = recent_request_messages(messages)
     history = "\n".join(
         f"{getattr(message, 'type', 'user')}: {message.content}" for message in messages

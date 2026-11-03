@@ -6,16 +6,20 @@ from app.config import Settings, get_settings
 
 def get_chat_model(model_name: str | None = None, temperature: float = 0.2, settings: Settings | None = None) -> ChatOpenAI | None:
     value = settings or get_settings()
-    if not value.dashscope_api_key or value.dashscope_api_key == "请用户自行填写":
+    api_key = value.chat_api_key or value.dashscope_api_key
+    if not api_key or api_key == "请用户自行填写":
         return None
     model = model_name or value.chat_model
-    return ChatOpenAI(
-            model=model,
-            api_key=value.dashscope_api_key,
-            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
-            temperature=None if "kimi" in model else temperature,
-            extra_body={"enable_thinking": False},
-        )
+    base_url = value.chat_base_url or "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    options = {
+        "model": model,
+        "api_key": api_key,
+        "base_url": base_url,
+        "temperature": None if "kimi" in model else temperature,
+    }
+    if "dashscope.aliyuncs.com" in base_url:
+        options["extra_body"] = {"enable_thinking": False}
+    return ChatOpenAI(**options)
     
 
 def get_judge_model(model_name: str | None = None, temperature: float = 0.2, settings: Settings | None = None) -> ChatOpenAI | None:

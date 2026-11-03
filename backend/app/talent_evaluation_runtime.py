@@ -36,7 +36,7 @@ def build_runtime_graph():
     embedder = get_embedding_model()
     reranker = get_reranker()
     if model is None:
-        raise RuntimeError("模型未配置，请先设置项目 .env 中的 DASHSCOPE_API_KEY")
+        raise RuntimeError("模型未配置，请先设置 CHAT_API_KEY、CHAT_BASE_URL 和 CHAT_MODEL")
     if embedder is None:
         raise RuntimeError("Embedding 服务未配置")
     if reranker is None:
@@ -133,7 +133,7 @@ def build_report_runtime_graph():
     )
     model = get_chat_model(temperature=0)
     if model is None:
-        raise RuntimeError("模型未配置，请先设置项目 .env 中的 DASHSCOPE_API_KEY")
+        raise RuntimeError("模型未配置，请先设置 CHAT_API_KEY、CHAT_BASE_URL 和 CHAT_MODEL")
     runtime_graph = build_talent_evaluation_report_graph(
         dimension_scorer=build_structured_dimension_scorer(lambda: model),
         consistency_reviewer=build_structured_consistency_reviewer(lambda: model),

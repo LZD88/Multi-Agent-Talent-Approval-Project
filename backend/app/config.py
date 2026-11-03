@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:15173,http://127.0.0.1:15173"
     mineru_url: str = "http://127.0.0.1:18001"
     dashscope_api_key: str = ""
+    chat_api_key: str = ""
+    chat_base_url: str = ""
     chat_model: str = "qwen-plus"
     judge_model: str = ""
     judge_api_key: str = ""

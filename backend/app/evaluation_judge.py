@@ -137,7 +137,7 @@ def replay_dimension_generation(item):
 def replay_fact_extraction(item):
     model = get_chat_model(temperature=0)
     if model is None:
-        raise RuntimeError('事实抽取模型未配置，请设置 DASHSCOPE_API_KEY')
+        raise RuntimeError('事实抽取模型未配置，请设置 CHAT_API_KEY、CHAT_BASE_URL 和 CHAT_MODEL')
     payload = {
         'requirement': item.input_payload['requirement'],
         'sources': item.input_payload['sources'],
