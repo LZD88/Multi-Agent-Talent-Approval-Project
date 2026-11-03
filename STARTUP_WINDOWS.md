@@ -214,13 +214,13 @@ http://127.0.0.1:15173/
 项目根目录 `.env` 中：
 
 ```env
-CHAT_API_KEY=DeepSeek 或其他 OpenAI 兼容聊天模型的 API Key
-CHAT_BASE_URL=https://api.deepseek.com
-CHAT_MODEL=deepseek-chat
-DASHSCOPE_API_KEY=用于 Embedding 与 Rerank 的 DashScope API Key
+DASHSCOPE_API_KEY=阿里云百炼 API Key
+CHAT_API_KEY=
+CHAT_BASE_URL=
+CHAT_MODEL=qwen-plus
 ```
 
-人才评估和报告使用 `CHAT_*` 配置；向量索引、人才检索的 Embedding 与 Rerank 继续使用 `DASHSCOPE_API_KEY`。修改后需要重启后端和 worker。
+默认情况下，人才评估、报告、Embedding 与 Rerank 都使用 `DASHSCOPE_API_KEY`，聊天模型为 `qwen-plus`。只有切换其他 OpenAI 兼容聊天服务时才填写 `CHAT_API_KEY` 和 `CHAT_BASE_URL`。修改后需要重启后端和 worker。
 
 只做员工、知识库、文档上传、解析和切片时，这些 Key 可以暂时为空。
 

@@ -280,7 +280,7 @@ def test_provider_free_tier_error_is_actionable_and_sanitized():
     result = public_run_error(RuntimeError(raw))
 
     assert "免费额度已用完" in result
-    assert "CHAT_API_KEY" in result
+    assert "DASHSCOPE_API_KEY" in result
     assert "secret-request-id" not in result
 
 

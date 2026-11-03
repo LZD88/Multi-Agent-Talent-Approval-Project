@@ -44,10 +44,10 @@ def public_run_error(exc: Exception) -> str:
     if "allocationquota.freetieronly" in lowered or "free quota exhausted" in lowered:
         return (
             "大模型免费额度已用完。请在阿里云百炼控制台为当前 DashScope 账号充值并关闭"
-            "“仅使用免费额度”，或更换有可用额度的 CHAT_API_KEY 后重启后端。"
+            "“仅使用免费额度”，或更换有可用额度的 DASHSCOPE_API_KEY 后重启后端。"
         )
     if "invalidapikey" in lowered or "invalid api-key" in lowered or "incorrect api key" in lowered:
-        return "大模型 API Key 无效，请更新 CHAT_API_KEY 后重启后端。"
+        return "大模型 API Key 无效，请更新聊天模型 API Key（默认 DASHSCOPE_API_KEY）后重启后端。"
     if "429" in lowered or "rate limit" in lowered:
         return "大模型请求频率已达上限，请稍后重试。"
     return message
