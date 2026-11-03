@@ -282,4 +282,5 @@ def test_model_interpreter_prompt_distinguishes_region_from_current_position(mon
     assert "region: 工作地区" in system_prompt
     assert "current_position: 当前岗位" in system_prompt
     assert "地名只能映射为 region" in system_prompt
+    assert "为上海研发团队招聘" in system_prompt
     assert result.draft.filters[0].field.value == "region"

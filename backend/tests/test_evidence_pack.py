@@ -65,6 +65,19 @@ def test_quote_with_outer_whitespace_is_trimmed_before_exact_source_validation()
     assert reference['quote_end'] == 6
 
 
+def test_pdf_layout_whitespace_is_tolerated_but_returns_original_quote():
+    data = extraction()
+    data['facts'][0]['sources'][0]['quote'] = '负责AI Agent项目'
+    row = source()
+    row['content'] = '负责 AI\nAgent 项目'
+
+    reference = build(data, [row])[0]['requirements'][0]['facts'][0]['sources'][0]
+
+    assert reference['quote'] == row['content']
+    assert reference['quote_start'] == 0
+    assert reference['quote_end'] == len(row['content'])
+
+
 def test_unverifiable_quote_logs_safe_diagnostic_context(caplog):
     data = extraction()
     data['facts'][0]['sources'][0]['quote'] = '主持千人团队'

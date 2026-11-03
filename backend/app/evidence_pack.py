@@ -5,6 +5,7 @@ from app.evaluation_case import capture_call, current_extraction_scope, Evaluati
 
 import json
 import logging
+import re
 import time
 from typing import Annotated, Literal
 from openai import APIConnectionError, APITimeoutError, RateLimitError
@@ -162,6 +163,17 @@ def model_extractor(
     return extract
 
 
+def _quote_span(content: str, quote: str) -> tuple[int, int] | None:
+    exact_start = content.find(quote)
+    if exact_start >= 0:
+        return exact_start, exact_start + len(quote)
+    compact = re.sub(r"\s+", "", quote)
+    if not compact:
+        return None
+    match = re.search(r"\s*".join(re.escape(char) for char in compact), content)
+    return match.span() if match else None
+
+
 def _validate_fact_sources(facts, sources):
     """Reject model facts that cannot point back to an input Chunk and exact quote."""
     by_id = {row['chunk_id']: row for row in sources}
@@ -183,19 +195,20 @@ def _validate_fact_sources(facts, sources):
                     fact_index=fact_index, source_index=source_index,
                     quote_length=0, source_length=len(row['content']),
                 )
-            quote_start = row['content'].find(quote)
-            if quote_start < 0:
+            quote_span = _quote_span(row['content'], quote)
+            if quote_span is None:
                 raise EvidenceSourceValidationError(
                     'quote_not_found', chunk_id=ref.chunk_id,
                     fact_index=fact_index, source_index=source_index,
                     quote_length=len(quote), source_length=len(row['content']),
                 )
+            quote_start, quote_end = quote_span
             mapped = {
                 'citation_id': row['citation_id'],
                 'chunk_id': ref.chunk_id,
-                'quote': quote,
+                'quote': row['content'][quote_start:quote_end],
                 'quote_start': quote_start,
-                'quote_end': quote_start + len(quote),
+                'quote_end': quote_end,
                 'source_label': row.get('document_title') or row.get('source_label') or ref.chunk_id,
             }
             if mapped not in refs:

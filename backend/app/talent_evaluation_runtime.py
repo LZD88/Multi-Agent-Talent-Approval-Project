@@ -7,6 +7,7 @@ from app.evidence_citations import load_pack_sources
 from app.evidence_pack import model_extractor
 from app.evidence_index_service import get_evidence_store
 from app.hybrid_search_service import hybrid_search_evidence
+from app.local_evidence_search import local_keyword_search
 from app.milvus_store import EvidenceFilter
 from app.model_provider import get_chat_model, get_embedding_model
 from app.reranker import get_reranker
@@ -49,19 +50,35 @@ def build_runtime_graph():
             "query_chars=%s permission_scope_count=%s limit=8 rerank_top_n=20",
             candidate_ids, len(query), len(permission_scopes),
         )
-        results = hybrid_search_evidence(
-            query=query,
-            filters=EvidenceFilter(
-                tenant_id=tenant_id,
-                permission_scopes=permission_scopes,
-                candidate_ids=candidate_ids,
-            ),
-            store=store,
-            embedder=embedder,
-            reranker=reranker,
-            limit=8,
-            rerank_top_n=20,
-        )
+        try:
+            results = hybrid_search_evidence(
+                query=query,
+                filters=EvidenceFilter(
+                    tenant_id=tenant_id,
+                    permission_scopes=permission_scopes,
+                    candidate_ids=candidate_ids,
+                ),
+                store=store,
+                embedder=embedder,
+                reranker=reranker,
+                limit=8,
+                rerank_top_n=20,
+            )
+        except Exception as exc:
+            logger.warning(
+                "event=hybrid_search_fallback function=search candidate_ids=%s reason=%s",
+                candidate_ids,
+                exc,
+            )
+            with SessionLocal() as db:
+                results = local_keyword_search(
+                    db,
+                    query=query,
+                    tenant_id=tenant_id,
+                    permission_scopes=permission_scopes,
+                    candidate_ids=candidate_ids,
+                    limit=8,
+                )
         logger.info(
             "event=hybrid_search_completed function=search candidate_ids=%s "
             "hit_count=%s chunk_ids=%s",

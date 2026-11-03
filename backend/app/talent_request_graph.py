@@ -505,7 +505,7 @@ def _diagnose_filters(
     return diagnostics
 
 
-def _resolve_requirements():
+def _resolve_requirements(candidate_filter: CandidateFilter | None = None):
     def resolve_requirements(
         state: TalentRequestState,
         runtime: Runtime[DecisionContext],
@@ -520,7 +520,20 @@ def _resolve_requirements():
             rendered = "、".join(
                 f"{item['field']} {item['operator']} {item['value']}" for item in filters
             )
-            blocking_reason = f"使用以下结构化条件筛选后未命中候选人：{rendered}"
+            blocking_reason = (
+                f"使用以下结构化条件筛选后未命中候选人：{rendered}。"
+                "候选人在检索简历证据之前已被花名册字段排除，这不代表简历中没有相关经历。"
+            )
+            if candidate_filter is not None:
+                conditions = [FilterCondition.model_validate(item) for item in filters]
+                diagnostics = _diagnose_filters(conditions, candidate_filter, runtime.context)
+                recoveries = [
+                    f"移除 {item['field']} 条件后可命中 {item['candidates_without_condition']} 人"
+                    for item in diagnostics
+                    if item["candidates_without_condition"] > 0
+                ]
+                if recoveries:
+                    blocking_reason += "；" + "；".join(recoveries)
         selected_job = state.get("selected_job")
         if selected_job is not None:
             editable_request = selected_job["content"]
@@ -801,7 +814,7 @@ def build_talent_request_graph(
         builder.add_edge("build_plan", END)
     else:
         builder.add_node("filter_candidates", _filter_candidates_node(candidate_filter))
-        builder.add_node("resolve_requirements", _resolve_requirements())
+        builder.add_node("resolve_requirements", _resolve_requirements(candidate_filter))
         builder.add_conditional_edges(
             "build_plan",
             _route_after_plan,
@@ -829,7 +842,7 @@ MODEL_SYSTEM_PROMPT = """你是人才评估任务编译器。按照给定 Schema
 如果输入包含地区、年限、职级、技能、项目经验或偏好，input_mode 使用 detailed_requirement。
 结构化硬条件只能写入 filters，字段定义与允许的操作符如下：
 {filter_dsl}
-地名只能映射为 region，current_position 只表示当前岗位名称，禁止将地名写入 current_position。
+只有明确要求候选人当前所在地、工作地或到岗地点时，地名才能成为硬条件，且地名只能映射为 region。招聘团队所在地不是候选人地区要求，例如“为上海研发团队招聘”不得生成 region 条件。current_position 只表示当前岗位名称，禁止将地名写入 current_position。
 技能、经历和成果写入 semantic_requirements。优先项写入 evaluation_preferences。
 只有歧义或矛盾导致无法形成可执行查询计划时才写入 clarifications。资深、经验丰富等可以用于语义检索或排序的描述写入 semantic_requirements 或 evaluation_preferences，不要求补充年龄等结构化阈值。租户和权限不得从用户文本提取。
 当输入中包含 confirmed_job 时，按照已确认岗位 JD 编译条件，并保留用户补充要求。"""
