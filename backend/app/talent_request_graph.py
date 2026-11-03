@@ -5,6 +5,7 @@ from app.evaluation_case import capture_call, EvaluationModule, safe_record
 from collections.abc import Callable
 import inspect
 from operator import add
+import re
 from time import perf_counter
 from typing import Annotated, Any, Literal
 
@@ -837,6 +838,7 @@ MODEL_SYSTEM_PROMPT = """你是人才评估任务编译器。按照给定 Schema
 结合最近消息窗口和 previous_request，输出本轮修订后的完整 TalentRequestDraft。
 首轮 revision_action 为 initial，conversation_title 为空时生成不超过 20 个中文字的标题。
 已有 conversation_title 时不生成标题，后续轮根据最新消息在 add、update、remove 中选择，保留未被修改的既有条件。
+但是“只要 X 就行”“有 X 就行”“X 即可”“只看 X”“只需要 X”属于排他式替换：只保留本轮明确提到的条件，删除此前未再次明确提到的硬条件、语义要求和偏好。
 用 revision_summary 简要说明变化。
 如果输入只有岗位名称或岗位简称，input_mode 使用 job_name，只填写 job_query，不根据岗位名称猜测条件。
 如果输入包含地区、年限、职级、技能、项目经验或偏好，input_mode 使用 detailed_requirement。
@@ -846,6 +848,63 @@ MODEL_SYSTEM_PROMPT = """你是人才评估任务编译器。按照给定 Schema
 技能、经历和成果写入 semantic_requirements。优先项写入 evaluation_preferences。
 只有歧义或矛盾导致无法形成可执行查询计划时才写入 clarifications。资深、经验丰富等可以用于语义检索或排序的描述写入 semantic_requirements 或 evaluation_preferences，不要求补充年龄等结构化阈值。租户和权限不得从用户文本提取。
 当输入中包含 confirmed_job 时，按照已确认岗位 JD 编译条件，并保留用户补充要求。"""
+
+
+_EXCLUSIVE_REVISION = re.compile(r"(?:只要.+就行|有.+就行|.+即可|只看.+|只需要.+)", re.IGNORECASE)
+_FILTER_TERMS = {
+    "region": ("地区", "城市", "所在地", "工作地", "到岗"),
+    "department": ("部门",),
+    "job_level": ("职级",),
+    "years_of_experience": ("年经验", "工作年限", "年以上", "年以下"),
+    "current_position": ("当前岗位", "当前职位"),
+    "employment_status": ("在职", "离职", "状态"),
+    "age": ("年龄", "岁"),
+}
+
+
+def _condition_is_mentioned(text: str, condition: FilterCondition) -> bool:
+    lowered = text.lower().replace(" ", "")
+    return any(term.lower() in lowered for term in _FILTER_TERMS.get(condition.field.value, ()))
+
+
+def _semantic_is_mentioned(text: str, requirement: SemanticRequirement) -> bool:
+    lowered = text.lower().replace(" ", "")
+    tokens = re.findall(r"[a-z][a-z0-9+.#_-]{1,}|[\u4e00-\u9fff]{2,6}", requirement.query.lower())
+    ignored = {"相关", "经验", "项目", "要求", "具备"}
+    return any(token not in ignored and token.replace(" ", "") in lowered for token in tokens)
+
+
+def _apply_exclusive_revision(
+    latest_message: str,
+    understanding: TalentRequestUnderstanding,
+) -> TalentRequestUnderstanding:
+    if not _EXCLUSIVE_REVISION.search(latest_message.strip()):
+        return understanding
+    draft = understanding.draft
+    filters = [item for item in draft.filters if _condition_is_mentioned(latest_message, item)]
+    semantic = [
+        item for item in draft.semantic_requirements
+        if _semantic_is_mentioned(latest_message, item)
+    ]
+    preferences = [
+        item for item in draft.evaluation_preferences
+        if any(token in latest_message.lower() for token in re.findall(r"[a-z]{2,}|[\u4e00-\u9fff]{2,6}", item.lower()))
+    ]
+    if not filters and not semantic and not preferences:
+        return understanding
+    return understanding.model_copy(
+        update={
+            "draft": draft.model_copy(
+                update={
+                    "filters": filters,
+                    "semantic_requirements": semantic,
+                    "evaluation_preferences": preferences,
+                }
+            ),
+            "revision_action": "update",
+            "revision_summary": "识别为排他式修订，仅保留本轮明确提出的条件",
+        }
+    )
 
 
 def model_request_interpreter(
@@ -883,7 +942,8 @@ def model_request_interpreter(
     )
     if conversation_title:
         revision = TalentRequestRevision.model_validate(result)
-        return TalentRequestUnderstanding(**revision.model_dump(), conversation_title=conversation_title)
+        understanding = TalentRequestUnderstanding(**revision.model_dump(), conversation_title=conversation_title)
+        return _apply_exclusive_revision(str(messages[-1].content), understanding)
     return TalentRequestUnderstanding.model_validate(result)
 
 

@@ -10,7 +10,7 @@ from langgraph.types import interrupt
 from typing_extensions import TypedDict
 
 from app.talent_decision_graph import DecisionContext
-from app.talent_run_stream import RunStatus, TalentRunManager
+from app.talent_run_stream import RunStatus, TalentRun, TalentRunManager
 
 
 @pytest.fixture
@@ -282,6 +282,28 @@ def test_provider_free_tier_error_is_actionable_and_sanitized():
     assert "免费额度已用完" in result
     assert "DASHSCOPE_API_KEY" in result
     assert "secret-request-id" not in result
+
+
+@pytest.mark.anyio
+async def test_resume_allows_repeated_steps_to_emit_fresh_completion():
+    manager = _manager(_streaming_graph())
+    run = TalentRun(run_id="run-repeat", conversation_id="conversation-repeat", turn_no=1, message="initial")
+    run.status = RunStatus.WAITING_INPUT
+    run.pending_interrupt = {
+        "type": "requirement_revision",
+        "interaction_id": "rr-v0",
+        "reason_code": "empty_candidates",
+    }
+    run.started_steps.update({"understand_request", "filter_candidates"})
+    run.completed_steps.update({"understand_request", "filter_candidates"})
+    manager._runs[run.run_id] = run
+    manager._conversation_runs[run.conversation_id] = [run.run_id]
+    manager._conditions[run.run_id] = asyncio.Condition()
+
+    await manager.resume_run(run.run_id, "有 Agent 的就行")
+
+    assert run.started_steps == set()
+    assert run.completed_steps == set()
 
 
 @pytest.mark.anyio

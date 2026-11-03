@@ -284,3 +284,42 @@ def test_model_interpreter_prompt_distinguishes_region_from_current_position(mon
     assert "地名只能映射为 region" in system_prompt
     assert "为上海研发团队招聘" in system_prompt
     assert result.draft.filters[0].field.value == "region"
+
+
+def test_exclusive_revision_keeps_only_conditions_mentioned_in_latest_message(monkeypatch):
+    from app import talent_request_graph as module
+
+    class Model:
+        def with_structured_output(self, schema, **kwargs):
+            return self
+
+        def invoke(self, messages):
+            return {
+                "draft": {
+                    "input_mode": "detailed_requirement",
+                    "filters": [
+                        {"field": "years_of_experience", "operator": "gte", "value": 5}
+                    ],
+                    "semantic_requirements": [
+                        {"requirement_id": "S1", "query": "企业知识库项目经验", "required": True},
+                        {"requirement_id": "S2", "query": "Agent 相关项目经验", "required": True},
+                    ],
+                    "evaluation_preferences": ["高级 AI 应用工程师岗位匹配度"],
+                    "clarifications": [],
+                },
+                "revision_action": "update",
+                "revision_summary": "其余条件保持不变",
+            }
+
+    monkeypatch.setattr(module, "get_chat_model", lambda temperature=0: Model())
+
+    result = module.model_request_interpreter(
+        [HumanMessage(content="原始要求"), HumanMessage(content="有 Agent 的就行")],
+        {"hard_conditions": [{"field": "years_of_experience", "operator": "gte", "value": 5}]},
+        conversation_title="高级 AI 应用工程师招聘",
+    )
+
+    assert result.draft.filters == []
+    assert [item.query for item in result.draft.semantic_requirements] == ["Agent 相关项目经验"]
+    assert result.draft.evaluation_preferences == []
+    assert result.revision_summary == "识别为排他式修订，仅保留本轮明确提出的条件"

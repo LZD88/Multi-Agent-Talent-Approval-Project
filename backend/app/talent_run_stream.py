@@ -192,6 +192,19 @@ class TalentRunManager:
         decision, resolved = self._resume_value(run.pending_interrupt, value.strip())
         run.pending_interrupt = None
         run.status = RunStatus.RUNNING
+        # A revision re-enters nodes that may already have completed during the
+        # first attempt. Allow their fresh step events to replace the stale
+        # candidates_empty/plan output in both the live view and SQL history.
+        run.started_steps.clear()
+        run.completed_steps.clear()
+        run.branch_completed = 0
+        run.branch_total = 0
+        run.extraction_failures = 0
+        run.branch_status_counts.clear()
+        run.graph_status = ""
+        run.graph_errors.clear()
+        run.evidence_items.clear()
+        run.report_emitted = False
         self._append(run, "hitl.resolved", resolved)
         run.task = asyncio.create_task(self._execute(run, Command(resume=decision)))
         await self._notify(run.run_id)
