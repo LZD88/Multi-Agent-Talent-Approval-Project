@@ -673,6 +673,8 @@ function App() {
       setUploadOpen(false);
       setNotice("材料已上传，解析、切片和索引已自动排队");
       await load();
+    } catch (error) {
+      setNotice(`上传失败：${error instanceof Error ? error.message : "请检查后端服务和对象存储"}`);
     } finally {
       setBusy(false);
     }
@@ -1203,8 +1205,8 @@ function App() {
                 <input name="file" type="file" required />
               </label>
             </div>
-            <button className="primary" disabled={busy}>
-              上传并自动处理
+            <button className="primary" disabled={busy} aria-busy={busy}>
+              {busy ? "上传中…" : "上传并自动处理"}
             </button>
           </form>
         </div>
