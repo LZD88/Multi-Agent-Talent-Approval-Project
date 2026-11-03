@@ -691,7 +691,7 @@ Markdown 和 DOCX 的 `source_locators` 为空数组
 - `document_chunks` 新增 Markdown 起止偏移
 - `document_chunks` 新增原文件辅助定位集合
 
-### 从第 4 迁移到第 5 
+### 从第 4 迁移到第 5
 
 先确保 PostgreSQL 已经通过同一个项目名启动：
 
