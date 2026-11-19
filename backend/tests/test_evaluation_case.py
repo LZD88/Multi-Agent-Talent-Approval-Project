@@ -15,6 +15,8 @@ def test_first_evaluation_modules_are_closed_and_explicit():
         "job_matching",
         "dimension_generation",
         "fact_extraction",
+        "dimension_scoring",
+        "report_grounding",
     }
 
 

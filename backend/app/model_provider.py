@@ -4,7 +4,7 @@ from langchain_openai import ChatOpenAI
 from app.config import Settings, get_settings
 
 
-def get_chat_model(model_name: str | None = None, temperature: float = 0.2, settings: Settings | None = None) -> ChatOpenAI | None:
+def get_chat_model(model_name: str | None = None, temperature: float = 0.2, settings: Settings | None = None, **client_options) -> ChatOpenAI | None:
     value = settings or get_settings()
     api_key = value.chat_api_key or value.dashscope_api_key
     if not api_key or api_key == "请用户自行填写":
@@ -19,8 +19,18 @@ def get_chat_model(model_name: str | None = None, temperature: float = 0.2, sett
     }
     if "dashscope.aliyuncs.com" in base_url:
         options["extra_body"] = {"enable_thinking": False}
-    return ChatOpenAI(**options)
+    return ChatOpenAI(**options, **client_options)
     
+
+def get_grounding_model(settings: Settings | None = None) -> ChatOpenAI | None:
+    value = settings or get_settings()
+    if not (value.chat_api_key or value.dashscope_api_key) or (value.chat_api_key or value.dashscope_api_key) == "请用户自行填写":
+        return None
+    import httpx
+    return get_chat_model(value.grounding_model or value.chat_model, temperature=0, settings=value,
+                          timeout=value.grounding_request_timeout, max_retries=0,
+                          http_async_client=httpx.AsyncClient(timeout=value.grounding_request_timeout))
+
 
 def get_judge_model(model_name: str | None = None, temperature: float = 0.2, settings: Settings | None = None) -> ChatOpenAI | None:
     value = settings or get_settings()

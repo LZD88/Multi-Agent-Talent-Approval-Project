@@ -19,6 +19,11 @@ class Settings(BaseSettings):
     chat_api_key: str = ""
     chat_base_url: str = ""
     chat_model: str = "qwen-plus"
+    grounding_model: str = ""
+    grounding_request_timeout: float = 30.0
+    grounding_batch_timeout: float = 60.0
+    grounding_max_attempts: int = 2
+    grounding_concurrency: int = 4
     judge_model: str = ""
     judge_api_key: str = ""
     judge_base_url: str = ""

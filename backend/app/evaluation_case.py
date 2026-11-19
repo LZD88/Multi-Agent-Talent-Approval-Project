@@ -17,6 +17,8 @@ class EvaluationModule(StrEnum):
     JOB_MATCHING = "job_matching"
     DIMENSION_GENERATION = "dimension_generation"
     FACT_EXTRACTION = "fact_extraction"
+    DIMENSION_SCORING = "dimension_scoring"
+    REPORT_GROUNDING = "report_grounding"
 
 
 class EvaluationCaseDraft(BaseModel):
@@ -167,10 +169,14 @@ def capture_call(call, *, context, module_key, input_payload, recorder=None,
                  version_snapshot=None, replay_extra=None):
     if context is None or not context.run_id:
         return call()
-    if recorder is None:
-        from app.database import SessionLocal
-        recorder = SqlEvaluationCaseStore(SessionLocal).record
-    snapshot = deepcopy(input_payload) # 1. 深拷贝输入
+    try:
+        if recorder is None:
+            from app.database import SessionLocal
+            recorder = SqlEvaluationCaseStore(SessionLocal).record
+        snapshot = deepcopy(input_payload)
+    except Exception as exc:
+        logger.error('event=case_collection_failed module=%s error_type=%s', module_key, type(exc).__name__)
+        return call()
     started = perf_counter()
     output, error = {}, None
     try:
@@ -181,13 +187,16 @@ def capture_call(call, *, context, module_key, input_payload, recorder=None,
         error = type(exc).__name__
         raise
     finally:
-        safe_record(recorder, EvaluationCaseDraft(
-            source_run_id=context.run_id, conversation_id=context.conversation_id,
-            turn_no=context.turn_no, module_key=module_key, input_payload=snapshot,
-            output_payload=output, replay_context={
-                'tenant_id': context.tenant_id,
-                'permission_scopes': list(context.permission_scopes), **(replay_extra or {}),
-            }, version_snapshot=version_snapshot or {},
-            status='failed' if error else 'succeeded', error_code=error,
-            duration_ms=round((perf_counter() - started) * 1000),
-        ))
+        try:
+            safe_record(recorder, EvaluationCaseDraft(
+                source_run_id=context.run_id, conversation_id=context.conversation_id,
+                turn_no=context.turn_no, module_key=module_key, input_payload=snapshot,
+                output_payload=output, replay_context={
+                    'tenant_id': context.tenant_id,
+                    'permission_scopes': list(context.permission_scopes), **(replay_extra or {}),
+                }, version_snapshot=version_snapshot or {},
+                status='failed' if error else 'succeeded', error_code=error,
+                duration_ms=round((perf_counter() - started) * 1000),
+            ))
+        except Exception as exc:
+            logger.error('event=case_collection_failed module=%s error_type=%s', module_key, type(exc).__name__)
