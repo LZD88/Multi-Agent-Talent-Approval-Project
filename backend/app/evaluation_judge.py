@@ -20,9 +20,13 @@ from app.talent_evaluation_dispatch import (
     build_structured_dimension_generator,
 )
 from app.evidence_pack import EvidenceExtraction, EXTRACTION_PROMPT
+from app.assessment_grounding import GroundingReview, REVIEW_PROMPT, AssessmentClaim, EvidenceAnchor, ClaimReviewer
+from app.talent_evaluation_report import DimensionJudgement, DIMENSION_SCORER_PROMPT
 
 JUDGE_VERSION = 'module-judge-v1'
 TASK_SPECS = {
+    'dimension_scoring': DIMENSION_SCORER_PROMPT,
+    'report_grounding': REVIEW_PROMPT,
     'request_understanding': MODEL_SYSTEM_PROMPT.format(filter_dsl=filter_dsl_catalog()),
     'job_matching': '''根据 job_query 返回名称相关的岗位候选和路由。
 恰好一个 exact 候选时 route=select_exact_job；没有 exact 但存在候选，或存在多个 exact 时 route=confirm_job；无候选时 route=no_job_match。
@@ -45,7 +49,8 @@ class JobOutput(BaseModel):
 
 def output_schema(module_key):
     return {'request_understanding': TalentRequestUnderstanding, 'job_matching': JobOutput,
-            'dimension_generation': EvaluationDimensionPlan, 'fact_extraction': EvidenceExtraction}[module_key]
+            'dimension_generation': EvaluationDimensionPlan, 'fact_extraction': EvidenceExtraction,
+            'dimension_scoring': DimensionJudgement, 'report_grounding': GroundingReview}[module_key]
 
 class JudgeResponse(BaseModel):
     score: int = Field(ge=0, le=4)
@@ -150,7 +155,48 @@ def replay_fact_extraction(item):
     return EvidenceExtraction.model_validate(result).model_dump(mode='json')
 
 
+def replay_dimension_scoring(item):
+    from app.talent_evaluation_report import build_structured_dimension_scorer, EvidenceItem
+    from app.talent_evaluation_dispatch import EvaluationDimension, BranchEvidenceDraft
+    data = item.input_payload
+    if data.get('schema_version') != '1.0':
+        raise ValueError('incompatible_scoring_schema')
+    return build_structured_dimension_scorer(get_chat_model)(
+        EvaluationDimension.model_validate(data['dimension']), BranchEvidenceDraft.model_validate(data['branch']),
+        [EvidenceItem.model_validate(row) for row in data['evidence_items']]).model_dump(mode='json')
+
+
+def replay_report_grounding(item):
+    import asyncio
+    from app.model_provider import get_grounding_model
+    from app.config import get_settings
+    data = item.input_payload
+    if data.get('schema_version') != '1.0':
+        raise ValueError('incompatible_grounding_schema')
+    settings = get_settings()
+    reviewer = ClaimReviewer(get_grounding_model, attempts=settings.grounding_max_attempts,
+        request_timeout=settings.grounding_request_timeout, batch_timeout=settings.grounding_batch_timeout,
+        concurrency=settings.grounding_concurrency)
+    return asyncio.run(reviewer.areview([AssessmentClaim.model_validate(row) for row in data['claims']],
+        [EvidenceAnchor.model_validate(row) for row in data['anchors']], phase=data.get('phase', 'report'))).model_dump(mode='json')
+
+
+def validate_golden_input(module_key, data, golden):
+    """A human confirmation must cover exactly the frozen invocation."""
+    if module_key == 'report_grounding':
+        from app.assessment_grounding import validate_review
+        validate_review(GroundingReview.model_validate(golden),
+                        [AssessmentClaim.model_validate(row) for row in data['claims']])
+    elif module_key == 'dimension_scoring':
+        from app.talent_evaluation_report import validate_dimension_judgement
+        from app.talent_evaluation_dispatch import BranchEvidenceDraft
+        validate_dimension_judgement(BranchEvidenceDraft.model_validate(data['branch']),
+                                    DimensionJudgement.model_validate(golden))
+
+
 REPLAY_HANDLERS = {
+    'dimension_scoring': replay_dimension_scoring,
+    'report_grounding': replay_report_grounding,
     'request_understanding': replay_request_understanding,
     'job_matching': replay_job_matching,
     'dimension_generation': replay_dimension_generation,

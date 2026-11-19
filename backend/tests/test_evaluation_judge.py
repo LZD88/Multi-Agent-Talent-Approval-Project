@@ -100,7 +100,7 @@ def test_judge_redacts_pii_before_external_model_call(monkeypatch):
 def test_every_judge_module_has_a_task_spec():
     from app import evaluation_judge as j
     assert set(j.TASK_SPECS) == {
-        'request_understanding', 'job_matching', 'dimension_generation', 'fact_extraction',
+        'request_understanding', 'job_matching', 'dimension_generation', 'fact_extraction', 'dimension_scoring', 'report_grounding',
     }
     assert j.TASK_SPECS['request_understanding'].startswith('你是人才评估任务编译器')
     assert j.TASK_SPECS['dimension_generation'] == j.DIMENSION_GENERATOR_PROMPT
@@ -255,6 +255,60 @@ def test_replay_rejects_unknown_module():
     from app import evaluation_judge as j
     with pytest.raises(ValueError, match='不支持的评测模块'):
         j.replay_output(SimpleNamespace(module_key='unknown', input_payload={}, replay_context={}))
+
+
+def test_grounding_replay_uses_frozen_input_without_judge_or_database(monkeypatch):
+    from app import evaluation_judge as j
+    from app import model_provider
+    from test_assessment_grounding import anchor, claim, FakeModel, supported
+    a = anchor()
+    observed = []
+    async def respond(payload):
+        observed.append(payload)
+        return supported([j.AssessmentClaim.model_validate(row) for row in payload['claims']], []).model_dump()
+    monkeypatch.setattr(model_provider, 'get_grounding_model', lambda: FakeModel(respond))
+    item = SimpleNamespace(module_key='report_grounding', input_payload={
+        'schema_version': '1.0', 'phase': 'report', 'claims': [claim(a).model_dump()], 'anchors': [a.model_dump()]})
+    assert j.replay_output(item)['reviews'][0]['verdict'] == 'supported'
+    assert observed[0]['anchors'][0]['document_version_id'] == 'version'
+    item.input_payload['schema_version'] = '99'
+    with pytest.raises(ValueError, match='incompatible'):
+        j.replay_output(item)
+
+
+def test_golden_rejects_missing_claim_or_foreign_anchor():
+    from app.evaluation_judge import validate_golden_input
+    from test_assessment_grounding import anchor, claim, supported
+    a = anchor()
+    payload = {'claims': [claim(a).model_dump()]}
+    with pytest.raises(ValueError):
+        validate_golden_input('report_grounding', payload, {'reviews': []})
+    result = supported([claim(a)], [a]).model_dump()
+    validate_golden_input('report_grounding', payload, result)
+    result['reviews'][0]['anchor_ids'] = ['foreign']
+    with pytest.raises(ValueError):
+        validate_golden_input('report_grounding', payload, result)
+
+
+def test_new_module_quality_replay_without_judge_keeps_confirmed_labels(client, monkeypatch):
+    from app import evaluation_api as api
+    from app.models import EvaluationCaseRecord as Case
+    from test_assessment_grounding import anchor, claim, supported
+    c, cid = client
+    a = anchor()
+    expected = supported([claim(a)], [a]).model_dump(mode='json')
+    with api.SessionLocal() as db:
+        case = db.get(Case, __import__('uuid').UUID(cid))
+        case.module_key = 'report_grounding'
+        case.input_payload = {'schema_version': '1.0', 'claims': [claim(a).model_dump()], 'anchors': [a.model_dump()]}
+        db.commit()
+    item = c.post(f'/api/evaluation/cases/{cid}/confirm', json={'golden_output': expected}).json()
+    monkeypatch.setattr(api, 'replay_output', lambda item: expected)
+    monkeypatch.setattr(api, 'judge_case', lambda *args, **kw: pytest.fail('new module needs no Judge'))
+    result = c.post('/api/evaluation/replay', json={'dataset_item_ids': [item['id']]}).json()
+    assert result['quality_compared_count'] == 1 and result['complete']
+    assert result['quality_metrics']['metrics']['published_claim_support']['value'] == 1
+    assert result['items'][0]['version_snapshot']['dataset_hash']
 
 
 def test_replay_judge_failure_does_not_become_zero_score(client, monkeypatch):

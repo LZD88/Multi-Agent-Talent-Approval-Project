@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import {buildEvaluationCaseQuery} from './evaluationViewModel';
 import './evaluation.css';
 
-export const moduleLabels: Record<string, string> = {request_understanding: '人才要求理解', job_matching: '岗位名称匹配', dimension_generation: '动态维度生成', fact_extraction: '事实抽取'};
-type CaseRow = {annotation?: {score: number | null; review_status: string}; case_id: string; source_run_id: string; turn_no: number; module_key: string; invocation_no: number; status: string; created_at: string; identity: Record<string, string>; has_feedback: boolean; run_has_feedback: boolean};
+export const moduleLabels: Record<string, string> = {request_understanding: '人才要求理解', job_matching: '岗位名称匹配', dimension_generation: '动态维度生成', fact_extraction: '事实抽取', dimension_scoring: '维度评分', report_grounding: '结论依据审查'};
+type CaseRow = {error_code?:string; annotation?: {score: number | null; review_status: string}; case_id: string; source_run_id: string; turn_no: number; module_key: string; invocation_no: number; status: string; created_at: string; identity: Record<string, string>; has_feedback: boolean; run_has_feedback: boolean};
 async function api(url: string, options?: RequestInit) {
   const r = await fetch(url, options);
   const body = await r.json();
@@ -33,7 +33,7 @@ export function StepCaseFeedback({apiBase, runId, stepId}: {apiBase: string; run
     let current = true;
     setRows([]); setError('');
     async function loadCases() {
-      const modules = stepId === 'understand_request' ? ['request_understanding', 'job_matching'] : stepId === 'build_dimensions' ? ['dimension_generation'] : stepId === 'parallel_assessment' ? ['fact_extraction'] : [];
+      const modules = stepId === 'understand_request' ? ['request_understanding', 'job_matching'] : stepId === 'build_dimensions' ? ['dimension_generation'] : stepId === 'parallel_assessment' ? ['fact_extraction'] : stepId === 'score_candidates' ? ['dimension_scoring','report_grounding'] : stepId === 'compose_report' ? ['report_grounding'] : [];
       if (!modules.length) return;
       const collected: CaseRow[] = [];
       let offset = 0;
@@ -61,7 +61,7 @@ export function EvaluationPagination({offset, more, busy, onChange, unit='条'}:
 function CaseTable({rows, selected, busy, onSelect, onOpen}: {rows:CaseRow[]; selected:string[]; busy:boolean; onSelect:(id:string, checked:boolean)=>void; onOpen:(id:string)=>void}) {
   return <div className="evaluationTableWrap"><table><thead><tr><th>选择</th><th>模块 / 调用</th><th>得分 / 审核</th><th>业务对象</th><th>状态</th><th>反馈</th><th>采集时间</th></tr></thead><tbody>{rows.map(row=><tr key={row.case_id} tabIndex={0} className="evaluationClickableRow" aria-label={`${moduleLabels[row.module_key]} 调用 ${row.invocation_no} 详情`} onClick={()=>onOpen(row.case_id)} onKeyDown={e=>{if(e.target===e.currentTarget && (e.key==='Enter'||e.key===' ')){e.preventDefault();onOpen(row.case_id);}}}>
     <td onClick={e=>e.stopPropagation()}><input aria-label={`选择 ${row.case_id}`} type="checkbox" checked={selected.includes(row.case_id)} disabled={busy || !!row.annotation || (!selected.includes(row.case_id)&&selected.length>=20)} onChange={e=>onSelect(row.case_id,e.target.checked)}/></td>
-    <td><b>{moduleLabels[row.module_key]}</b><small>调用 #{row.invocation_no} · Turn {row.turn_no}</small></td><td>{row.annotation ? <><b>{row.annotation.score ?? '未评分'}</b><small>{row.annotation.review_status==='confirmed'?'已确认':'待审核'}</small></> : '未标注'}</td><td>{Object.values(row.identity).join(' / ')||'—'}</td><td><span className={`evaluationBadge ${row.status}`}>{row.status==='succeeded'?'成功':'失败'}</span></td><td>{row.has_feedback?'用户反馈':row.run_has_feedback?'Run 有反馈':'—'}</td><td>{timeLabel(row.created_at)}</td>
+    <td><b>{moduleLabels[row.module_key]}</b><small>调用 #{row.invocation_no} · Turn {row.turn_no}</small></td><td>{row.annotation ? <><b>{row.annotation.score ?? '未评分'}</b><small>{row.annotation.review_status==='confirmed'?'已确认':'待审核'}</small></> : '未标注'}</td><td>{Object.values(row.identity).join(' / ')||'—'}</td><td><span className={`evaluationBadge ${row.status}`}>{row.error_code==='synthetic_fixture_not_executed'?'未执行（虚构样本）':row.status==='succeeded'?'成功':'失败'}</span></td><td>{row.has_feedback?'用户反馈':row.run_has_feedback?'Run 有反馈':'—'}</td><td>{timeLabel(row.created_at)}</td>
   </tr>)}</tbody></table></div>;
 }
 function RunGroup({group, apiBase, query, refresh, selected, busy, onSelect, onOpen}: {group:RunGroupRow; apiBase:string; query:string; refresh:number; selected:string[]; busy:boolean; onSelect:(id:string, checked:boolean)=>void; onOpen:(id:string)=>void}) {

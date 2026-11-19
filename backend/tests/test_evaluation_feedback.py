@@ -2,7 +2,15 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 
-def test_feedback_rejects_missing_case_and_invalid_scope():
+def test_feedback_rejects_missing_case_and_invalid_scope(monkeypatch):
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
+    from sqlalchemy.pool import StaticPool
+    from app import evaluation_api
+    from app.models import Base
+    engine = create_engine('sqlite://', connect_args={'check_same_thread': False}, poolclass=StaticPool)
+    Base.metadata.create_all(engine)
+    monkeypatch.setattr(evaluation_api, 'SessionLocal', sessionmaker(engine))
     from app.evaluation_api import router
     app = FastAPI()
     app.include_router(router)
@@ -13,6 +21,7 @@ def test_feedback_rejects_missing_case_and_invalid_scope():
         'source_run_id': 'unknown', 'feedback_scope': 'run', 'case_id': 'bad'}).status_code == 422
     assert client.post('/api/evaluation/feedback', json={
         'source_run_id': 'unknown', 'feedback_scope': 'run'}).status_code == 404
+    engine.dispose()
 
 
 def test_feedback_roundtrip_preserves_cases_and_does_not_fan_out(monkeypatch):

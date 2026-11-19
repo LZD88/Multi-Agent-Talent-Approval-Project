@@ -3,10 +3,14 @@ from typing import Literal
 from datetime import datetime
 from types import SimpleNamespace
 from copy import deepcopy
+import hashlib
+import json
+import time
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError
 from app.config import get_settings
-from app.evaluation_judge import judge_case, replay_output, output_schema, JUDGE_VERSION
+from app.evaluation_judge import judge_case, replay_output, output_schema, validate_golden_input, JUDGE_VERSION
+from app.assessment_grounding import POLICY_VERSION, PROMPT_VERSION
 from app.models import EvaluationAnnotationRecord as Annotation, EvaluationDatasetItemRecord as DatasetItem
 from uuid import UUID
 from fastapi import APIRouter, HTTPException, Query
@@ -14,6 +18,7 @@ from pydantic import BaseModel, Field, model_validator
 from sqlalchemy import select, exists, func
 from app.database import SessionLocal
 from app.evaluation_case import EvaluationModule
+from app.assessment_metrics import NEW_MODULES, quality_metrics
 from app.models import EvaluationCaseRecord as Case, EvaluationFeedbackRecord as Feedback, TalentRunRecord, TalentConversationRecord
 
 router = APIRouter(prefix='/api/evaluation', tags=['evaluation'])
@@ -99,7 +104,7 @@ def list_cases(group_by: Literal['run'] | None = None, source_run_id: str | None
             case_id=str(row.id), source_run_id=row.source_run_id, conversation_id=row.conversation_id,
             turn_no=row.turn_no, module_key=row.module_key, invocation_no=row.invocation_no,
             status=row.status, error_code=row.error_code, created_at=row.created_at.isoformat(),
-            identity={k: row.input_payload[k] for k in ('candidate_id', 'dimension_number', 'requirement_id', 'attempt') if k in row.input_payload},
+            identity={k: row.input_payload[k] for k in ('candidate_id', 'candidate_ids', 'dimension_number', 'requirement_id', 'attempt', 'phase') if k in row.input_payload},
             has_feedback=signal, run_has_feedback=run_signal_value,
             annotation=row_json(annotation) if annotation else None,
         ) for row, signal, run_signal_value, annotation in rows[:limit]]}
@@ -170,7 +175,8 @@ def confirm_golden(case_id: UUID, payload: ConfirmGolden):
             raise HTTPException(409, '已确认的数据集条目不可覆盖')
         try:
             golden = output_schema(case.module_key).model_validate(payload.golden_output).model_dump(mode='json')
-        except (ValidationError, KeyError):
+            validate_golden_input(case.module_key, case.input_payload, golden)
+        except (ValueError, KeyError):
             raise HTTPException(422, 'Golden 不符合模块输出 Schema')
         annotation = db.get(Annotation, case_id)
         if annotation is None:
@@ -178,6 +184,7 @@ def confirm_golden(case_id: UUID, payload: ConfirmGolden):
                 verdict='unscored', reason='人工编写并确认参考答案', golden_candidate=None)
             db.add(annotation)
         annotation.review_status = 'confirmed'
+        annotation.annotator_type = 'human'
         item = DatasetItem(source_case_id=case_id, module_key=case.module_key,
             input_payload=deepcopy(case.input_payload), golden_output=golden,
             replay_context=deepcopy(case.replay_context), dataset_split=payload.dataset_split, tags=payload.tags)
@@ -211,16 +218,35 @@ class ReplayBatch(BaseModel):
 @router.post('/replay')
 def batch_replay(payload: ReplayBatch):
     results = []
+    quality_rows = []
     for item_id in dict.fromkeys(payload.dataset_item_ids):
         with SessionLocal() as db:
             item = db.get(DatasetItem, item_id)
             if item is None:
                 results.append(dict(dataset_item_id=str(item_id), status='error', error_type='MissingItem'))
                 continue
+            annotation = db.get(Annotation, item.source_case_id)
+            confirmed = bool(annotation and annotation.review_status == 'confirmed')
+            started = time.monotonic()
+            fingerprint = hashlib.sha256(json.dumps({'input': item.input_payload, 'golden': item.golden_output},
+                sort_keys=True, ensure_ascii=False, separators=(',', ':')).encode()).hexdigest()
             try:
                 output = replay_output(item)
             except Exception as exc:
+                if item.module_key in NEW_MODULES:
+                    quality_rows.append(dict(module_key=item.module_key, confirmed=confirmed, golden=item.golden_output,
+                        input_payload=item.input_payload,
+                        actual=None, status='incompatible' if 'incompatible' in str(exc) else 'execution_failed'))
                 results.append(dict(dataset_item_id=str(item_id), status='module_failed', score=0, error_type=type(exc).__name__))
+                continue
+            if item.module_key in NEW_MODULES:
+                quality_rows.append(dict(module_key=item.module_key, confirmed=confirmed,
+                    golden=item.golden_output, actual=output, status='completed', input_payload=item.input_payload))
+                results.append(dict(dataset_item_id=str(item_id), status='quality_compared', output=output,
+                    version_snapshot={'model': get_settings().grounding_model or get_settings().chat_model,
+                                      'policy': POLICY_VERSION, 'prompt': PROMPT_VERSION, 'dataset_hash': fingerprint,
+                                      'duration_ms': round((time.monotonic()-started)*1000),
+                                      'dataset_item_id': str(item_id)}))
                 continue
             try:
                 result = judge_case(SimpleNamespace(module_key=item.module_key, input_payload=item.input_payload,
@@ -229,7 +255,10 @@ def batch_replay(payload: ReplayBatch):
             except Exception as exc:
                 results.append(dict(dataset_item_id=str(item_id), status='judge_error', output=output, error_type=type(exc).__name__))
     scores = [row['score'] for row in results if 'score' in row]
-    return dict(items=results, requested_count=len(results), scored_count=len(scores),
-        complete=len(scores) == len(results), average_score=sum(scores)/len(scores) if scores else None,
+    quality = quality_metrics(quality_rows) if quality_rows else None
+    compared = sum(row['status'] == 'quality_compared' for row in results)
+    return dict(items=results, requested_count=len(results), scored_count=len(scores), quality_compared_count=compared,
+        quality_metrics=quality,
+        complete=(len(scores)+compared == len(results) and (quality is None or quality['complete'])), average_score=sum(scores)/len(scores) if scores else None,
         minimum_score=min(scores) if scores else None, judge_version=JUDGE_VERSION,
         judge_model=get_settings().judge_model, chat_model=get_settings().chat_model)
