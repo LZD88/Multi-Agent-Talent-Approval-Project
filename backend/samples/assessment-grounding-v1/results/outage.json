@@ -1,0 +1,2748 @@
+{
+  "dataset": {
+    "schema_version": "1.0",
+    "dataset_version": "synthetic-assessment-v1",
+    "synthetic": true,
+    "provenance": "所有材料及候选标签由本项目为回归测试构造，无真实个人信息；尚无人工确认。",
+    "split_counts": {
+      "dev": 40,
+      "test": 20
+    },
+    "cases_sha256": "553b34241446bedbb42761da8dd7d0a20965a32d3ced738740f6f981b374b14c",
+    "cases": [
+      {
+        "case_id": "fictional-dev-01",
+        "scenario_id": "fictional-dev-01",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "48c890626907596fc2bafad257913cb0ab96a9adaacd34e13e5c00c3eb7a0dda"
+      },
+      {
+        "case_id": "fictional-dev-02",
+        "scenario_id": "fictional-dev-02",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "338a7733a6f1b95d53578a17e7fee58c35467b016522c0ae6b94ec0a60084d03"
+      },
+      {
+        "case_id": "fictional-dev-03",
+        "scenario_id": "fictional-dev-03",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "5e6aef2bb3738d39806c5180ecb2886700b0681cc07bafc82bdf7f7ca6dc3206"
+      },
+      {
+        "case_id": "fictional-dev-04",
+        "scenario_id": "fictional-dev-04",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "fe777862e8062916bfe91e81f3c332f90e3e3e0755c7ecc05cc2d23512793746"
+      },
+      {
+        "case_id": "fictional-dev-05",
+        "scenario_id": "fictional-dev-05",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "04c89125b313646d5e966d461024c973696f8b614b1197e2364a070b8da2b5af"
+      },
+      {
+        "case_id": "fictional-dev-06",
+        "scenario_id": "fictional-dev-06",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "eaa6bca57703031698019feaf40a2d2a035e42a66f2350128be46cdbed7e4394"
+      },
+      {
+        "case_id": "fictional-dev-07",
+        "scenario_id": "fictional-dev-07",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "3bfe24a13c5285f89d8b119d082d3d080e7d6f3c8f32b5d625d80dad013e0e9a"
+      },
+      {
+        "case_id": "fictional-dev-08",
+        "scenario_id": "fictional-dev-08",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "7383cdec3e8f8c341215960348551021aaa31cc01128b2246a36f3f85be13c42"
+      },
+      {
+        "case_id": "fictional-dev-09",
+        "scenario_id": "fictional-dev-09",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "ba01050e854b63d7174b3babb38e512f942e1331ae45a795d626c2d2b285e25d"
+      },
+      {
+        "case_id": "fictional-dev-10",
+        "scenario_id": "fictional-dev-10",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "afa313269c2ee1fba505d44d8eaa4709589d9c5a4dfad833355318159d4d1bc5"
+      },
+      {
+        "case_id": "fictional-dev-11",
+        "scenario_id": "fictional-dev-11",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "32b9e584c9163e955dcceda7f7d95729e9fbcb999c1283d2c16727906069586a"
+      },
+      {
+        "case_id": "fictional-dev-12",
+        "scenario_id": "fictional-dev-12",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "a6ae5f0d8c171e17deee5c92665b89ad75cf065fde1f4f5d7c3912405637d0e7"
+      },
+      {
+        "case_id": "fictional-dev-13",
+        "scenario_id": "fictional-dev-13",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "d30639db80414a2a067dc3cfdffc193334b84c9f4d2234bfe8837e9da30373d2"
+      },
+      {
+        "case_id": "fictional-dev-14",
+        "scenario_id": "fictional-dev-14",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "6011692815129e0fbdca0b7bcf3ff2d1303e8ca0985c7dc2fc0e17948257bb13"
+      },
+      {
+        "case_id": "fictional-dev-15",
+        "scenario_id": "fictional-dev-15",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "f722356a350834a2ce4ac7ba8e41fcd835b2f253bd0121997c6613c7dbf596e1"
+      },
+      {
+        "case_id": "fictional-dev-16",
+        "scenario_id": "fictional-dev-16",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "c057d25c41d9eeb9cfdbc3a1f887fdd739ace7fee4a90ecbc81fcacc436a1c38"
+      },
+      {
+        "case_id": "fictional-dev-17",
+        "scenario_id": "fictional-dev-17",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "0263b6c5ac1226631fe642ce8e2d6e306b01a60e480762b44b914b55c20bc016"
+      },
+      {
+        "case_id": "fictional-dev-18",
+        "scenario_id": "fictional-dev-18",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "94412ff4e51435f565ab673c4dbaf81659f45c8b67990ad36e71322a74b71a1c"
+      },
+      {
+        "case_id": "fictional-dev-19",
+        "scenario_id": "fictional-dev-19",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "83ee2f1c001aeac05c6e21e9b1cbb8be53e93a236c4693a96407eac3dca692f5"
+      },
+      {
+        "case_id": "fictional-dev-20",
+        "scenario_id": "fictional-dev-20",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "edc120d2dae447a9e3a64a5b152045a4c68d079cf895864faa104d6625789062"
+      },
+      {
+        "case_id": "fictional-dev-21",
+        "scenario_id": "fictional-dev-21",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "4c14e07b3bbc9f24f1c608a1695ca0de695911c08e5c1b00167400d1b5256d79"
+      },
+      {
+        "case_id": "fictional-dev-22",
+        "scenario_id": "fictional-dev-22",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "0f9e261a08ce4f82814a433f73f1aab3617c6308724d68b85519a27450f43f09"
+      },
+      {
+        "case_id": "fictional-dev-23",
+        "scenario_id": "fictional-dev-23",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "28114e88589a2e915b2b86f230da57090676d7a49bb86a8750fd92e22d9d6474"
+      },
+      {
+        "case_id": "fictional-dev-24",
+        "scenario_id": "fictional-dev-24",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "15ce30d61b9433dca8e25396260b4443c3b7ffdc4fbee1d2fd6a7dcc87d8b3b5"
+      },
+      {
+        "case_id": "fictional-dev-25",
+        "scenario_id": "fictional-dev-25",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "135643247741036a890a235f5a7df0e6992e976241ec7b63249a3f42a5fd4b1d"
+      },
+      {
+        "case_id": "fictional-dev-26",
+        "scenario_id": "fictional-dev-26",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "9d3f4164a47002d2a2eb2fd509e7ca96088b11b3468a4d76cee6131567c481ba"
+      },
+      {
+        "case_id": "fictional-dev-27",
+        "scenario_id": "fictional-dev-27",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "be0f54c4aee48bb7a7266ce2729820f875a9b725a2f77a274704ca97fba9b7b1"
+      },
+      {
+        "case_id": "fictional-dev-28",
+        "scenario_id": "fictional-dev-28",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "29e98afe99291871cef33f1df7345c3a90975b681f42d2254d5616719c0d07b0"
+      },
+      {
+        "case_id": "fictional-dev-29",
+        "scenario_id": "fictional-dev-29",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "43f6cc2c9158f357532d6f4b351cab1330250aeb50e8edb7f4394d537146db9b"
+      },
+      {
+        "case_id": "fictional-dev-30",
+        "scenario_id": "fictional-dev-30",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "4a4483f5a00af97028302c0c4f5a86dc08a405f6e4befc531ddc52b2f4736f59"
+      },
+      {
+        "case_id": "fictional-dev-31",
+        "scenario_id": "fictional-dev-31",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "b2fb89742f5d419346b9519c9be437952c8f72f3862e11c8b0cdc6430addf1c8"
+      },
+      {
+        "case_id": "fictional-dev-32",
+        "scenario_id": "fictional-dev-32",
+        "split": "dev",
+        "module_key": "report_grounding",
+        "input_hash": "bb14aba529b666055cd154547d4d3dff47e7ed3734afbd171297314c8f72c56b"
+      },
+      {
+        "case_id": "fictional-test-33",
+        "scenario_id": "fictional-test-33",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "3c2274d12548123b3bf0e6c851a5d5ce878acbfc77fc59a08aad66ea1bee6f31"
+      },
+      {
+        "case_id": "fictional-test-34",
+        "scenario_id": "fictional-test-34",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "a0e2ea9e8d8ed8e3907eac6051549b768cc8167a84a4ac9dd879e0ac89ae3af1"
+      },
+      {
+        "case_id": "fictional-test-35",
+        "scenario_id": "fictional-test-35",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "64ea3f9987435d325695df998163fd665bbbfbb57f018f230db06b49dbcf8f4a"
+      },
+      {
+        "case_id": "fictional-test-36",
+        "scenario_id": "fictional-test-36",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "b325767151fcd4713d744539b39cab069f343adb0b086f1feb2e80fa92d8e7c3"
+      },
+      {
+        "case_id": "fictional-test-37",
+        "scenario_id": "fictional-test-37",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "3fb9710e3a97336e87e0f89617dab8aee713fb645fbcd749df9cb6c45b399918"
+      },
+      {
+        "case_id": "fictional-test-38",
+        "scenario_id": "fictional-test-38",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "d7466fb0e5b3a5878c91d6af3434221c93fb64f96e8ba6be526fd885b5494b6c"
+      },
+      {
+        "case_id": "fictional-test-39",
+        "scenario_id": "fictional-test-39",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "fa710d7a50ee4a60295a32607f8081a1d292a471c24d434d0cdce567912c91df"
+      },
+      {
+        "case_id": "fictional-test-40",
+        "scenario_id": "fictional-test-40",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "2c7832bd6e6ca8f084ef0d41e6517fa91e5cb0ed744871b5284ee7a3bc3fb37a"
+      },
+      {
+        "case_id": "fictional-test-41",
+        "scenario_id": "fictional-test-41",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "8d271fa831e8f5608b3c051cfc1ee1d01b471e76298e067c8d7cfb76ab405892"
+      },
+      {
+        "case_id": "fictional-test-42",
+        "scenario_id": "fictional-test-42",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "40b293ed42092d84e3a3a04132cb6befd6597c5cc4ed47d3548b043e54495811"
+      },
+      {
+        "case_id": "fictional-test-43",
+        "scenario_id": "fictional-test-43",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "f58f7949c7382ee10d2772d44cc809a3adf1b63bf443f2ad0d7c2e82dd0212c3"
+      },
+      {
+        "case_id": "fictional-test-44",
+        "scenario_id": "fictional-test-44",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "592a0bf437aa5c66a1a33b10e636e20727b3dbc12c25be20036e00f9e662c87e"
+      },
+      {
+        "case_id": "fictional-test-45",
+        "scenario_id": "fictional-test-45",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "293770d6b35cee8a887d873d7d5bcef74d60deb19fb1f076f81a38e35a26df44"
+      },
+      {
+        "case_id": "fictional-test-46",
+        "scenario_id": "fictional-test-46",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "19a299999cd427e2e4e4cf2f63b213536e01453e72f104212c5a1ef09e6968ab"
+      },
+      {
+        "case_id": "fictional-test-47",
+        "scenario_id": "fictional-test-47",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "5d4f910c06010e3b1b802c359344aa0401b8798739c1a63c9da131934c3c6fdb"
+      },
+      {
+        "case_id": "fictional-test-48",
+        "scenario_id": "fictional-test-48",
+        "split": "test",
+        "module_key": "report_grounding",
+        "input_hash": "234bdf0bc9c76f427032c400be08422c2b78840c45396d87265fa36fac98ec2f"
+      },
+      {
+        "case_id": "fictional-score-dev-01",
+        "scenario_id": "fictional-score-dev-01",
+        "split": "dev",
+        "module_key": "dimension_scoring",
+        "input_hash": "c4714a4ef62fe3e53db0c5f2fa812f5fd9840c07d23f8fdf56d935ca84ee35bd"
+      },
+      {
+        "case_id": "fictional-score-dev-02",
+        "scenario_id": "fictional-score-dev-02",
+        "split": "dev",
+        "module_key": "dimension_scoring",
+        "input_hash": "096de47a25578a136e2ef0a6a4bb805edecaeb82d43e7f65f968f740c692d1b2"
+      },
+      {
+        "case_id": "fictional-score-dev-03",
+        "scenario_id": "fictional-score-dev-03",
+        "split": "dev",
+        "module_key": "dimension_scoring",
+        "input_hash": "a440a2af6fc9a892cc1dc52b5b557242eebc5b141d7bdb2c8efb4206c795de34"
+      },
+      {
+        "case_id": "fictional-score-dev-04",
+        "scenario_id": "fictional-score-dev-04",
+        "split": "dev",
+        "module_key": "dimension_scoring",
+        "input_hash": "9177526cac2d528f1cafd1e2cd777f912e6f854e052137d3438ed85536953ed2"
+      },
+      {
+        "case_id": "fictional-score-dev-05",
+        "scenario_id": "fictional-score-dev-05",
+        "split": "dev",
+        "module_key": "dimension_scoring",
+        "input_hash": "a283bae48d5566c5307907bc142f83e5916449e77b1db84241b991807ad13483"
+      },
+      {
+        "case_id": "fictional-score-dev-06",
+        "scenario_id": "fictional-score-dev-06",
+        "split": "dev",
+        "module_key": "dimension_scoring",
+        "input_hash": "151c4f1477c12e28665bc29691efea30b5ff08b74070796ee4e5879f76c255fd"
+      },
+      {
+        "case_id": "fictional-score-dev-07",
+        "scenario_id": "fictional-score-dev-07",
+        "split": "dev",
+        "module_key": "dimension_scoring",
+        "input_hash": "a46b65d7c10e8fa28e847bb65e578aaf8e26e2c1c7adf19dd27e0a678fe520b2"
+      },
+      {
+        "case_id": "fictional-score-dev-08",
+        "scenario_id": "fictional-score-dev-08",
+        "split": "dev",
+        "module_key": "dimension_scoring",
+        "input_hash": "8a6aa5c475f6f4a37e11992d1a583d3868809d77a7c690d14ecde1ef4f15ceb4"
+      },
+      {
+        "case_id": "fictional-score-test-09",
+        "scenario_id": "fictional-score-test-09",
+        "split": "test",
+        "module_key": "dimension_scoring",
+        "input_hash": "03c87465f1791a5f90f23605c42ffac3427d2f2a6fef12f2ed1a6e8c54e40525"
+      },
+      {
+        "case_id": "fictional-score-test-10",
+        "scenario_id": "fictional-score-test-10",
+        "split": "test",
+        "module_key": "dimension_scoring",
+        "input_hash": "c4c84ee06a279b717233c7278087f6f0b1a21c9f4e09d0c77751eff056b2f583"
+      },
+      {
+        "case_id": "fictional-score-test-11",
+        "scenario_id": "fictional-score-test-11",
+        "split": "test",
+        "module_key": "dimension_scoring",
+        "input_hash": "94e89f166d346141affefa7fe13f25ca6ff8cb51bc029460fa014182097dde05"
+      },
+      {
+        "case_id": "fictional-score-test-12",
+        "scenario_id": "fictional-score-test-12",
+        "split": "test",
+        "module_key": "dimension_scoring",
+        "input_hash": "c8861423bb1c8b4e1eb6312392cea760d0bf4ed4d2916d3436be4486b2c1011c"
+      }
+    ]
+  },
+  "mode": "offline_injected",
+  "policy_version": "assessment-grounding-v1",
+  "prompt_version": "claim-review-v1",
+  "model": "",
+  "scope": "仅选中的虚构样本；候选标签诊断不属于人工Golden验收。",
+  "duration_ms": 49,
+  "items": [
+    {
+      "case_id": "fictional-dev-01",
+      "input_hash": "48c890626907596fc2bafad257913cb0ab96a9adaacd34e13e5c00c3eb7a0dda",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-01:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-01:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-01:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-01:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 2
+    },
+    {
+      "case_id": "fictional-dev-02",
+      "input_hash": "338a7733a6f1b95d53578a17e7fee58c35467b016522c0ae6b94ec0a60084d03",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-02:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-02:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-02:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-02:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 9
+    },
+    {
+      "case_id": "fictional-dev-03",
+      "input_hash": "5e6aef2bb3738d39806c5180ecb2886700b0681cc07bafc82bdf7f7ca6dc3206",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-03:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-03:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-03:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-03:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 6
+    },
+    {
+      "case_id": "fictional-dev-04",
+      "input_hash": "fe777862e8062916bfe91e81f3c332f90e3e3e0755c7ecc05cc2d23512793746",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-04:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-04:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-04:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-04:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 12
+    },
+    {
+      "case_id": "fictional-dev-05",
+      "input_hash": "04c89125b313646d5e966d461024c973696f8b614b1197e2364a070b8da2b5af",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-05:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-05:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-05:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-05:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 1
+    },
+    {
+      "case_id": "fictional-dev-06",
+      "input_hash": "eaa6bca57703031698019feaf40a2d2a035e42a66f2350128be46cdbed7e4394",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-06:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-06:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-06:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-06:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 2
+    },
+    {
+      "case_id": "fictional-dev-07",
+      "input_hash": "3bfe24a13c5285f89d8b119d082d3d080e7d6f3c8f32b5d625d80dad013e0e9a",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-07:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-07:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-07:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-07:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 2
+    },
+    {
+      "case_id": "fictional-dev-08",
+      "input_hash": "7383cdec3e8f8c341215960348551021aaa31cc01128b2246a36f3f85be13c42",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-08:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-08:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-08:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-08:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 1
+    },
+    {
+      "case_id": "fictional-dev-09",
+      "input_hash": "ba01050e854b63d7174b3babb38e512f942e1331ae45a795d626c2d2b285e25d",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-09:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-09:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-09:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-09:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 11
+    },
+    {
+      "case_id": "fictional-dev-10",
+      "input_hash": "afa313269c2ee1fba505d44d8eaa4709589d9c5a4dfad833355318159d4d1bc5",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-10:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-10:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-10:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-10:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 1
+    },
+    {
+      "case_id": "fictional-dev-11",
+      "input_hash": "32b9e584c9163e955dcceda7f7d95729e9fbcb999c1283d2c16727906069586a",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-11:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-11:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-11:claim:2",
+            "verdict": "insufficient",
+            "reason_code": "candidate_mismatch",
+            "reason": "该命题未满足引用归属或范围约束，未作为结论发布。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-11:claim:3",
+            "verdict": "insufficient",
+            "reason_code": "candidate_mismatch",
+            "reason": "该命题未满足引用归属或范围约束，未作为结论发布。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 1
+    },
+    {
+      "case_id": "fictional-dev-12",
+      "input_hash": "a6ae5f0d8c171e17deee5c92665b89ad75cf065fde1f4f5d7c3912405637d0e7",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-12:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-12:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-12:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-12:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 1
+    },
+    {
+      "case_id": "fictional-dev-13",
+      "input_hash": "d30639db80414a2a067dc3cfdffc193334b84c9f4d2234bfe8837e9da30373d2",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-13:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-13:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-13:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-13:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-14",
+      "input_hash": "6011692815129e0fbdca0b7bcf3ff2d1303e8ca0985c7dc2fc0e17948257bb13",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-14:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-14:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-14:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-14:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-15",
+      "input_hash": "f722356a350834a2ce4ac7ba8e41fcd835b2f253bd0121997c6613c7dbf596e1",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-15:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-15:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-15:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-15:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-16",
+      "input_hash": "c057d25c41d9eeb9cfdbc3a1f887fdd739ace7fee4a90ecbc81fcacc436a1c38",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-16:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-16:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-16:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-16:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 1
+    },
+    {
+      "case_id": "fictional-dev-17",
+      "input_hash": "0263b6c5ac1226631fe642ce8e2d6e306b01a60e480762b44b914b55c20bc016",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-17:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-17:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-17:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-17:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-18",
+      "input_hash": "94412ff4e51435f565ab673c4dbaf81659f45c8b67990ad36e71322a74b71a1c",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-18:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-18:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-18:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-18:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-19",
+      "input_hash": "83ee2f1c001aeac05c6e21e9b1cbb8be53e93a236c4693a96407eac3dca692f5",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-19:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-19:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-19:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-19:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 2
+    },
+    {
+      "case_id": "fictional-dev-20",
+      "input_hash": "edc120d2dae447a9e3a64a5b152045a4c68d079cf895864faa104d6625789062",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-20:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-20:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-20:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-20:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-21",
+      "input_hash": "4c14e07b3bbc9f24f1c608a1695ca0de695911c08e5c1b00167400d1b5256d79",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-21:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-21:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-21:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-21:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-22",
+      "input_hash": "0f9e261a08ce4f82814a433f73f1aab3617c6308724d68b85519a27450f43f09",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-22:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-22:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-22:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-22:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-23",
+      "input_hash": "28114e88589a2e915b2b86f230da57090676d7a49bb86a8750fd92e22d9d6474",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-23:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-23:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-23:claim:2",
+            "verdict": "insufficient",
+            "reason_code": "candidate_mismatch",
+            "reason": "该命题未满足引用归属或范围约束，未作为结论发布。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-23:claim:3",
+            "verdict": "insufficient",
+            "reason_code": "candidate_mismatch",
+            "reason": "该命题未满足引用归属或范围约束，未作为结论发布。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 7
+    },
+    {
+      "case_id": "fictional-dev-24",
+      "input_hash": "15ce30d61b9433dca8e25396260b4443c3b7ffdc4fbee1d2fd6a7dcc87d8b3b5",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-24:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-24:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-24:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-24:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-25",
+      "input_hash": "135643247741036a890a235f5a7df0e6992e976241ec7b63249a3f42a5fd4b1d",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-25:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-25:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-25:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-25:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-26",
+      "input_hash": "9d3f4164a47002d2a2eb2fd509e7ca96088b11b3468a4d76cee6131567c481ba",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-26:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-26:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-26:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-26:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-27",
+      "input_hash": "be0f54c4aee48bb7a7266ce2729820f875a9b725a2f77a274704ca97fba9b7b1",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-27:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-27:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-27:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-27:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 2
+    },
+    {
+      "case_id": "fictional-dev-28",
+      "input_hash": "29e98afe99291871cef33f1df7345c3a90975b681f42d2254d5616719c0d07b0",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-28:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-28:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-28:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-28:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-29",
+      "input_hash": "43f6cc2c9158f357532d6f4b351cab1330250aeb50e8edb7f4394d537146db9b",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-29:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-29:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-29:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-29:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-30",
+      "input_hash": "4a4483f5a00af97028302c0c4f5a86dc08a405f6e4befc531ddc52b2f4736f59",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-30:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-30:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-30:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-30:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-31",
+      "input_hash": "b2fb89742f5d419346b9519c9be437952c8f72f3862e11c8b0cdc6430addf1c8",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-31:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-31:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-31:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-31:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-dev-32",
+      "input_hash": "bb14aba529b666055cd154547d4d3dff47e7ed3734afbd171297314c8f72c56b",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-dev-32:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-32:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-32:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-dev-32:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-test-33",
+      "input_hash": "3c2274d12548123b3bf0e6c851a5d5ce878acbfc77fc59a08aad66ea1bee6f31",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-33:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-33:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-33:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-33:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 7
+    },
+    {
+      "case_id": "fictional-test-34",
+      "input_hash": "a0e2ea9e8d8ed8e3907eac6051549b768cc8167a84a4ac9dd879e0ac89ae3af1",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-34:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-34:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-34:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-34:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-test-35",
+      "input_hash": "64ea3f9987435d325695df998163fd665bbbfbb57f018f230db06b49dbcf8f4a",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-35:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-35:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-35:claim:2",
+            "verdict": "insufficient",
+            "reason_code": "candidate_mismatch",
+            "reason": "该命题未满足引用归属或范围约束，未作为结论发布。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-35:claim:3",
+            "verdict": "insufficient",
+            "reason_code": "candidate_mismatch",
+            "reason": "该命题未满足引用归属或范围约束，未作为结论发布。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 5
+    },
+    {
+      "case_id": "fictional-test-36",
+      "input_hash": "b325767151fcd4713d744539b39cab069f343adb0b086f1feb2e80fa92d8e7c3",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-36:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-36:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-36:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-36:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 3
+    },
+    {
+      "case_id": "fictional-test-37",
+      "input_hash": "3fb9710e3a97336e87e0f89617dab8aee713fb645fbcd749df9cb6c45b399918",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-37:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-37:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-37:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-37:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 1
+    },
+    {
+      "case_id": "fictional-test-38",
+      "input_hash": "d7466fb0e5b3a5878c91d6af3434221c93fb64f96e8ba6be526fd885b5494b6c",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-38:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-38:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-38:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-38:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 6
+    },
+    {
+      "case_id": "fictional-test-39",
+      "input_hash": "fa710d7a50ee4a60295a32607f8081a1d292a471c24d434d0cdce567912c91df",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-39:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-39:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-39:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-39:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-test-40",
+      "input_hash": "2c7832bd6e6ca8f084ef0d41e6517fa91e5cb0ed744871b5284ee7a3bc3fb37a",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-40:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-40:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-40:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-40:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-test-41",
+      "input_hash": "8d271fa831e8f5608b3c051cfc1ee1d01b471e76298e067c8d7cfb76ab405892",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-41:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-41:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-41:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-41:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-test-42",
+      "input_hash": "40b293ed42092d84e3a3a04132cb6befd6597c5cc4ed47d3548b043e54495811",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-42:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-42:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-42:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-42:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-test-43",
+      "input_hash": "f58f7949c7382ee10d2772d44cc809a3adf1b63bf443f2ad0d7c2e82dd0212c3",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-43:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-43:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-43:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-43:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-test-44",
+      "input_hash": "592a0bf437aa5c66a1a33b10e636e20727b3dbc12c25be20036e00f9e662c87e",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-44:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-44:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-44:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-44:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 1
+    },
+    {
+      "case_id": "fictional-test-45",
+      "input_hash": "293770d6b35cee8a887d873d7d5bcef74d60deb19fb1f076f81a38e35a26df44",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-45:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-45:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-45:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-45:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-test-46",
+      "input_hash": "19a299999cd427e2e4e4cf2f63b213536e01453e72f104212c5a1ef09e6968ab",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-46:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-46:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-46:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-46:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-test-47",
+      "input_hash": "5d4f910c06010e3b1b802c359344aa0401b8798739c1a63c9da131934c3c6fdb",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-47:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-47:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-47:claim:2",
+            "verdict": "insufficient",
+            "reason_code": "candidate_mismatch",
+            "reason": "该命题未满足引用归属或范围约束，未作为结论发布。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-47:claim:3",
+            "verdict": "insufficient",
+            "reason_code": "candidate_mismatch",
+            "reason": "该命题未满足引用归属或范围约束，未作为结论发布。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 2
+    },
+    {
+      "case_id": "fictional-test-48",
+      "input_hash": "234bdf0bc9c76f427032c400be08422c2b78840c45396d87265fa36fac98ec2f",
+      "module_key": "report_grounding",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "schema_version": "1.0",
+        "reviews": [
+          {
+            "claim_id": "fictional-test-48:claim:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-48:claim:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-48:claim:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "fictional-test-48:claim:3",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ]
+      },
+      "duration_ms": 3
+    },
+    {
+      "case_id": "fictional-score-dev-01",
+      "input_hash": "c4714a4ef62fe3e53db0c5f2fa812f5fd9840c07d23f8fdf56d935ca84ee35bd",
+      "module_key": "dimension_scoring",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "fact_claims": [],
+        "evidence_status": "sufficient",
+        "score": 0,
+        "confidence": "high",
+        "evidence_refs": [
+          "37b8b2d801362e959b2999a56302538f"
+        ],
+        "missing_items": [],
+        "conflicts": [],
+        "rationale": "当前虚构材料支持该状态。"
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-score-dev-02",
+      "input_hash": "096de47a25578a136e2ef0a6a4bb805edecaeb82d43e7f65f968f740c692d1b2",
+      "module_key": "dimension_scoring",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "fact_claims": [],
+        "evidence_status": "missing",
+        "score": null,
+        "confidence": "unavailable",
+        "evidence_refs": [],
+        "missing_items": [
+          "未提供交付记录"
+        ],
+        "conflicts": [],
+        "rationale": "当前虚构材料支持该状态。"
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-score-dev-03",
+      "input_hash": "a440a2af6fc9a892cc1dc52b5b557242eebc5b141d7bdb2c8efb4206c795de34",
+      "module_key": "dimension_scoring",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "fact_claims": [],
+        "evidence_status": "conflicting",
+        "score": null,
+        "confidence": "unavailable",
+        "evidence_refs": [
+          "75570fd92d77ac14afb1225d2dbf450c"
+        ],
+        "missing_items": [],
+        "conflicts": [
+          "同一时期职责矛盾"
+        ],
+        "rationale": "当前虚构材料支持该状态。"
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-score-dev-04",
+      "input_hash": "9177526cac2d528f1cafd1e2cd777f912e6f854e052137d3438ed85536953ed2",
+      "module_key": "dimension_scoring",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "fact_claims": [],
+        "evidence_status": "sufficient",
+        "score": 5,
+        "confidence": "high",
+        "evidence_refs": [
+          "dec9eba6824a31e02779b117b292d613"
+        ],
+        "missing_items": [],
+        "conflicts": [],
+        "rationale": "当前虚构材料支持该状态。"
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-score-dev-05",
+      "input_hash": "a283bae48d5566c5307907bc142f83e5916449e77b1db84241b991807ad13483",
+      "module_key": "dimension_scoring",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "fact_claims": [],
+        "evidence_status": "sufficient",
+        "score": 0,
+        "confidence": "high",
+        "evidence_refs": [
+          "569b966e75094a9ce49bed56ca0a0d62"
+        ],
+        "missing_items": [],
+        "conflicts": [],
+        "rationale": "当前虚构材料支持该状态。"
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-score-dev-06",
+      "input_hash": "151c4f1477c12e28665bc29691efea30b5ff08b74070796ee4e5879f76c255fd",
+      "module_key": "dimension_scoring",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "fact_claims": [],
+        "evidence_status": "missing",
+        "score": null,
+        "confidence": "unavailable",
+        "evidence_refs": [],
+        "missing_items": [
+          "未提供交付记录"
+        ],
+        "conflicts": [],
+        "rationale": "当前虚构材料支持该状态。"
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-score-dev-07",
+      "input_hash": "a46b65d7c10e8fa28e847bb65e578aaf8e26e2c1c7adf19dd27e0a678fe520b2",
+      "module_key": "dimension_scoring",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "fact_claims": [],
+        "evidence_status": "conflicting",
+        "score": null,
+        "confidence": "unavailable",
+        "evidence_refs": [
+          "10b22872e5da2841fb1902147a43f96e"
+        ],
+        "missing_items": [],
+        "conflicts": [
+          "同一时期职责矛盾"
+        ],
+        "rationale": "当前虚构材料支持该状态。"
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-score-dev-08",
+      "input_hash": "8a6aa5c475f6f4a37e11992d1a583d3868809d77a7c690d14ecde1ef4f15ceb4",
+      "module_key": "dimension_scoring",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "fact_claims": [],
+        "evidence_status": "sufficient",
+        "score": 5,
+        "confidence": "high",
+        "evidence_refs": [
+          "2c7b81b0640af2c25e7b0d6d0494d580"
+        ],
+        "missing_items": [],
+        "conflicts": [],
+        "rationale": "当前虚构材料支持该状态。"
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-score-test-09",
+      "input_hash": "03c87465f1791a5f90f23605c42ffac3427d2f2a6fef12f2ed1a6e8c54e40525",
+      "module_key": "dimension_scoring",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "fact_claims": [],
+        "evidence_status": "sufficient",
+        "score": 0,
+        "confidence": "high",
+        "evidence_refs": [
+          "a23cbe78cb9c29ca7d41a98b2893b0e6"
+        ],
+        "missing_items": [],
+        "conflicts": [],
+        "rationale": "当前虚构材料支持该状态。"
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-score-test-10",
+      "input_hash": "c4c84ee06a279b717233c7278087f6f0b1a21c9f4e09d0c77751eff056b2f583",
+      "module_key": "dimension_scoring",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "fact_claims": [],
+        "evidence_status": "missing",
+        "score": null,
+        "confidence": "unavailable",
+        "evidence_refs": [],
+        "missing_items": [
+          "未提供交付记录"
+        ],
+        "conflicts": [],
+        "rationale": "当前虚构材料支持该状态。"
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-score-test-11",
+      "input_hash": "94e89f166d346141affefa7fe13f25ca6ff8cb51bc029460fa014182097dde05",
+      "module_key": "dimension_scoring",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "fact_claims": [],
+        "evidence_status": "conflicting",
+        "score": null,
+        "confidence": "unavailable",
+        "evidence_refs": [
+          "07b680e664170b3f92fc1f95840183f3"
+        ],
+        "missing_items": [],
+        "conflicts": [
+          "同一时期职责矛盾"
+        ],
+        "rationale": "当前虚构材料支持该状态。"
+      },
+      "duration_ms": 0
+    },
+    {
+      "case_id": "fictional-score-test-12",
+      "input_hash": "c8861423bb1c8b4e1eb6312392cea760d0bf4ed4d2916d3436be4486b2c1011c",
+      "module_key": "dimension_scoring",
+      "status": "completed",
+      "error_type": null,
+      "output": {
+        "fact_claims": [],
+        "evidence_status": "sufficient",
+        "score": 5,
+        "confidence": "high",
+        "evidence_refs": [
+          "4712d065bca2ffe2ef5902112dad98ae"
+        ],
+        "missing_items": [],
+        "conflicts": [],
+        "rationale": "当前虚构材料支持该状态。"
+      },
+      "duration_ms": 0
+    }
+  ],
+  "quality_metrics": {
+    "counts": {
+      "unconfirmed": 60
+    },
+    "complete": false,
+    "metrics": {
+      "score_eligibility_agreement": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "unavailable_reason": "no_applicable_samples"
+      },
+      "published_claim_support": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "unavailable_reason": "no_applicable_samples"
+      },
+      "unsupported_claim_blocking": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "unavailable_reason": "no_applicable_samples"
+      },
+      "supported_claim_false_blocking": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "unavailable_reason": "no_applicable_samples"
+      },
+      "reference_validation": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "unavailable_reason": "no_applicable_samples"
+      }
+    }
+  },
+  "provisional_diagnostics": {
+    "counts": {
+      "requested": 60,
+      "completed": 12,
+      "execution_failed": 48,
+      "references_submitted": 208,
+      "references_valid": 200,
+      "published": 0,
+      "illegal_reference_published": 0,
+      "published_supported": 0,
+      "supported": 96,
+      "false_blocks": 96,
+      "unsupported": 96,
+      "unsafe_blocks": 96,
+      "review_errors": 184,
+      "dimensions": 12,
+      "dimensions_correct": 12
+    },
+    "complete": false,
+    "metrics": {
+      "score_eligibility_agreement": {
+        "numerator": 12,
+        "denominator": 12,
+        "value": 1.0,
+        "unavailable_reason": null
+      },
+      "published_claim_support": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "unavailable_reason": "no_applicable_samples"
+      },
+      "unsupported_claim_blocking": {
+        "numerator": 96,
+        "denominator": 96,
+        "value": 1.0,
+        "unavailable_reason": null
+      },
+      "supported_claim_false_blocking": {
+        "numerator": 96,
+        "denominator": 96,
+        "value": 1.0,
+        "unavailable_reason": null
+      },
+      "reference_validation": {
+        "numerator": 200,
+        "denominator": 208,
+        "value": 0.9615384615384616,
+        "unavailable_reason": null
+      }
+    }
+  },
+  "acceptance": "incomplete"
+}
