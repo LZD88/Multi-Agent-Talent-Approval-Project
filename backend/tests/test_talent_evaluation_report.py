@@ -357,9 +357,10 @@ def test_report_graph_scores_aggregates_ranks_and_renders_trusted_citations():
         )
 
     def consistency_reviewer(assessments, evidence):
-        assert len(assessments) == 2
         if assessments[0].candidate_id == "C002":
+            assert len(assessments) == 1
             return ConsistencyReview()
+        assert len(assessments) == 2
         return ConsistencyReview(
             issues=[
                 ConsistencyIssue(
@@ -371,7 +372,9 @@ def test_report_graph_scores_aggregates_ranks_and_renders_trusted_citations():
             ]
         )
 
+    from tests_grounding_support import supported_reviewer
     graph = build_talent_evaluation_report_graph(
+        claim_reviewer=supported_reviewer,
         dimension_scorer=scorer,
         consistency_reviewer=consistency_reviewer,
         report_writer=report_writer,
@@ -509,6 +512,66 @@ def test_structured_dimension_scorer_uses_anchors_and_evidence_without_counter_f
     assert result == expected
     assert "score_anchors" in model.messages[1][1]
     assert "主导 RAG 项目" in model.messages[1][1]
+
+
+@pytest.mark.parametrize("failure", ["missing_items", "rationale_length", "unknown_ref"])
+def test_dimension_scorer_repairs_invalid_model_output_once(failure):
+    from app.talent_evaluation_dispatch import BranchEvidenceDraft
+    from app.talent_evaluation_report import DimensionJudgement, EvidenceItem, build_structured_dimension_scorer
+
+    class Model:
+        calls = 0
+
+        def with_structured_output(self, schema, **kwargs):
+            return self
+
+        def invoke(self, messages):
+            self.calls += 1
+            valid = dict(evidence_status="partial", score=3, confidence="medium",
+                         evidence_refs=["E1"], rationale="有参与证据，完整职责仍需核实")
+            if self.calls == 1:
+                if failure == "missing_items":
+                    valid.update(evidence_status="missing", score=None)
+                elif failure == "rationale_length":
+                    valid["rationale"] = "过长" * 501
+                else:
+                    valid["evidence_refs"] = ["E999"]
+            else:
+                assert "校验" in messages[-1][1]
+                assert "主导项目上线" in messages[1][1]
+            return DimensionJudgement.model_validate(valid)
+
+    model = Model()
+    branch = BranchEvidenceDraft(task_id="C001:1", candidate_id="C001", dimension_number=1,
+                                execution_status="succeeded", requirements=[_branch_requirement("chunk-1")])
+    evidence = EvidenceItem(ref_id="chunk-1", model_ref="E1", candidate_id="C001",
+                            quote="主导项目上线", source_label="简历", citation_url="/api/evidence/citations/chunk-1")
+    result = build_structured_dimension_scorer(lambda: model)(_dimension("rag_delivery", 100), branch, [evidence])
+    assert model.calls == 2
+    assert result.score == 3 and result.evidence_refs == ["chunk-1"]
+
+
+def test_invalid_dimension_does_not_abort_other_candidates_or_receive_a_score():
+    from app.talent_evaluation_report import DimensionJudgement, _receive_input, _score_dimensions
+
+    branches = [dict(task_id=f"{candidate}:1", candidate_id=candidate, dimension_number=1,
+                     execution_status="succeeded", requirements=[_branch_requirement(f"{candidate}-chunk")])
+                for candidate in ("C001", "C002")]
+    state = {"dimensions": [_dimension("rag_delivery", 100).model_dump()], "branch_results": branches}
+    state.update(_receive_input(state))
+
+    def scorer(dimension, branch, evidence):
+        if branch.candidate_id == "C002":
+            raise ValueError("unknown evidence ref")
+        return DimensionJudgement(evidence_status="sufficient", score=5, confidence="high",
+                                  evidence_refs=["C001-chunk"], rationale="有可验证交付事实")
+
+    result = _score_dimensions(scorer)(state)["dimension_assessments"]
+    assert result[0]["score"] == 5
+    assert result[1]["score"] is None and result[1]["evidence_status"] == "failed"
+    assert result[1]["evidence_refs"] == ["C002-chunk"]
+    assert result[1]["missing_items"] == []
+    assert "不纳入评分" in result[1]["rationale"]
 
 
 def test_structured_dimension_scorer_uses_short_evidence_refs_and_restores_chunk_ids():
@@ -817,6 +880,41 @@ def test_consistency_issue_lowers_confidence_without_rewriting_scores():
     assert result[0].consistency_issues == [issue]
 
 
+def test_consistency_reviewer_hides_unscored_sources_and_retries_wrong_refs():
+    import json
+    from app.talent_evaluation_report import (
+        DimensionAssessment, EvidenceItem, build_structured_consistency_reviewer,
+    )
+
+    class Model:
+        calls = 0
+
+        def with_structured_output(self, schema, **kwargs):
+            return self
+
+        def invoke(self, messages):
+            self.calls += 1
+            payload = json.loads(messages[1][1])
+            assert len(payload["evidence_items"]) == 1
+            assert "unscored-marker" not in messages[1][1]
+            if self.calls == 1:
+                return {"issues": [{"candidate_id": "C001", "dimension_numbers": [1, 2],
+                                    "evidence_refs": ["E999"], "message": "冲突"}]}
+            assert "校验" in messages[-1][1]
+            return {"issues": []}
+
+    assessments = [DimensionAssessment(task_id=f"C001:{n}", candidate_id="C001", dimension_number=n,
+                    evidence_status="partial", score=3, confidence="medium", evidence_refs=["chunk-1"],
+                    rationale="有参与证据") for n in (1, 2)]
+    evidence = [EvidenceItem(ref_id="chunk-1", model_ref="E1", candidate_id="C001", quote="参与项目",
+                            source_label="简历", citation_url="/api/evidence/citations/chunk-1"),
+                EvidenceItem(ref_id="chunk-2", model_ref="E2", candidate_id="C001", quote="unscored-marker",
+                            source_label="简历", citation_url="/api/evidence/citations/chunk-2")]
+    model = Model()
+    review = build_structured_consistency_reviewer(lambda: model)(assessments, evidence)
+    assert not review.issues and model.calls == 2
+
+
 def test_structured_consistency_reviewer_uses_only_scored_evidence():
     from app.talent_evaluation_report import (
         ConsistencyIssue,
@@ -1071,9 +1169,9 @@ def test_consistency_review_runs_once_per_candidate_concurrently():
                     "task_id": f"{candidate_id}:{dimension_number}",
                     "candidate_id": candidate_id,
                     "dimension_number": dimension_number,
-                    "evidence_status": "missing",
-                    "score": None,
-                    "confidence": "unavailable",
+                    "evidence_status": "sufficient",
+                    "score": 3,
+                    "confidence": "medium",
                     "evidence_refs": [],
                     "missing_items": ["缺少材料"],
                     "conflicts": [],
@@ -1189,6 +1287,7 @@ def test_report_runtime_builds_graph_with_structured_model_components(monkeypatc
         "report_writer",
         "max_scoring_concurrency",
         "max_consistency_concurrency",
+        "claim_reviewer",
     }
     assert callable(report_kwargs["dimension_scorer"])
     assert callable(report_kwargs["consistency_reviewer"])
@@ -1248,7 +1347,7 @@ def test_report_graph_derives_evidence_items_and_missing_information_from_branch
                                     "chunk_id": "chunk-1",
                                     "quote": "主导 RAG 方案上线",
                                     "quote_start": 0,
-                                    "quote_end": 10,
+                                    "quote_end": len("主导 RAG 方案上线"),
                                     "source_label": "项目复盘",
                                 }
                             ],
@@ -1294,7 +1393,9 @@ def test_report_graph_derives_evidence_items_and_missing_information_from_branch
             ],
         )
 
+    from tests_grounding_support import supported_reviewer
     graph = build_talent_evaluation_report_graph(
+        claim_reviewer=supported_reviewer,
         dimension_scorer=scorer,
         report_writer=writer,
     )
@@ -1306,4 +1407,4 @@ def test_report_graph_derives_evidence_items_and_missing_information_from_branch
     )
 
     assert result["evidence_items"][0]["ref_id"] == "chunk-1"
-    assert "[E1](/api/evidence/citations/chunk-1?quote_start=0&quote_end=10)" in result["report"]
+    assert "[E1](/api/evidence/citations/chunk-1?quote_start=0&quote_end=11)" in result["report"]

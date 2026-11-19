@@ -151,7 +151,14 @@ def build_report_runtime_graph():
     model = get_chat_model(temperature=0)
     if model is None:
         raise RuntimeError("模型未配置，请先设置 CHAT_API_KEY、CHAT_BASE_URL 和 CHAT_MODEL")
+    from app.assessment_grounding import ClaimReviewer
+    from app.config import get_settings
+    from app.model_provider import get_grounding_model
+    settings = get_settings()
     runtime_graph = build_talent_evaluation_report_graph(
+        claim_reviewer=ClaimReviewer(get_grounding_model, attempts=settings.grounding_max_attempts,
+            request_timeout=settings.grounding_request_timeout, batch_timeout=settings.grounding_batch_timeout,
+            concurrency=settings.grounding_concurrency),
         dimension_scorer=build_structured_dimension_scorer(lambda: model),
         consistency_reviewer=build_structured_consistency_reviewer(lambda: model),
         report_writer=build_structured_report_writer(lambda: model),

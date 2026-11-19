@@ -10,6 +10,9 @@ from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field, ValidationError
 from typing_extensions import TypedDict
 from app.assessment_grounding import source_ref
+from langgraph.runtime import Runtime
+from app.talent_decision_graph import DecisionContext
+from app.evaluation_case import capture_call, EvaluationModule
 
 from app.talent_evaluation_dispatch import BranchEvidenceDraft, EvaluationDimension
 
@@ -40,9 +43,19 @@ class DimensionAssessment(BaseModel):
     missing_items: list[str] = Field(default_factory=list)
     conflicts: list[str] = Field(default_factory=list)
     rationale: str = Field(min_length=1, max_length=1000)
+    reason_code: str = ""
+    fact_claims: list[dict[str, Any]] = Field(default_factory=list)
+
+
+
+class ScoringFact(BaseModel):
+    text: str = Field(min_length=1, max_length=500, description="限定于具体项目和时期的单个评分事实")
+    evidence_refs: list[str] = Field(min_length=1, max_length=8, description="直接支持本事实的输入证据编号")
+
 
 
 class DimensionJudgement(BaseModel):
+    fact_claims: list[ScoringFact] = Field(default_factory=list, max_length=4, description="本次评分依据的最多四个事实，必须包含引用")
     evidence_status: Literal["sufficient", "partial", "missing", "conflicting"] = Field(
         description=(
             "当前维度的证据状态：sufficient 表示证据充分，partial 表示可评分但仍有缺失，"
@@ -75,6 +88,7 @@ class DimensionJudgement(BaseModel):
         max_length=1000,
         description="结合评分锚点与证据事实说明评分或不可评分原因",
     )
+
 
 
 class ConsistencyIssue(BaseModel):
@@ -183,6 +197,13 @@ class ReportDraft(BaseModel):
 
 
 class TalentEvaluationReportState(TypedDict, total=False):
+    report_error: str
+    assessment_grounding: dict[str, Any]
+    grounding_claims: list[dict[str, Any]]
+    grounding_reviews: list[dict[str, Any]]
+    original_assessments: list[dict[str, Any]]
+    verification: dict[str, Any]
+    assessment_context: dict[str, Any]
     dimensions: list[dict[str, Any]]
     branch_results: list[dict[str, Any]]
     evidence_items: list[dict[str, Any]]
@@ -194,6 +215,7 @@ class TalentEvaluationReportState(TypedDict, total=False):
     report: str
     status: str
     errors: list[str]
+
 
 
 DimensionScorer = Callable[
@@ -343,9 +365,14 @@ DIMENSION_SCORER_PROMPT = """你负责依据单个评估维度的定义、证据
 有完整可评分证据时使用 sufficient，存在可评分事实但仍有缺失时使用 partial。
 材料无法支持评分时使用 missing，同一事实范围存在互斥说法时使用 conflicting。
 missing 和 conflicting 的 score 必须为 null，材料缺失不能解释为 0 分。
+missing 必须填写至少一条 missing_items，conflicting 必须填写至少一条 conflicts。
+sufficient 和 partial 必须填写 0 到 5 的 score，并至少保留一条 evidence_refs。
 score 必须对照输入维度的评分锚点，rationale 需要说明证据事实与锚点的对应关系。
+rationale 使用简洁中文，不超过 1000 字符。
+fact_claims 列出评分所依赖的事实命题，每条用 text 与 evidence_refs 表示，最多四条，不得遗漏关键评分依据。
 missing_items 只记录影响当前判断的缺失信息，conflicts 只记录已由证据证明的互斥事实。
 """.strip()
+
 
 
 def build_structured_dimension_scorer(
@@ -367,23 +394,30 @@ def build_structured_dimension_scorer(
             "branch": _branch_model_payload(branch, chunk_to_model),
             "evidence_items": safe_evidence,
         }
-        result = model.with_structured_output(DimensionJudgement, method="function_calling").invoke(
-            [
-                ("system", DIMENSION_SCORER_PROMPT),
-                ("user", json.dumps(payload, ensure_ascii=False)),
-            ]
-        )
-        judgement = DimensionJudgement.model_validate(result)
-        return judgement.model_copy(
-            update={
-                "evidence_refs": _restore_evidence_refs(
-                    judgement.evidence_refs,
-                    model_to_chunk,
-                )
-            }
-        )
+        messages = [
+            ("system", DIMENSION_SCORER_PROMPT),
+            ("user", json.dumps(payload, ensure_ascii=False)),
+        ]
+        scorer = model.with_structured_output(DimensionJudgement, method="function_calling")
+        for attempt in range(2):
+            try:
+                judgement = DimensionJudgement.model_validate(scorer.invoke(messages))
+                judgement = judgement.model_copy(update={
+                    "evidence_refs": _restore_evidence_refs(judgement.evidence_refs, model_to_chunk),
+                    "fact_claims": [fact.model_copy(update={"evidence_refs": _restore_evidence_refs(fact.evidence_refs, model_to_chunk)}) for fact in judgement.fact_claims],
+                })
+                validate_dimension_judgement(branch, judgement)
+                return judgement
+            except ValueError as exc:
+                if attempt:
+                    raise
+                detail = (json.dumps(exc.errors(include_input=False, include_url=False, include_context=False), ensure_ascii=False)
+                          if isinstance(exc, ValidationError) else str(exc))
+                messages.append(("user", "上次评分未通过校验，请仅修正输出并保留全部原文约束。" + detail))
+        raise AssertionError("评分重试未返回结果")
 
     return score
+
 
 
 REPORT_WRITER_PROMPT = """你负责将已排序的候选人评估结果组织为结构化报告草稿。
@@ -490,6 +524,8 @@ def build_structured_consistency_reviewer(
         model = model_provider()
         if model is None:
             raise RuntimeError("一致性检查模型未配置")
+        scored_refs = {ref for assessment in assessments for ref in assessment.evidence_refs}
+        evidence_items = [item for item in evidence_items if item.ref_id in scored_refs]
         safe_evidence, chunk_to_model, model_to_chunk = _model_evidence_payload(
             evidence_items
         )
@@ -505,30 +541,30 @@ def build_structured_consistency_reviewer(
             "dimension_assessments": assessment_payloads,
             "evidence_items": safe_evidence,
         }
-        result = model.with_structured_output(ConsistencyReview, method="function_calling").invoke(
-            [
-                ("system", CONSISTENCY_REVIEW_PROMPT),
-                ("user", json.dumps(payload, ensure_ascii=False)),
-            ]
-        )
-        review = ConsistencyReview.model_validate(result)
-        return review.model_copy(
-            update={
-                "issues": [
-                    issue.model_copy(
-                        update={
-                            "evidence_refs": _restore_evidence_refs(
-                                issue.evidence_refs,
-                                model_to_chunk,
-                            )
-                        }
-                    )
+        messages = [
+            ("system", CONSISTENCY_REVIEW_PROMPT),
+            ("user", json.dumps(payload, ensure_ascii=False)),
+        ]
+        reviewer = model.with_structured_output(ConsistencyReview, method="function_calling")
+        for attempt in range(2):
+            try:
+                review = ConsistencyReview.model_validate(reviewer.invoke(messages))
+                review = review.model_copy(update={"issues": [
+                    issue.model_copy(update={"evidence_refs": _restore_evidence_refs(issue.evidence_refs, model_to_chunk)})
                     for issue in review.issues
-                ]
-            }
-        )
+                ]})
+                validate_consistency_review(review, assessments, evidence_items)
+                return review
+            except ValueError as exc:
+                if attempt:
+                    raise
+                detail = (json.dumps(exc.errors(include_input=False, include_url=False, include_context=False), ensure_ascii=False)
+                          if isinstance(exc, ValidationError) else str(exc))
+                messages.append(("user", "上次一致性检查未通过校验，请保留原文约束并修正：" + detail))
+        raise AssertionError("一致性检查重试未返回结果")
 
     return review
+
 
 
 def validate_dimension_judgement(
@@ -540,6 +576,8 @@ def validate_dimension_judgement(
     )
     if unavailable_refs:
         raise ValueError(f"评分结果引用了未提供的证据: {', '.join(unavailable_refs)}")
+    if any(not set(fact.evidence_refs).issubset(judgement.evidence_refs) for fact in judgement.fact_claims):
+        raise ValueError("评分事实引用不属于该评分已使用的证据")
     if judgement.evidence_status in {"missing", "conflicting"} and judgement.score is not None:
         raise ValueError(f"{judgement.evidence_status} 状态不允许设置分数")
     if judgement.evidence_status in {"sufficient", "partial"} and judgement.score is None:
@@ -550,6 +588,7 @@ def validate_dimension_judgement(
         raise ValueError("missing 状态必须说明缺失信息")
     if judgement.evidence_status == "conflicting" and not judgement.conflicts:
         raise ValueError("conflicting 状态必须说明冲突内容")
+
 
 
 def aggregate_candidate_assessments(
@@ -704,7 +743,8 @@ def _score_dimensions(
     if max_concurrency < 1:
         raise ValueError("max_concurrency 必须大于 0")
 
-    def score_dimensions(state: TalentEvaluationReportState) -> dict[str, Any]:
+    def score_dimensions(state: TalentEvaluationReportState, runtime: Runtime[DecisionContext] = None) -> dict[str, Any]:
+        context = runtime.context if runtime else None
         dimensions = {
             dimension_number: EvaluationDimension.model_validate(raw)
             for dimension_number, raw in enumerate(state["dimensions"], start=1)
@@ -759,12 +799,33 @@ def _score_dimensions(
                 )
 
             branch_evidence = [evidence_by_id[ref_id] for ref_id in evidence_refs]
-            judgement = dimension_scorer(
-                dimensions[branch.dimension_number],
-                branch,
-                branch_evidence,
-            )
-            validate_dimension_judgement(branch, judgement)
+            try:
+                judgement = capture_call(lambda: dimension_scorer(dimensions[branch.dimension_number], branch, branch_evidence),
+                    context=context, module_key=EvaluationModule.DIMENSION_SCORING,
+                    input_payload={"schema_version": "1.0", "attempt": 1, "candidate_id": branch.candidate_id, "dimension_number": branch.dimension_number,
+                        "dimension": dimensions[branch.dimension_number].model_dump(mode="json"),
+                        "branch": branch.model_dump(mode="json"),
+                        "evidence_items": [item.model_dump(mode="json") for item in branch_evidence]},
+                    version_snapshot={"prompt": "dimension-scorer-grounded-v1"})
+                validate_dimension_judgement(branch, judgement)
+            except Exception as exc:
+                logger.warning(
+                    "dimension_scoring_rejected task_id=%s error_type=%s",
+                    branch.task_id,
+                    type(exc).__name__,
+                )
+                return DimensionAssessment(
+                    task_id=branch.task_id,
+                    candidate_id=branch.candidate_id,
+                    dimension_number=branch.dimension_number,
+                    evidence_status="failed",
+                    score=None,
+                    confidence="unavailable",
+                    evidence_refs=evidence_refs,
+                    missing_items=[],
+                    conflicts=[],
+                    rationale="模型评分结果未通过证据校验，当前维度不纳入评分。",
+                )
             _log_node(
                 "score_dimensions",
                 "scoring",
@@ -772,7 +833,7 @@ def _score_dimensions(
                     "task_id": branch.task_id,
                     "branch_status": branch.execution_status,
                     "evidence_refs": evidence_refs,
-                    "judgement": judgement.model_dump(mode="json"),
+                    "score": judgement.score,
                 },
             )
             return DimensionAssessment(
@@ -788,6 +849,7 @@ def _score_dimensions(
                 ),
                 conflicts=judgement.conflicts,
                 rationale=judgement.rationale,
+                fact_claims=[row.model_dump(mode="json") for row in judgement.fact_claims],
             )
 
         branches = [
@@ -816,9 +878,12 @@ def _score_dimensions(
         return {
             "dimension_assessments": [item.model_dump(mode="json") for item in assessments],
             "status": "dimensions_scored",
+            "assessment_context": ({"tenant_id": context.tenant_id, "permission_scopes": list(context.permission_scopes),
+                "run_id": context.run_id, "conversation_id": context.conversation_id, "turn_no": context.turn_no} if context else {}),
         }
 
     return score_dimensions
+
 
 
 def validate_consistency_review(
@@ -888,6 +953,8 @@ def _review_consistency(
         )
         assessments_by_candidate: dict[str, list[DimensionAssessment]] = {}
         for assessment in assessments:
+            if assessment.score is None:
+                continue
             assessments_by_candidate.setdefault(
                 assessment.candidate_id,
                 [],
@@ -914,6 +981,8 @@ def _review_consistency(
             return review.issues
 
         candidate_groups = list(assessments_by_candidate.items())
+        if not candidate_groups:
+            return {"consistency_issues": [], "status": "consistency_reviewed"}
         worker_count = min(max_concurrency, len(candidate_groups))
         with ThreadPoolExecutor(max_workers=worker_count) as executor:
             issues_by_candidate = list(
@@ -943,6 +1012,7 @@ def _review_consistency(
         }
 
     return review_consistency
+
 
 
 def _aggregate_candidates(state: TalentEvaluationReportState) -> dict[str, Any]:
@@ -1137,11 +1207,14 @@ def build_talent_evaluation_report_graph(
     report_writer: ReportWriter,
     max_scoring_concurrency: int = 12,
     max_consistency_concurrency: int = 12,
+    claim_reviewer=None,
 ):
     reviewer = consistency_reviewer or (
         lambda assessments, evidence_items: ConsistencyReview()
     )
-    builder = StateGraph(TalentEvaluationReportState)
+    from app.assessment_graph_nodes import make_grounding_nodes
+    ground_dimensions = make_grounding_nodes(claim_reviewer)
+    builder = StateGraph(TalentEvaluationReportState, context_schema=DecisionContext)
     builder.add_node("receive_input", _receive_input)
     builder.add_node(
         "score_dimensions",
@@ -1159,12 +1232,15 @@ def build_talent_evaluation_report_graph(
     )
     builder.add_node("aggregate_candidates", _aggregate_candidates)
     builder.add_node("compose_report", _compose_report(report_writer))
+    builder.add_node("ground_dimension_assessments", ground_dimensions)
     builder.add_node("validate_report", _validate_and_render_report)
     builder.add_edge(START, "receive_input")
     builder.add_edge("receive_input", "score_dimensions")
-    builder.add_edge("score_dimensions", "review_consistency")
+    builder.add_edge("score_dimensions", "ground_dimension_assessments")
+    builder.add_edge("ground_dimension_assessments", "review_consistency")
     builder.add_edge("review_consistency", "aggregate_candidates")
     builder.add_edge("aggregate_candidates", "compose_report")
     builder.add_edge("compose_report", "validate_report")
     builder.add_edge("validate_report", END)
     return builder.compile()
+
