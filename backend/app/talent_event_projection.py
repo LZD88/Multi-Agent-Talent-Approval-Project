@@ -19,6 +19,9 @@ STEP_BY_START_NODE = {
         "检索证据并并行评估",
     ),
     "score_dimensions": ("score_candidates", "workflow", "证据质量门禁与排名"),
+    "ground_dimension_assessments": ("score_candidates", "workflow", "证据质量门禁与排名"),
+    "ground_report_claims": ("compose_report", "workflow", "合成可引用评估报告"),
+    "build_verification_checklist": ("compose_report", "workflow", "合成可引用评估报告"),
     "compose_report": ("compose_report", "workflow", "合成可引用评估报告"),
 }
 
@@ -120,6 +123,9 @@ def _project_step_output(node: str, update: dict[str, Any]) -> dict[str, Any]:
     elif node == "validate_report":
         report = update.get("report")
         output["report_chars"] = len(report) if isinstance(report, str) else 0
+        snapshot = update.get("assessment_grounding") or {}
+        output["grounding_status"] = snapshot.get("status")
+        output["grounding_summary"] = snapshot.get("summary", {})
     return output
 
 
@@ -178,7 +184,7 @@ def project_graph_update(
             }
         return [{"type": "hitl.required", "data": data}]
 
-    if node == "generate_dimensions" and isinstance(update, dict):
+    if node in {"generate_dimensions", "ground_dimension_assessments", "ground_report_claims", "build_verification_checklist"} and isinstance(update, dict):
         step_id, kind, title = STEP_BY_START_NODE[node]
         return [
             {

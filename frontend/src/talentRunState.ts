@@ -49,6 +49,7 @@ export type ConversationTurn = {
   status: RunView["status"];
   steps: RunStep[];
   report: string;
+  assessmentGrounding?: Record<string, unknown> | null;
   citations: Citation[];
   traceId: string;
   error: string;
@@ -63,6 +64,7 @@ export type RunView = {
   steps: RunStep[];
   interrupt: Interrupt | null;
   report: string;
+  assessmentGrounding?: Record<string, unknown> | null;
   citations: Citation[];
   traceId: string;
   error: string;
@@ -79,6 +81,7 @@ export type RunHistoryDetail = {
   message: string;
   status: RunView["status"];
   report: string;
+  assessment_grounding?: Record<string, unknown> | null;
   citations: Citation[];
   trace_id: string;
   error?: string;
@@ -100,6 +103,7 @@ export type RunHistoryDetail = {
     message: string;
     status: RunView["status"];
     report: string;
+    assessment_grounding?: Record<string, unknown> | null;
     citations: Citation[];
     trace_id: string;
     error?: string;
@@ -157,6 +161,7 @@ export function historyDetailToRunView(detail: RunHistoryDetail): RunView {
     steps: restoreSteps(detail.steps),
     interrupt: null,
     report: detail.report,
+    assessmentGrounding: detail.assessment_grounding,
     citations: detail.citations,
     traceId: detail.trace_id,
     error: detail.error || "",
@@ -173,6 +178,7 @@ export function historyDetailToRunView(detail: RunHistoryDetail): RunView {
       status: turn.status,
       steps: restoreSteps(turn.steps),
       report: turn.report,
+      assessmentGrounding: turn.assessment_grounding,
       citations: turn.citations,
       traceId: turn.trace_id,
       error: turn.error || "",
@@ -279,6 +285,7 @@ function snapshotCurrentTurn(
           status,
           steps: state.steps,
           report: state.report,
+          assessmentGrounding: state.assessmentGrounding,
           citations: state.citations,
           traceId: state.traceId,
           error: state.error,
@@ -317,6 +324,12 @@ export function reduceRunEvent(state: RunView, event: RunEvent): RunView {
     return {
       ...base,
       status: "running",
+      report: "",
+      citations: [],
+      assessmentGrounding: null,
+      traceId: "",
+      error: "",
+      steps: [],
       conversationId: text(event.data.conversation_id),
       turnNo,
       conversationTurns: [...priorTurns, turn].sort(
@@ -368,6 +381,7 @@ export function reduceRunEvent(state: RunView, event: RunEvent): RunView {
     return {
       ...base,
       report: text(event.data.markdown),
+      assessmentGrounding: object(event.data.assessment_grounding) ?? null,
       citations: Array.isArray(event.data.citations)
         ? (event.data.citations as Citation[])
         : [],

@@ -102,6 +102,7 @@ class TalentRunRecord(Base):
     message: Mapped[str] = mapped_column(Text)
     status: Mapped[str] = mapped_column(String(32), index=True)
     report: Mapped[str | None] = mapped_column(Text)
+    assessment_grounding: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     citations: Mapped[list[dict]] = mapped_column(JSON, default=list)
     trace_id: Mapped[str | None] = mapped_column(String(128), index=True)
     error_message: Mapped[str | None] = mapped_column(Text)

@@ -235,6 +235,7 @@ def test_conversation_projection_keeps_title_status_updated_at_and_turn_order():
             "message": "筛选上海地区、5 年以上经验的候选人",
             "status": "completed",
             "report": "# 首轮报告",
+            "assessment_grounding": None,
             "citations": [{"ref": "E1", "quote": "首轮证据"}],
             "trace_id": "trace-run-1",
             "error": "",
@@ -261,6 +262,7 @@ def test_conversation_projection_keeps_title_status_updated_at_and_turn_order():
             "message": "地区要求删除",
             "status": "completed",
             "report": "",
+            "assessment_grounding": None,
             "citations": [],
             "trace_id": "",
             "error": "",
@@ -329,3 +331,21 @@ def test_legacy_provider_quota_error_is_sanitized_when_reading_history():
     assert "免费额度已用完" in detail["error"]
     assert "secret-request-id" not in detail["error"]
 
+
+def test_billing_error_is_actionable_without_provider_request_details():
+    from app.talent_run_stream import public_run_error
+    message = public_run_error(RuntimeError('400 Arrearage overdue-payment request_id=private-provider-id'))
+    assert '欠费' in message and '充值' in message
+    assert 'private-provider-id' not in message
+
+
+
+def test_grounding_snapshot_persists_atomically_with_report_and_conversation_turn():
+    store = _store()
+    store.record(_event(1, "run.started", {"message": "虚构评估"}, "2026-11-19T01:00:00+00:00"))
+    snapshot = {"schema_version": "1.0", "status": "degraded", "summary": {"errors": 1}}
+    store.record(_event(2, "report.completed", {"markdown": "报告", "citations": [], "assessment_grounding": snapshot}, "2026-11-19T01:00:01+00:00"))
+    restored = store.get_run("run-1")
+    assert restored["assessment_grounding"] == snapshot
+    assert restored["conversation_turns"][0]["assessment_grounding"] == snapshot
+    assert restored["report"] == "报告"

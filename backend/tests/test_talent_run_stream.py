@@ -30,9 +30,10 @@ class StreamingState(TypedDict, total=False):
     ranking: list[str]
     report: str
     errors: list[str]
+    assessment_grounding: dict[str, Any]
 
 
-def _streaming_graph(*, require_job_selection: bool = False, slow: bool = False):
+def _streaming_graph(*, require_job_selection: bool = False, slow: bool = False, snapshot=None):
     builder = StateGraph(StreamingState)
 
     async def interpret_input(state: StreamingState) -> dict[str, Any]:
@@ -91,6 +92,7 @@ def _streaming_graph(*, require_job_selection: bool = False, slow: bool = False)
     def validate_report(state: StreamingState) -> dict[str, Any]:
         return {
             "report": f"# {state['request_text']}\n\nC001 匹配 [E1](/api/evidence/citations/chunk-1)",
+            "assessment_grounding": snapshot or {},
             "status": "completed",
         }
 
@@ -363,3 +365,14 @@ async def test_cancel_marks_run_cancelled_and_is_idempotent():
     assert manager.get_run(run.run_id).status == RunStatus.CANCELLED
     assert [event.type for event in events].count("run.cancelled") == 1
     assert events[-1].type == "run.cancelled"
+
+
+@pytest.mark.anyio
+async def test_report_event_keeps_snapshot_separate_from_completed_run_status():
+    snapshot = {"schema_version": "1.0", "status": "degraded", "summary": {"errors": 1}}
+    manager = _manager(_streaming_graph(snapshot=snapshot))
+    run = await manager.create_run("虚构快照传输测试")
+    await _wait_for_status(manager, run.run_id, RunStatus.COMPLETED)
+    event = next(e for e in manager.events_since(run.run_id, 0) if e.type == 'report.completed')
+    assert event.data['assessment_grounding'] == snapshot
+    assert event.data['markdown'] and event.data['citations']

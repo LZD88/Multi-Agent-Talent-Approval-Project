@@ -91,6 +91,7 @@ class SqlTalentRunHistoryStore:
                 self._set_active_step_status(session, run.run_id, "running", occurred_at)
             elif event.type == "report.completed":
                 run.report = str(event.data.get("markdown", ""))
+                run.assessment_grounding = event.data.get("assessment_grounding")
                 run.citations = list(event.data.get("citations", []))
                 run.trace_id = str(event.data.get("trace_id", "")) or None
             elif event.type in {"run.completed", "run.cancelled", "run.failed"}:
@@ -265,6 +266,7 @@ class SqlTalentRunHistoryStore:
             return {
                 **self._run_summary(run),
                 "report": run.report or "",
+                "assessment_grounding": run.assessment_grounding,
                 "citations": list(run.citations or []),
                 "trace_id": run.trace_id or "",
                 "error": public_run_error(RuntimeError(run.error_message)) if run.error_message else "",
@@ -302,6 +304,7 @@ class SqlTalentRunHistoryStore:
             "message": run.message,
             "status": run.status,
             "report": run.report or "",
+            "assessment_grounding": run.assessment_grounding,
             "citations": list(run.citations or []),
             "trace_id": run.trace_id or "",
             "error": public_run_error(RuntimeError(run.error_message)) if run.error_message else "",

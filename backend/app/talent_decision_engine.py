@@ -16,6 +16,7 @@ class TalentDecisionEngineInput(TypedDict, total=False):
 
 
 class TalentDecisionEngineOutput(TypedDict, total=False):
+    assessment_grounding: dict[str, Any]
     messages: list[AnyMessage]
     revision_action: str
     revision_summary: str
@@ -28,6 +29,7 @@ class TalentDecisionEngineOutput(TypedDict, total=False):
 
 
 class TalentDecisionEngineState(TypedDict, total=False):
+    assessment_grounding: dict[str, Any]
     messages: Annotated[list[AnyMessage], add_messages]
     request_text: str
     revision_action: str
@@ -79,6 +81,7 @@ def _begin_turn(state: TalentDecisionEngineState) -> dict[str, Any]:
     """返回局部更新：未返回的消息、当前输入、要求和标题均保留。"""
 
     update: dict[str, Any] = {
+        "assessment_grounding": {},
         "candidate_ids": [],
         "dimensions": [],
         "work_items": [],

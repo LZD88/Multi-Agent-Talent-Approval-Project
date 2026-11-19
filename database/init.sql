@@ -233,6 +233,7 @@ CREATE TABLE talent_runs (
     message TEXT NOT NULL,
     status VARCHAR(32) NOT NULL,
     report TEXT,
+    assessment_grounding JSON,
     citations JSONB NOT NULL DEFAULT '[]'::jsonb,
     trace_id VARCHAR(128),
     error_message TEXT,

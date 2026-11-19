@@ -41,6 +41,8 @@ def public_run_error(exc: Exception) -> str:
     """Return an actionable message without exposing provider response details."""
     message = str(exc)
     lowered = message.lower()
+    if 'arrearage' in lowered or 'overdue-payment' in lowered:
+        return "百炼账号当前欠费，模型请求已被拒绝。请在阿里云百炼控制台检查账单并充值，恢复后重新发起评估。"
     if "allocationquota.freetieronly" in lowered or "free quota exhausted" in lowered:
         return (
             "大模型免费额度已用完。请在阿里云百炼控制台为当前 DashScope 账号充值并关闭"
@@ -84,6 +86,7 @@ class TalentRun:
     graph_status: str = ""
     graph_errors: list[str] = field(default_factory=list)
     report_emitted: bool = False
+    assessment_grounding: dict[str, Any] | None = None
 
 
 class TalentRunManager:
@@ -205,6 +208,7 @@ class TalentRunManager:
         run.graph_errors.clear()
         run.evidence_items.clear()
         run.report_emitted = False
+        run.assessment_grounding = None
         self._append(run, "hitl.resolved", resolved)
         run.task = asyncio.create_task(self._execute(run, Command(resume=decision)))
         await self._notify(run.run_id)
@@ -422,6 +426,8 @@ class TalentRunManager:
                     if isinstance(error, str) and error and error not in run.graph_errors:
                         run.graph_errors.append(error)
             self._collect_evidence(run, update)
+            if isinstance(update.get("assessment_grounding"), dict):
+                run.assessment_grounding = update["assessment_grounding"]
             await self._project_progress(run, node, update)
             for event in project_graph_update(
                 namespace=namespace,
@@ -554,6 +560,7 @@ class TalentRunManager:
             "report.completed",
             {
                 "markdown": markdown,
+                "assessment_grounding": run.assessment_grounding,
                 "citations": citations,
                 "trace_id": run.run_id,
             },
