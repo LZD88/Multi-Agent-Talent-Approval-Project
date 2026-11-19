@@ -56,6 +56,8 @@ class AssessmentWorkItem(BaseModel):
 
 
 class EvidenceSourceRef(BaseModel):
+    document_id: str = ""
+    document_version_id: str = ""
     citation_id: str
     chunk_id: str
     quote: str = Field(min_length=1)

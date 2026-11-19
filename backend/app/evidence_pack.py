@@ -217,6 +217,8 @@ def _validate_fact_sources(facts, sources):
                 )
             quote_start, quote_end = quote_span
             mapped = {
+                'document_id': row.get('document_id', ''),
+                'document_version_id': row.get('document_version_id', ''),
                 'citation_id': row['citation_id'],
                 'chunk_id': ref.chunk_id,
                 'quote': row['content'][quote_start:quote_end],

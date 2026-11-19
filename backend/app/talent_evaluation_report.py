@@ -9,6 +9,7 @@ from typing import Any, Literal
 from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field, ValidationError
 from typing_extensions import TypedDict
+from app.assessment_grounding import source_ref
 
 from app.talent_evaluation_dispatch import BranchEvidenceDraft, EvaluationDimension
 
@@ -114,6 +115,11 @@ class CandidateAssessment(BaseModel):
 
 
 class EvidenceItem(BaseModel):
+    document_id: str = ""
+    document_version_id: str = ""
+    chunk_id: str = ""
+    quote_start: int = 0
+    quote_end: int = 0
     ref_id: str = Field(min_length=1, description="内部保存的完整 Chunk 编号")
     model_ref: str | None = Field(
         default=None,
@@ -124,6 +130,7 @@ class EvidenceItem(BaseModel):
     quote: str = Field(min_length=1)
     source_label: str = Field(min_length=1)
     citation_url: str = Field(min_length=1)
+
 
 
 class ReportPoint(BaseModel):
@@ -204,12 +211,13 @@ ModelProvider = Callable[[], Any]
 def branch_evidence_refs(branch: BranchEvidenceDraft) -> list[str]:
     return list(
         dict.fromkeys(
-            source.chunk_id
+            source_ref(branch.candidate_id, source)
             for requirement in branch.requirements
             for fact in requirement.facts
             for source in fact.sources
         )
     )
+
 
 
 def branch_missing_information(branch: BranchEvidenceDraft) -> list[str]:
@@ -229,9 +237,15 @@ def evidence_items_from_branches(
         for requirement in branch.requirements:
             for fact in requirement.facts:
                 for source in fact.sources:
-                    if source.chunk_id not in items:
-                        items[source.chunk_id] = EvidenceItem(
-                            ref_id=source.chunk_id,
+                    identity = source_ref(branch.candidate_id, source)
+                    if identity not in items:
+                        items[identity] = EvidenceItem(
+                            ref_id=identity,
+                            document_id=source.document_id,
+                            document_version_id=source.document_version_id,
+                            chunk_id=source.chunk_id,
+                            quote_start=source.quote_start,
+                            quote_end=source.quote_end,
                             model_ref=f"E{len(items) + 1}",
                             candidate_id=branch.candidate_id,
                             quote=source.quote,
@@ -243,6 +257,7 @@ def evidence_items_from_branches(
                             ),
                         )
     return list(items.values())
+
 
 
 def _evidence_reference_maps(
@@ -308,9 +323,9 @@ def _branch_model_payload(
                         "claim": fact.claim,
                         "answer": fact.answer,
                         "evidence_refs": [
-                            chunk_to_model[source.chunk_id]
+                            chunk_to_model[source_ref(branch.candidate_id, source)]
                             for source in fact.sources
-                            if source.chunk_id in chunk_to_model
+                            if source_ref(branch.candidate_id, source) in chunk_to_model
                         ],
                     }
                     for fact in requirement.facts
@@ -320,6 +335,7 @@ def _branch_model_payload(
             for requirement in branch.requirements
         ],
     }
+
 
 
 DIMENSION_SCORER_PROMPT = """你负责依据单个评估维度的定义、证据要求和 0/3/5 分锚点完成评分。

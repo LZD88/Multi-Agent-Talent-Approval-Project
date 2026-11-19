@@ -171,3 +171,37 @@ def test_bad_report_reference_never_reaches_reviewer_and_is_not_technical_outage
     assert not calls
     assert result.reviews[0].verdict == "insufficient"
 
+
+
+def dimension():
+    return {"name": "项目交付", "definition": "明确职责与结果", "weight_percent": 100,
+            "evidence_requirements": ["交付事实"], "score_anchors": [
+                {"score": 0, "description": "明确未满足"}, {"score": 3, "description": "参与原型"},
+                {"score": 5, "description": "主导生产"}], "retrieval_hints": ["项目"], "source_requirement_ids": ["S1"]}
+
+
+def branch():
+    a = anchor()
+    source = a.model_dump(include={"document_id", "document_version_id", "chunk_id", "quote", "quote_start", "quote_end"})
+    source.update(citation_id="chunk", source_label="虚构简历")
+    return {"task_id": "C1:1", "candidate_id": "C1", "dimension_number": 1,
+        "execution_status": "succeeded", "requirements": [{"requirement_id": "S1", "query": "项目",
+        "status": "sufficient", "reason": "found", "extraction_status": "succeeded",
+        "facts": [{"event": "虚构项目", "period": "2025", "claim": "参与原型", "answer": "yes", "sources": [source]}]}]}
+
+
+def test_same_chunk_two_quotes_survive_report_mapping_and_model_aliases():
+    from app.talent_evaluation_report import evidence_items_from_branches, _model_evidence_payload
+    from app.talent_evaluation_dispatch import BranchEvidenceDraft
+    raw = branch()
+    second = anchor(start=30, quote="完成接口测试")
+    source = second.model_dump(include={"document_id", "document_version_id", "chunk_id", "quote", "quote_start", "quote_end"})
+    source.update(citation_id="chunk", source_label="虚构简历")
+    raw['requirements'][0]['facts'][0]['sources'].append(source)
+    items = evidence_items_from_branches([BranchEvidenceDraft.model_validate(raw)])
+    assert len(items) == 2 and len({r.ref_id for r in items}) == 2
+    payload, to_model, from_model = _model_evidence_payload(items)
+    assert set(to_model.values()) == {'E1', 'E2'}
+    assert len(set(r.citation_url for r in items)) == 2
+    assert set(from_model.values()) == {r.ref_id for r in items}
+
