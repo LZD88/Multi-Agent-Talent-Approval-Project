@@ -9,6 +9,7 @@ import re
 import time
 from typing import Annotated, Literal
 from openai import APIConnectionError, APITimeoutError, RateLimitError
+from langchain_core.exceptions import OutputParserException
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 
@@ -132,7 +133,20 @@ def model_extractor(
                         input_payload={**payload, **identity, "attempt": attempt},
                         replay_extra={"source_aliases": source_aliases, "sources": sources},
                         version_snapshot={"prompt": "evidence-extraction-v1", "model": get_settings().chat_model})
+                data = raw if isinstance(raw, EvidenceExtraction) else EvidenceExtraction.model_validate(raw)
                 break
+            except (OutputParserException, ValidationError) as exc:
+                if attempt >= max_attempts:
+                    raise
+                logger.warning(
+                    'event=evidence_schema_retry attempt=%s max_attempts=%s error_type=%s',
+                    attempt, max_attempts, type(exc).__name__,
+                )
+                messages.append(('user',
+                    '上次输出未通过 JSON/结构校验。请严格按 output_schema 重新返回完整 JSON。'
+                    'period 只允许 unknown、YYYY 或 YYYY-MM/YYYY-MM；'
+                    'facts 最多30条，missing_information 最多10条；'
+                    'event、claim、每条缺失信息最多200字符。逐字引用并保留限定词，不补全未知事实。'))
             except retryable as exc:
                 if attempt >= max_attempts:
                     raise
@@ -143,7 +157,6 @@ def model_extractor(
                 )
                 if backoff_seconds:
                     time.sleep(backoff_seconds * (2 ** (attempt - 1)))
-        data = raw if isinstance(raw, EvidenceExtraction) else EvidenceExtraction.model_validate(raw)
         facts = [
             fact.model_copy(
                 update={

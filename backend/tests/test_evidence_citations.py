@@ -50,6 +50,19 @@ def test_citation_binds_original_version_and_markdown_offsets():
     assert result['content'] == chunk.content
 
 
+def test_saved_parent_citation_derives_missing_page_range_from_pdf_locators():
+    db, kb, doc, version, chunk = fixture()
+    chunk.source_locators = [
+        {'kind': 'page_region', 'page': 3, 'bbox': [0, 0, 100, 100]},
+        {'kind': 'page_region', 'page': 1, 'bbox': [0, 0, 100, 100]},
+    ]
+    result = resolve(db, chunk)
+    assert (result['page_start'], result['page_end']) == (1, 3)
+    chunk.page_start, chunk.page_end = 2, 3
+    result = resolve(db, chunk)
+    assert (result['page_start'], result['page_end']) == (2, 3)
+
+
 @pytest.mark.parametrize('change', ['tenant', 'document_scope', 'kb_scope', 'deleted', 'missing', 'candidate'])
 def test_citation_rechecks_current_access_without_leaking_existence(change):
     db, kb, doc, version, chunk = fixture()

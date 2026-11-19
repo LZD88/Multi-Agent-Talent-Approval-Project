@@ -57,7 +57,18 @@ def _markdown_blocks(markdown: str) -> list[tuple[str, int, int]]:
         if not block:
             continue
         start = match.start(1) + len(raw) - len(raw.lstrip())
-        blocks.append((block, start, start + len(block)))
+        heading_with_body = re.match(r"^(#{1,6}\s+[^\r\n]+)\r?\n([\s\S]+)$", block)
+        if not heading_with_body:
+            blocks.append((block, start, start + len(block)))
+            continue
+
+        heading = heading_with_body.group(1).rstrip()
+        body_raw = heading_with_body.group(2)
+        body = body_raw.strip()
+        blocks.append((heading, start, start + len(heading)))
+        if body:
+            body_start = start + heading_with_body.start(2) + len(body_raw) - len(body_raw.lstrip())
+            blocks.append((body, body_start, body_start + len(body)))
     return blocks
 
 
@@ -255,6 +266,10 @@ def create_chunking_run(
             for current_parent in parents_for_piece:
                 current_parent.content = f"{current_parent.content}\n\n{child.content}".strip()
                 current_parent.element_ids = list(dict.fromkeys([*current_parent.element_ids, *child.element_ids]))
+                if child.page_start is not None:
+                    current_parent.page_start = min(current_parent.page_start, child.page_start) if current_parent.page_start is not None else child.page_start
+                if child.page_end is not None:
+                    current_parent.page_end = max(current_parent.page_end, child.page_end) if current_parent.page_end is not None else child.page_end
                 if child.markdown_start is not None:
                     current_parent.markdown_start = min(current_parent.markdown_start, child.markdown_start) if current_parent.markdown_start is not None else child.markdown_start
                 if child.markdown_end is not None:

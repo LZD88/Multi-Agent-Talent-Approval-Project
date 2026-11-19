@@ -29,6 +29,21 @@ def test_markdown_fallback_preserves_headings_as_elements():
     assert all(element.source_locator == {} for element in elements)
 
 
+def test_markdown_heading_with_immediate_body_keeps_body_for_chunking():
+    markdown = "# 面试记录\n\n## 面试结论\n- 综合评分：4/5\n- 建议：进入下一轮\n\n## 风险\n跨行业经验需要继续核实"
+
+    elements = elements_from_artifacts(markdown, {})
+
+    assert [element.kind for element in elements] == ["heading", "heading", "text", "heading", "text"]
+    assert elements[2].text == "- 综合评分：4/5\n- 建议：进入下一轮"
+    assert elements[4].text == "跨行业经验需要继续核实"
+    assert all(markdown[element.markdown_start:element.markdown_end] == element.text for element in elements)
+
+    chunks = chunk_elements(elements, strategy=ChunkStrategy.MARKDOWN, chunk_size=100, chunk_overlap=0)
+    assert [chunk.heading_path for chunk in chunks] == [["面试记录", "面试结论"], ["面试记录", "风险"]]
+    assert [chunk.content for chunk in chunks] == ["- 综合评分：4/5\n- 建议：进入下一轮", "跨行业经验需要继续核实"]
+
+
 def test_docx_locator_is_not_treated_as_auxiliary_source_position():
     markdown = "# 项目经历\n\n负责推荐系统升级"
     structured = {

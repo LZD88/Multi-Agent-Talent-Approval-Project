@@ -30,6 +30,10 @@ def resolve_citation(db, chunk_id: UUID, *, tenant_id: str, permission_scopes: l
     if ((quote_start is None) != (quote_end is None)
             or (quote_start is not None and not (0 <= quote_start < quote_end <= len(chunk.content)))):
         raise HTTPException(422, '引用位置无效')
+    # Older parent chunks retained PDF locators but omitted the denormalized range.
+    # Derive it when resolving existing citations so saved reports remain usable.
+    locator_pages = [item['page'] for item in (chunk.source_locators or [])
+                     if isinstance(item.get('page'), int)]
     return {
         'citation_id': str(chunk.id), 'chunk_id': str(chunk.id),
         'candidate_id': doc.candidate_id, 'document_id': str(doc.id),
@@ -40,7 +44,8 @@ def resolve_citation(db, chunk_id: UUID, *, tenant_id: str, permission_scopes: l
         'heading_path': chunk.heading_path, 'markdown_start': chunk.markdown_start,
         'markdown_end': chunk.markdown_end, 'source_locators': chunk.source_locators,
         'quote_start': quote_start, 'quote_end': quote_end,
-        'page_start': chunk.page_start, 'page_end': chunk.page_end,
+        'page_start': chunk.page_start if chunk.page_start is not None else min(locator_pages, default=None),
+        'page_end': chunk.page_end if chunk.page_end is not None else max(locator_pages, default=None),
         'timestamp_start': chunk.timestamp_start, 'timestamp_end': chunk.timestamp_end,
         'parser_version': job.parser_version if job else None,
         'parent_chunk_id': str(chunk.parent_chunk_id) if chunk.parent_chunk_id else None,

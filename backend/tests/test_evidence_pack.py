@@ -273,3 +273,27 @@ def test_model_extractor_retries_transient_provider_failure():
     assert result.missing_information == ["材料未说明职责"]
 
 
+def test_model_extractor_retries_invalid_json_without_accepting_unvalidated_facts():
+    from langchain_core.exceptions import OutputParserException
+
+    class Model:
+        calls = 0
+
+        def with_structured_output(self, schema, **kwargs):
+            return self
+
+        def invoke(self, messages):
+            self.calls += 1
+            if self.calls == 1:
+                raise OutputParserException("invalid JSON")
+            assert "结构校验" in messages[-1][1]
+            return module().EvidenceExtraction(facts=[], fully_supported=False,
+                                                missing_information=["材料未说明职责"])
+
+    model = Model()
+    result = module().model_extractor(model, max_attempts=2)(
+        {"requirement_id": "S1", "query": "负责过星河项目"}, [source()])
+    assert model.calls == 2 and not result.facts
+    assert result.missing_information == ["材料未说明职责"]
+
+
