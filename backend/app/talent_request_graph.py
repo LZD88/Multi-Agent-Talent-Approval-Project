@@ -4,6 +4,7 @@ from app.evaluation_case import capture_call, EvaluationModule, safe_record
 
 from collections.abc import Callable
 import inspect
+import json
 from operator import add
 import re
 from time import perf_counter
@@ -931,15 +932,24 @@ def model_request_interpreter(
             f"confirmed_job={selected_job['name']}\n"
             f"job_description={selected_job['content']}"
         )
-    result = model.with_structured_output(
-        TalentRequestRevision if conversation_title else TalentRequestUnderstanding,
-        method="function_calling",
-    ).invoke(
-        [
-            ("system", MODEL_SYSTEM_PROMPT.format(filter_dsl=filter_dsl_catalog())),
-            ("user", user_content),
-        ]
-    )
+    schema = TalentRequestRevision if conversation_title else TalentRequestUnderstanding
+    model_messages = [
+        ("system", MODEL_SYSTEM_PROMPT.format(filter_dsl=filter_dsl_catalog())),
+        ("user", user_content),
+    ]
+    try:
+        result = schema.model_validate(model.with_structured_output(
+            schema, method="function_calling",
+        ).invoke(model_messages))
+    except ValidationError as exc:
+        # Some compatible providers return no tool call during HITL revisions.
+        # Retry with explicit JSON schema, keeping the full request and constraints.
+        model_messages.append(("user", "上次未返回有效结构化要求。请仅返回符合下列 Schema 的完整 JSON，不要解释："
+                               + json.dumps(schema.model_json_schema(), ensure_ascii=False)
+                               + "\n校验问题：" + json.dumps(exc.errors(include_input=False, include_url=False, include_context=False), ensure_ascii=False)))
+        result = schema.model_validate(model.with_structured_output(
+            schema, method="json_mode",
+        ).invoke(model_messages))
     if conversation_title:
         revision = TalentRequestRevision.model_validate(result)
         understanding = TalentRequestUnderstanding(**revision.model_dump(), conversation_title=conversation_title)

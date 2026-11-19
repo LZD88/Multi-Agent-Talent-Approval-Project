@@ -286,6 +286,36 @@ def test_model_interpreter_prompt_distinguishes_region_from_current_position(mon
     assert result.draft.filters[0].field.value == "region"
 
 
+def test_hitl_revision_retries_empty_tool_output_with_explicit_json_schema(monkeypatch):
+    from langchain.messages import HumanMessage
+    import app.talent_request_graph as module
+
+    class Model:
+        methods = []
+
+        def with_structured_output(self, schema, **kwargs):
+            self.methods.append(kwargs["method"])
+            return self
+
+        def invoke(self, messages):
+            if len(self.methods) == 1:
+                return None
+            assert "Schema" in messages[-1][1]
+            assert "E2E验收组" in messages[1][1]
+            return {"draft": {"input_mode": "detailed_requirement", "filters": [
+                {"field": "department", "operator": "eq", "value": "E2E验收组"}],
+                "semantic_requirements": [{"requirement_id": "S1", "query": "Python 项目经验", "required": True}]},
+                "revision_action": "update", "revision_summary": "修订部门"}
+
+    model = Model()
+    monkeypatch.setattr(module, "get_chat_model", lambda **kwargs: model)
+    result = module.model_request_interpreter([HumanMessage(content="修改部门为 E2E验收组，保留 Python 要求")],
+                                              {}, conversation_title="测试评估")
+    assert model.methods == ["function_calling", "json_mode"]
+    assert result.conversation_title == "测试评估"
+    assert result.draft.filters[0].value == "E2E验收组"
+
+
 def test_exclusive_revision_keeps_only_conditions_mentioned_in_latest_message(monkeypatch):
     from app import talent_request_graph as module
 
