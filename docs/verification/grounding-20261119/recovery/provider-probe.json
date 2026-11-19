@@ -1,0 +1,9 @@
+{
+  "recorded_at": "2026-11-19T10:51:16.808199+00:00",
+  "chat_call": "ok",
+  "model": "qwen-plus",
+  "nonempty_reply": true,
+  "embedding_status": 200,
+  "embedding_dimension": 1024,
+  "scope": "本轮充值后的实际最小调用，不包含凭据。"
+}

@@ -1,0 +1,66 @@
+[
+  {
+    "run_id": "74b965d2-126c-4804-bed1-ba0dc4e876c5",
+    "phase": "evaluation",
+    "grounding_summary": {
+      "submitted": 28,
+      "supported": 19,
+      "blocked": 3,
+      "errors": 6,
+      "report_error": false
+    },
+    "failed_attempts": [
+      {
+        "module": "dimension_scoring",
+        "error_code": "ValueError",
+        "count": 3
+      },
+      {
+        "module": "report_grounding",
+        "error_code": "TimeoutError",
+        "count": 1
+      },
+      {
+        "module": "report_grounding",
+        "error_code": "ValidationError",
+        "count": 2
+      },
+      {
+        "module": "report_grounding",
+        "error_code": "supported_requires_anchor",
+        "count": 2
+      }
+    ],
+    "final_review_errors": {
+      "grounding_unavailable": 6
+    },
+    "limitations": "failed_attempts包括成功重试前的失败尝试，不等于最终失败维度数；最终报告状态为degraded。"
+  },
+  {
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "phase": "followup",
+    "grounding_summary": {
+      "submitted": 23,
+      "supported": 14,
+      "blocked": 3,
+      "errors": 6,
+      "report_error": false
+    },
+    "failed_attempts": [
+      {
+        "module": "dimension_scoring",
+        "error_code": "ValueError",
+        "count": 3
+      },
+      {
+        "module": "report_grounding",
+        "error_code": "ValidationError",
+        "count": 4
+      }
+    ],
+    "final_review_errors": {
+      "grounding_unavailable": 6
+    },
+    "limitations": "failed_attempts包括成功重试前的失败尝试，不等于最终失败维度数；最终报告状态为degraded。"
+  }
+]

@@ -1,0 +1,1 @@
+PostgreSQL: migration twice, legacy NULL, JSON roundtrip passed; isolated schema rolled back

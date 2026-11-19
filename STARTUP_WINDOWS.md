@@ -1,5 +1,56 @@
 # Windows 本地启动说明
 
+> **2026-11-19 当前机器部署说明：以下本节优先于后面的原始课程环境说明。**
+>
+> 当前仓库位于 `D:\codex\2026-11-03\https-github-com-lzd88-multi-agent\Multi-Agent-Talent-Approval-Project`。
+> VM 为 `D:\WorkSpace\CentOS 7.vmx`，VMware 位于 `D:\VMware`，SSH 为 `root@192.168.163.128`。
+> 前端、后端、worker、MinerU、PostgreSQL、Redis、MinIO、Milvus、etcd 全部运行在 VM 的 Docker 中。
+> VM 仓库为 `/root/talent-eval-agents`，沿用其 `.env` 中已有的百炼配置，无需启动 Windows 本地 PostgreSQL 或后端。
+
+## 当前机器一键启动
+
+在当前仓库目录执行：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-local.ps1
+```
+
+脚本检查服务，必要时启动 VM、已有的 9 个容器并建立 SSH 转发；SSH 会交互要求输入已有 root 密码。保持终端打开以维持转发。密码不会保存到文件。服务已正常时直接退出，不会重复建立转发。
+
+只检查健康状态：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-local.ps1 -CheckOnly
+```
+
+- 页面：<http://127.0.0.1:15173/>
+- 后端：<http://127.0.0.1:18080/api/health>
+- MinerU：<http://127.0.0.1:18001/health>
+- MinIO 控制台：<http://127.0.0.1:19001/>，文件端口为 `19000`
+- Milvus 健康检查：<http://127.0.0.1:19091/healthz>
+
+`ens33` 已设置 `ONBOOT=yes`，容器重启策略为 `unless-stopped`。Windows 重启后需要重新建立转发。VM IP 改变时向脚本传入 `-VmAddress 新IP`。
+
+## 当前完整链路验收
+
+本机已安装 Python、httpx 和 reportlab。以下命令调用真实模型，会产生模型费用；它使用明确标注的虚构候选人和 PDF，不使用真实个人材料。
+
+```powershell
+py backend/scripts/verify_full_pipeline.py --output ../work/e2e-20261119 --tag 20261119 --stage all
+```
+
+覆盖上传、MinerU 3.4.4、父子切片、向量索引、稠密/混合检索、自然语言查询、证据包、SSE 评估报告、同会话续问、HITL 修订恢复、原文引用及权限、取消幂等性。相同 output/tag 会复用测试员工、知识库和文档，评估 Run 会重新创建。可使用 `--stage` 单独执行一段。
+
+证据保存在 output 目录：`state.json`、原始 SSE、文档/切片 JSON、报告 Markdown 和逐条引用核对结果。对应页面知识库为“完整链路验收（虚构数据）20261119”。
+
+VM 上目前没有 Docker Compose 可执行命令，启动脚本直接启动已有容器。本次修复已同步到 VM 源码、容器和重新构建的镜像；重建镜像本身不会替换已有容器。前端 API 端口应为 `18080`，旧构建产物中的 `18081` 会导致页面无数据。
+
+后端部分文件解析测试依赖当前仓库未提供的 `sample-data/generated`，应将缺失测试数据与真实链路结果分别记录。Docker 环境中的默认配置测试还需避免 `MILVUS_URI` 环境变量覆盖默认值。
+
+---
+
+以下为原始课程部署参考，路径、IP 和启动方式不适用于上述当前机器。
+
 ## 当前环境
 
 - 本地代码目录：`D:\Workspace\PycharmProjects\PythonProject\talent-eval-agents`

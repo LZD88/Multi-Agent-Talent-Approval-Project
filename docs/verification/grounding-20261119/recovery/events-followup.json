@@ -1,0 +1,2900 @@
+[
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:1",
+    "sequence": 1,
+    "type": "run.started",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:50:18.147911+00:00",
+    "data": {
+      "message": "在原来的部门范围和岗位要求上，更看重有量化检索评测结果、独立主导上线的经验。请重新比较，明确需要面试核实的项目。",
+      "conversation_id": "0bf1e75c-ab7f-4e32-9e07-504da55c163a",
+      "turn_no": 2
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:2",
+    "sequence": 2,
+    "type": "step.started",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:50:18.201698+00:00",
+    "data": {
+      "step_id": "understand_request",
+      "kind": "workflow",
+      "title": "理解人才要求"
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:3",
+    "sequence": 3,
+    "type": "conversation.updated",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:50:23.897012+00:00",
+    "data": {
+      "title": "AI应用工程师岗位评估"
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:4",
+    "sequence": 4,
+    "type": "requirement.revised",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:50:23.904378+00:00",
+    "data": {
+      "action": "update",
+      "summary": "强化评估偏好：将‘量化检索评测结果’和‘独立主导上线的经验’加入 evaluation_preferences，替代原‘个人贡献、量化成果、证据不足项’；硬条件与语义要求保持不变。"
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:5",
+    "sequence": 5,
+    "type": "step.completed",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:50:23.911354+00:00",
+    "data": {
+      "step_id": "understand_request",
+      "kind": "workflow",
+      "title": "理解人才要求",
+      "summary": "plan_ready",
+      "output": {
+        "status": "plan_ready",
+        "talent_request": {
+          "task_type": "evaluate_and_recommend",
+          "source": "detailed_requirement",
+          "target_job": null,
+          "hard_conditions": [
+            {
+              "field": "department",
+              "operator": "eq",
+              "value": "E2E验收组20261119"
+            }
+          ],
+          "semantic_conditions": [
+            {
+              "requirement_id": "S1",
+              "query": "Python后端开发",
+              "required": true
+            },
+            {
+              "requirement_id": "S2",
+              "query": "企业知识库RAG项目经验",
+              "required": true
+            },
+            {
+              "requirement_id": "S3",
+              "query": "检索评测经验",
+              "required": true
+            },
+            {
+              "requirement_id": "S4",
+              "query": "Docker部署经验",
+              "required": true
+            }
+          ],
+          "evaluation_preferences": [
+            "量化检索评测结果",
+            "独立主导上线的经验"
+          ]
+        },
+        "query_plan": {
+          "task_type": "find_talent",
+          "filters": [
+            {
+              "field": "department",
+              "operator": "eq",
+              "value": "E2E验收组20261119"
+            }
+          ],
+          "semantic_requirements": [
+            {
+              "requirement_id": "S1",
+              "query": "Python后端开发",
+              "required": true
+            },
+            {
+              "requirement_id": "S2",
+              "query": "企业知识库RAG项目经验",
+              "required": true
+            },
+            {
+              "requirement_id": "S3",
+              "query": "检索评测经验",
+              "required": true
+            },
+            {
+              "requirement_id": "S4",
+              "query": "Docker部署经验",
+              "required": true
+            }
+          ],
+          "preferences": [
+            "量化检索评测结果",
+            "独立主导上线的经验"
+          ],
+          "clarifications": []
+        }
+      }
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:6",
+    "sequence": 6,
+    "type": "step.started",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:50:23.919520+00:00",
+    "data": {
+      "step_id": "filter_candidates",
+      "kind": "tool",
+      "title": "筛选候选人"
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:7",
+    "sequence": 7,
+    "type": "step.completed",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:50:23.933441+00:00",
+    "data": {
+      "step_id": "filter_candidates",
+      "kind": "tool",
+      "title": "筛选候选人",
+      "summary": "candidates_ready",
+      "output": {
+        "status": "candidates_ready",
+        "candidate_ids": [
+          "E2E20261119A",
+          "E2E20261119B"
+        ],
+        "candidate_count": 2
+      }
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:8",
+    "sequence": 8,
+    "type": "step.started",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:50:23.952280+00:00",
+    "data": {
+      "step_id": "build_dimensions",
+      "kind": "workflow",
+      "title": "生成评估维度"
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:9",
+    "sequence": 9,
+    "type": "step.progress",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:50:48.209553+00:00",
+    "data": {
+      "step_id": "build_dimensions",
+      "kind": "workflow",
+      "title": "生成评估维度",
+      "output": {
+        "status": "dimensions_generated",
+        "dimensions": [
+          {
+            "name": "Python后端开发能力",
+            "definition": "评估候选人是否具备扎实的Python后端开发能力，能独立完成服务端逻辑设计、API开发与集成。",
+            "weight_percent": 25,
+            "evidence_requirements": [
+              "简历中明确列出Python后端项目经历",
+              "GitHub/内部代码库可验证的Python服务代码",
+              "技术博客或面试中能清晰阐述Flask/FastAPI/Django等框架选型与实现细节"
+            ],
+            "score_anchors": [
+              {
+                "score": 0,
+                "description": "无Python后端项目经验，仅使用Python做脚本或数据分析"
+              },
+              {
+                "score": 3,
+                "description": "参与过Python后端项目，承担模块开发，但未主导核心架构或上线"
+              },
+              {
+                "score": 5,
+                "description": "独立负责Python后端服务从设计、开发到上线的全过程，有线上稳定运行系统证明"
+              }
+            ],
+            "retrieval_hints": [
+              "Python 后端",
+              "Flask",
+              "FastAPI",
+              "Django",
+              "API开发",
+              "服务端"
+            ],
+            "source_requirement_ids": [
+              "S1"
+            ]
+          },
+          {
+            "name": "企业知识库RAG项目实操经验",
+            "definition": "评估候选人是否真实参与并交付过面向企业场景的知识库RAG系统，涵盖数据接入、检索增强、LLM集成与业务落地。",
+            "weight_percent": 25,
+            "evidence_requirements": [
+              "简历/作品集中注明企业级RAG项目（非Demo或学术实验）",
+              "可提供系统截图、部署链接或客户验收文档",
+              "能说明知识源类型（如PDF/数据库/CRM）、召回策略与效果优化手段"
+            ],
+            "score_anchors": [
+              {
+                "score": 0,
+                "description": "无RAG相关经验，或仅调用现成API做简单问答"
+              },
+              {
+                "score": 3,
+                "description": "参与RAG项目，负责其中一环（如向量入库或Prompt调优），但未端到端交付"
+              },
+              {
+                "score": 5,
+                "description": "主导或作为核心成员完成企业知识库RAG项目上线，有可验证的业务指标提升（如客服响应准确率+X%）"
+              }
+            ],
+            "retrieval_hints": [
+              "RAG",
+              "企业知识库",
+              "检索增强生成",
+              "向量数据库",
+              "LangChain",
+              "LlamaIndex"
+            ],
+            "source_requirement_ids": [
+              "S2"
+            ]
+          },
+          {
+            "name": "量化检索评测能力",
+            "definition": "评估候选人是否具备设计并执行可复现、可归因的检索评测流程的能力，能输出明确指标（如MRR、NDCG、Hit Rate）并关联业务效果。",
+            "weight_percent": 25,
+            "evidence_requirements": [
+              "简历/报告中列出具体评测指标及数值结果",
+              "提供评测数据集、脚本或可视化图表",
+              "能说明评测场景（如FAQ匹配、长文档段落召回）、基线对比与归因分析"
+            ],
+            "score_anchors": [
+              {
+                "score": 0,
+                "description": "未开展过系统性检索评测，仅凭主观判断效果"
+              },
+              {
+                "score": 3,
+                "description": "执行过基础评测（如人工抽样打分），但缺乏指标体系与统计显著性分析"
+              },
+              {
+                "score": 5,
+                "description": "设计并落地量化检索评测方案，覆盖多维度指标、AB测试与业务漏斗归因，结果驱动模型/策略迭代"
+              }
+            ],
+            "retrieval_hints": [
+              "检索评测",
+              "MRR",
+              "NDCG",
+              "Hit Rate",
+              "召回率",
+              "评测报告",
+              "AB测试"
+            ],
+            "source_requirement_ids": [
+              "S3",
+              "preference:1"
+            ]
+          },
+          {
+            "name": "独立主导上线与工程交付能力",
+            "definition": "评估候选人是否具备从需求确认、技术方案、环境部署到灰度发布、监控告警的全链路工程闭环能力，并对线上系统稳定性与可用性负责。",
+            "weight_percent": 25,
+            "evidence_requirements": [
+              "简历中明确‘独立主导’‘Owner’‘从0到1上线’等表述并附项目周期",
+              "提供Docker部署记录、CI/CD流水线截图或K8s配置片段",
+              "能说明故障处理过程、SLA保障措施及监控看板建设情况"
+            ],
+            "score_anchors": [
+              {
+                "score": 0,
+                "description": "仅参与开发环节，无部署、运维或上线决策权"
+              },
+              {
+                "score": 3,
+                "description": "在团队协作下完成上线，承担部分部署或联调工作，依赖他人把控关键节点"
+              },
+              {
+                "score": 5,
+                "description": "独立主导项目上线全流程，自主完成Docker镜像构建、环境编排、流量切换与稳定性验证，有线上SLO达成证明"
+              }
+            ],
+            "retrieval_hints": [
+              "独立主导上线",
+              "Docker部署",
+              "CI/CD",
+              "灰度发布",
+              "SLA",
+              "监控告警",
+              "K8s"
+            ],
+            "source_requirement_ids": [
+              "S4",
+              "preference:2"
+            ]
+          }
+        ],
+        "dimension_count": 4
+      }
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:10",
+    "sequence": 10,
+    "type": "step.completed",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:50:48.227872+00:00",
+    "data": {
+      "step_id": "build_dimensions",
+      "kind": "workflow",
+      "title": "生成评估维度",
+      "summary": "dimensions_valid",
+      "output": {
+        "status": "dimensions_valid",
+        "validation_issues": []
+      }
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:11",
+    "sequence": 11,
+    "type": "step.started",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:50:48.253923+00:00",
+    "data": {
+      "step_id": "parallel_assessment",
+      "kind": "parallel",
+      "title": "检索证据并并行评估"
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:12",
+    "sequence": 12,
+    "type": "step.progress",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:50:48.308843+00:00",
+    "data": {
+      "step_id": "parallel_assessment",
+      "kind": "parallel",
+      "title": "检索证据并并行评估",
+      "completed": 0,
+      "total": 8
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:13",
+    "sequence": 13,
+    "type": "step.progress",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:51:10.177970+00:00",
+    "data": {
+      "step_id": "parallel_assessment",
+      "kind": "parallel",
+      "title": "检索证据并并行评估",
+      "completed": 1,
+      "total": 8
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:14",
+    "sequence": 14,
+    "type": "step.progress",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:51:11.652561+00:00",
+    "data": {
+      "step_id": "parallel_assessment",
+      "kind": "parallel",
+      "title": "检索证据并并行评估",
+      "completed": 2,
+      "total": 8
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:15",
+    "sequence": 15,
+    "type": "step.progress",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:51:12.493243+00:00",
+    "data": {
+      "step_id": "parallel_assessment",
+      "kind": "parallel",
+      "title": "检索证据并并行评估",
+      "completed": 3,
+      "total": 8
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:16",
+    "sequence": 16,
+    "type": "step.progress",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:51:21.178829+00:00",
+    "data": {
+      "step_id": "parallel_assessment",
+      "kind": "parallel",
+      "title": "检索证据并并行评估",
+      "completed": 4,
+      "total": 8
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:17",
+    "sequence": 17,
+    "type": "step.progress",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:51:31.780308+00:00",
+    "data": {
+      "step_id": "parallel_assessment",
+      "kind": "parallel",
+      "title": "检索证据并并行评估",
+      "completed": 5,
+      "total": 8
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:18",
+    "sequence": 18,
+    "type": "step.progress",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:51:33.299885+00:00",
+    "data": {
+      "step_id": "parallel_assessment",
+      "kind": "parallel",
+      "title": "检索证据并并行评估",
+      "completed": 6,
+      "total": 8
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:19",
+    "sequence": 19,
+    "type": "step.progress",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:51:42.374186+00:00",
+    "data": {
+      "step_id": "parallel_assessment",
+      "kind": "parallel",
+      "title": "检索证据并并行评估",
+      "completed": 7,
+      "total": 8
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:20",
+    "sequence": 20,
+    "type": "step.progress",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:51:43.236199+00:00",
+    "data": {
+      "step_id": "parallel_assessment",
+      "kind": "parallel",
+      "title": "检索证据并并行评估",
+      "completed": 8,
+      "total": 8
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:21",
+    "sequence": 21,
+    "type": "step.completed",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:51:43.243802+00:00",
+    "data": {
+      "step_id": "parallel_assessment",
+      "kind": "parallel",
+      "title": "检索证据并并行评估",
+      "summary": "8 个评估分支完成，取证失败=0，succeeded=8",
+      "output": {
+        "status": "branches_ready",
+        "completed": 8,
+        "total": 8,
+        "extraction_failures": 0,
+        "branch_status_counts": {
+          "succeeded": 8
+        }
+      }
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:22",
+    "sequence": 22,
+    "type": "step.started",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:51:43.277504+00:00",
+    "data": {
+      "step_id": "score_candidates",
+      "kind": "workflow",
+      "title": "证据质量门禁与排名"
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:23",
+    "sequence": 23,
+    "type": "step.progress",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:52:47.429490+00:00",
+    "data": {
+      "step_id": "score_candidates",
+      "kind": "workflow",
+      "title": "证据质量门禁与排名",
+      "output": {
+        "status": "dimensions_grounded"
+      }
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:24",
+    "sequence": 24,
+    "type": "step.completed",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:52:48.190634+00:00",
+    "data": {
+      "step_id": "score_candidates",
+      "kind": "workflow",
+      "title": "证据质量门禁与排名",
+      "summary": "candidates_ranked",
+      "output": {
+        "status": "candidates_ranked",
+        "ranking": [
+          "E2E20261119B",
+          "E2E20261119A"
+        ],
+        "candidates": [
+          {
+            "candidate_id": "E2E20261119B",
+            "confirmed_score": 15.0,
+            "possible_score": 90.0,
+            "evidence_coverage_percent": 25,
+            "confidence": "low"
+          },
+          {
+            "candidate_id": "E2E20261119A",
+            "confirmed_score": 0.0,
+            "possible_score": 100.0,
+            "evidence_coverage_percent": 0,
+            "confidence": "low"
+          }
+        ]
+      }
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:25",
+    "sequence": 25,
+    "type": "step.started",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:52:48.211804+00:00",
+    "data": {
+      "step_id": "compose_report",
+      "kind": "workflow",
+      "title": "合成可引用评估报告"
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:26",
+    "sequence": 26,
+    "type": "step.progress",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:54:06.350286+00:00",
+    "data": {
+      "step_id": "compose_report",
+      "kind": "workflow",
+      "title": "合成可引用评估报告",
+      "output": {
+        "status": "report_grounded"
+      }
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:27",
+    "sequence": 27,
+    "type": "step.progress",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:54:06.356042+00:00",
+    "data": {
+      "step_id": "compose_report",
+      "kind": "workflow",
+      "title": "合成可引用评估报告",
+      "output": {
+        "status": "verification_ready"
+      }
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:28",
+    "sequence": 28,
+    "type": "step.completed",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:54:06.360698+00:00",
+    "data": {
+      "step_id": "compose_report",
+      "kind": "workflow",
+      "title": "合成可引用评估报告",
+      "summary": "completed",
+      "output": {
+        "status": "completed",
+        "report_chars": 4766,
+        "grounding_status": "degraded",
+        "grounding_summary": {
+          "submitted": 23,
+          "supported": 14,
+          "blocked": 3,
+          "errors": 6,
+          "report_error": false
+        }
+      }
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:29",
+    "sequence": 29,
+    "type": "report.completed",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:54:06.364037+00:00",
+    "data": {
+      "markdown": "# 人才材料评估报告\n\n以下为当前材料评估顺序，材料中的陈述尚需独立核实。\n理论上限是未评分维度取满分时的计算边界，不是预测得分。\n\n依据审查：降级；通过 14 项，拦截 3 项，审查错误 6 项。\n\n## 1. E2E20261119B\n\n已确认得分 **15.0** / 100，理论上限 **90.0** / 100，可评分覆盖率 **25%**\n\n### 维度评分\n\n- Python后端开发能力：3 分（证据部分覆盖）\n- 企业知识库RAG项目实操经验：未评分（评估暂未完成）\n- 量化检索评测能力：未评分（评估暂未完成）\n- 独立主导上线与工程交付能力：未评分（材料不足）\n\n当前材料覆盖率较低，排序仅反映已有可评分依据，建议先补充核实。\n\n### 主要依据\n\n当前暂无通过审查的报告依据。\n\n### 待核实事项\n\n- 关于独立主导上线与工程交付能力：请补充说明相关项目、时期、职责与结果。 请提供可核实的职责分工、项目记录或效果指标。 \n  - 待核实记录（非已确认事实）：Gray release implementation or documentation\n- 关于独立主导上线与工程交付能力：请补充说明相关项目、时期、职责与结果。 请提供可核实的职责分工、项目记录或效果指标。 \n  - 待核实记录（非已确认事实）：SLA definition, measurement, and reporting mechanisms\n- 关于Python后端开发能力：请补充说明相关项目、时期、职责与结果。 请提供可核实的职责分工、项目记录或效果指标。 \n  - 待核实记录（非已确认事实）：技术博客或面试中关于框架选型与实现细节的阐述\n- 关于独立主导上线与工程交付能力：请补充说明相关项目、时期、职责与结果。 请提供可核实的职责分工、项目记录或效果指标。 \n  - 待核实记录（非已确认事实）：Alerting system configuration or evidence\n- 关于独立主导上线与工程交付能力：请补充说明相关项目、时期、职责与结果。 请提供可核实的职责分工、项目记录或效果指标。 \n  - 待核实记录（非已确认事实）：Docker deployment record\n- 关于独立主导上线与工程交付能力：请补充说明相关项目、时期、职责与结果。 请提供可核实的职责分工、项目记录或效果指标。 \n  - 待核实记录（非已确认事实）：Monitoring and alerting infrastructure (e.g., Prometheus, Grafana, Alertmanager)\n- 关于独立主导上线与工程交付能力：请补充说明相关项目、时期、职责与结果。 请提供可核实的职责分工、项目记录或效果指标。 \n  - 待核实记录（非已确认事实）：SLA monitoring setup or metrics\n- 关于Python后端开发能力：请补充说明相关项目、时期、职责与结果。 请提供可核实的职责分工、项目记录或效果指标。 \n  - 待核实记录（非已确认事实）：No indication of experience explaining framework selection (e.g., FastAPI vs Flask vs Django) in interviews or documentation\n另有 23 项，按优先级显示前八项。\n\n### 技术重试事项\n\n- 企业知识库RAG项目实操经验评分暂未完成，需要重试。\n- 量化检索评测能力评分暂未完成，需要重试。\n- 报告命题依据审查暂未完成，需要重试。\n- 报告命题依据审查暂未完成，需要重试。\n- 报告命题依据审查暂未完成，需要重试。\n- 报告命题依据审查暂未完成，需要重试。\n- 报告命题依据审查暂未完成，需要重试。\n- 报告命题依据审查暂未完成，需要重试。\n\n## 2. E2E20261119A\n\n当前材料无法完成评估，所有维度均未评分；理论上限 **100.0** / 100，可评分覆盖率 **0%**\n\n### 维度评分\n\n- Python后端开发能力：未评分（评估暂未完成）\n- 企业知识库RAG项目实操经验：未评分（评估暂未完成）\n- 量化检索评测能力：未评分（评估暂未完成）\n- 独立主导上线与工程交付能力：未评分（评估暂未完成）\n\n当前材料覆盖率较低，排序仅反映已有可评分依据，建议先补充核实。\n\n### 主要依据\n\n当前暂无通过审查的报告依据。\n\n### 待核实事项\n\n- 关于Python后端开发能力：当前判断尚缺少直接依据，请说明实际职责与交付范围。 请提供可核实的职责分工、项目记录或效果指标。 [E1](/api/evidence/citations/dd828275-e528-4603-a6eb-474e98d139b1?quote_start=0&quote_end=253) [E2](/api/evidence/citations/2433d004-c08f-47fe-9163-18791f32287f?quote_start=0&quote_end=253) [E3](/api/evidence/citations/50c8d950-d1e6-4367-a51a-6401bbf77a97?quote_start=0&quote_end=134) [E4](/api/evidence/citations/6a447355-9a35-4e8b-86a5-907ab4163fa3?quote_start=0&quote_end=134)\n  - 待核实记录（非已确认事实）：维度：Python后端开发能力；定义：评估候选人是否具备扎实的Python后端开发能力，能独立完成服务端逻辑设计、API开发与集成。；评分锚点：[{'score': 0, 'description': '无Python后端项目经验，仅使用Python做脚本或数据分析'}, {'score': 3, 'description': '参与过Python后端项目，承担模块开发，但未主导核心架构或上线'}, {'score': 5, 'description': '独立负责Python后端服务从设计、开发到上线的全过程，有线上稳定运行系统证明'}]；拟评5分；依据：证据显示候选人作为技术负责人，用Python+FastAPI独立构建了企业级知识助手后端，并‘个人负责检索与评估流水线’，符合5分锚点中‘独立负责设计、开发到上线全过程’的核心要求；七年Python后端经验与主导RAG交付也佐证其能力深度。但缺少代码库可验证性（E1/E2未提GitHub/内部库）、无框架选型 rationale 或技术表达证据（E1/E2仅列技术栈，未说明为何选FastAPI）、亦无线上稳定运行的直接证明，故不满足5分全部条件。3分锚点要求‘参与项目、承担模块但未主导核心架构或上线’，而证据明确显示其‘技术负责人’‘个人拥有流水线’，已超越模块开发层级。因此最贴近5分锚点，但因关键证据缺失，按规则降为partial，score=5。\n- 关于量化检索评测能力：当前判断尚缺少直接依据，请说明实际职责与交付范围。 请提供可核实的职责分工、项目记录或效果指标。 [E7](/api/evidence/citations/081fa1e9-d535-4276-bb2d-3642298a5a27?quote_start=0&quote_end=215) [E8](/api/evidence/citations/1d665605-f1e0-4a7a-a335-bcb8c4f25a7f?quote_start=0&quote_end=215)\n  - 待核实记录（非已确认事实）：未报告MRR、NDCG、Hit Rate等任一其他检索评测指标的具体数值\n- 关于企业知识库RAG项目实操经验：当前判断尚缺少直接依据，请说明实际职责与交付范围。 请提供可核实的职责分工、项目记录或效果指标。 [E1](/api/evidence/citations/dd828275-e528-4603-a6eb-474e98d139b1?quote_start=0&quote_end=253) [E2](/api/evidence/citations/2433d004-c08f-47fe-9163-18791f32287f?quote_start=0&quote_end=253) [E3](/api/evidence/citations/50c8d950-d1e6-4367-a51a-6401bbf77a97?quote_start=0&quote_end=134) [E4](/api/evidence/citations/6a447355-9a35-4e8b-86a5-907ab4163fa3?quote_start=0&quote_end=134) [E5](/api/evidence/citations/50c8d950-d1e6-4367-a51a-6401bbf77a97?quote_start=43&quote_end=134) [E6](/api/evidence/citations/6a447355-9a35-4e8b-86a5-907ab4163fa3?quote_start=43&quote_end=134) [E7](/api/evidence/citations/081fa1e9-d535-4276-bb2d-3642298a5a27?quote_start=0&quote_end=215) [E8](/api/evidence/citations/1d665605-f1e0-4a7a-a335-bcb8c4f25a7f?quote_start=0&quote_end=215)\n  - 待核实记录（非已确认事实）：维度：企业知识库RAG项目实操经验；定义：评估候选人是否真实参与并交付过面向企业场景的知识库RAG系统，涵盖数据接入、检索增强、LLM集成与业务落地。；评分锚点：[{'score': 0, 'description': '无RAG相关经验，或仅调用现成API做简单问答'}, {'score': 3, 'description': '参与RAG项目，负责其中一环（如向量入库或Prompt调优），但未端到端交付'}, {'score': 5, 'description': '主导或作为核心成员完成企业知识库RAG项目上线，有可验证的业务指标提升（如客服响应准确率+X%）'}]；拟评5分；依据：证据E1/E2明确项目为'synthetic enterprise knowledge assistant'，使用Milvus、LangGraph、混合检索、reranking等RAG关键技术，符合'企业级RAG项目（非Demo或学术实验）'要求；E3–E6多次强调'led enterprise knowledge-base RAG delivery'，体现端到端交付与核心角色；E7/E8提供可验证的业务指标提升（Recall@10 +18%、groundedness +15%、latency -1.7s），满足5分锚点中'主导/核心成员完成上线+可验证业务指标提升'全部条件。\n\n### 技术重试事项\n\n- 独立主导上线与工程交付能力评分暂未完成，需要重试。",
+      "assessment_grounding": {
+        "schema_version": "1.0",
+        "policy_version": "assessment-grounding-v1",
+        "prompt_version": "claim-review-v1",
+        "status": "degraded",
+        "model": "qwen-plus",
+        "claims": [
+          {
+            "claim_id": "E2E20261119A:1:fact:0",
+            "candidate_ids": [
+              "E2E20261119A"
+            ],
+            "dimension_numbers": [
+              1
+            ],
+            "kind": "fact",
+            "text": "候选人担任技术负责人，独立构建了基于Python和FastAPI的企业级知识助手后端服务",
+            "anchor_ids": [
+              "8b81ac40f7891dd487a75e7220a35c14",
+              "bf1bddaec8b97cd3a7c13baca36bad88"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119A:1:fact:1",
+            "candidate_ids": [
+              "E2E20261119A"
+            ],
+            "dimension_numbers": [
+              1
+            ],
+            "kind": "fact",
+            "text": "候选人有七年Python后端工程经验，并主导企业知识库RAG交付、检索评估与生产运维",
+            "anchor_ids": [
+              "66eb1cef06808014c07c01853ced82f3",
+              "ffd2528214ea824aedca4a7b9f4d537f"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119A:1:fact:2",
+            "candidate_ids": [
+              "E2E20261119A"
+            ],
+            "dimension_numbers": [
+              1
+            ],
+            "kind": "fact",
+            "text": "候选人个人负责检索与评估流水线，体现对服务端逻辑设计与上线落地的端到端参与",
+            "anchor_ids": [
+              "8b81ac40f7891dd487a75e7220a35c14",
+              "bf1bddaec8b97cd3a7c13baca36bad88"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119A:1:score",
+            "candidate_ids": [
+              "E2E20261119A"
+            ],
+            "dimension_numbers": [
+              1
+            ],
+            "kind": "score",
+            "text": "维度：Python后端开发能力；定义：评估候选人是否具备扎实的Python后端开发能力，能独立完成服务端逻辑设计、API开发与集成。；评分锚点：[{'score': 0, 'description': '无Python后端项目经验，仅使用Python做脚本或数据分析'}, {'score': 3, 'description': '参与过Python后端项目，承担模块开发，但未主导核心架构或上线'}, {'score': 5, 'description': '独立负责Python后端服务从设计、开发到上线的全过程，有线上稳定运行系统证明'}]；拟评5分；依据：证据显示候选人作为技术负责人，用Python+FastAPI独立构建了企业级知识助手后端，并‘个人负责检索与评估流水线’，符合5分锚点中‘独立负责设计、开发到上线全过程’的核心要求；七年Python后端经验与主导RAG交付也佐证其能力深度。但缺少代码库可验证性（E1/E2未提GitHub/内部库）、无框架选型 rationale 或技术表达证据（E1/E2仅列技术栈，未说明为何选FastAPI）、亦无线上稳定运行的直接证明，故不满足5分全部条件。3分锚点要求‘参与项目、承担模块但未主导核心架构或上线’，而证据明确显示其‘技术负责人’‘个人拥有流水线’，已超越模块开发层级。因此最贴近5分锚点，但因关键证据缺失，按规则降为partial，score=5。",
+            "anchor_ids": [
+              "8b81ac40f7891dd487a75e7220a35c14",
+              "bf1bddaec8b97cd3a7c13baca36bad88",
+              "66eb1cef06808014c07c01853ced82f3",
+              "ffd2528214ea824aedca4a7b9f4d537f"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119A:2:fact:0",
+            "candidate_ids": [
+              "E2E20261119A"
+            ],
+            "dimension_numbers": [
+              2
+            ],
+            "kind": "fact",
+            "text": "候选人作为技术负责人构建了面向企业的合成知识助手（synthetic enterprise knowledge assistant），明确使用Milvus向量数据库、LangGraph、混合检索、嵌入与重排序等RAG核心技术，且非Demo或学术实验。",
+            "anchor_ids": [
+              "8b81ac40f7891dd487a75e7220a35c14",
+              "bf1bddaec8b97cd3a7c13baca36bad88"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119A:2:fact:1",
+            "candidate_ids": [
+              "E2E20261119A"
+            ],
+            "dimension_numbers": [
+              2
+            ],
+            "kind": "fact",
+            "text": "候选人主导（led）企业级知识库RAG系统的交付、检索评估与生产运维，表明其端到端参与并承担核心责任。",
+            "anchor_ids": [
+              "66eb1cef06808014c07c01853ced82f3",
+              "ffd2528214ea824aedca4a7b9f4d537f",
+              "fbd343d57675e4c4ef611075e70d95dd",
+              "677bbad08568be876b2eef180d40f95d"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119A:2:fact:2",
+            "candidate_ids": [
+              "E2E20261119A"
+            ],
+            "dimension_numbers": [
+              2
+            ],
+            "kind": "fact",
+            "text": "候选人对300个手工标注问题开展检索评估，量化报告Recall@10（70%→88%）、答案可信度（76%→91%）及响应延迟（4.5s→2.8s）等业务可验证指标提升。",
+            "anchor_ids": [
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119A:2:score",
+            "candidate_ids": [
+              "E2E20261119A"
+            ],
+            "dimension_numbers": [
+              2
+            ],
+            "kind": "score",
+            "text": "维度：企业知识库RAG项目实操经验；定义：评估候选人是否真实参与并交付过面向企业场景的知识库RAG系统，涵盖数据接入、检索增强、LLM集成与业务落地。；评分锚点：[{'score': 0, 'description': '无RAG相关经验，或仅调用现成API做简单问答'}, {'score': 3, 'description': '参与RAG项目，负责其中一环（如向量入库或Prompt调优），但未端到端交付'}, {'score': 5, 'description': '主导或作为核心成员完成企业知识库RAG项目上线，有可验证的业务指标提升（如客服响应准确率+X%）'}]；拟评5分；依据：证据E1/E2明确项目为'synthetic enterprise knowledge assistant'，使用Milvus、LangGraph、混合检索、reranking等RAG关键技术，符合'企业级RAG项目（非Demo或学术实验）'要求；E3–E6多次强调'led enterprise knowledge-base RAG delivery'，体现端到端交付与核心角色；E7/E8提供可验证的业务指标提升（Recall@10 +18%、groundedness +15%、latency -1.7s），满足5分锚点中'主导/核心成员完成上线+可验证业务指标提升'全部条件。",
+            "anchor_ids": [
+              "8b81ac40f7891dd487a75e7220a35c14",
+              "bf1bddaec8b97cd3a7c13baca36bad88",
+              "66eb1cef06808014c07c01853ced82f3",
+              "ffd2528214ea824aedca4a7b9f4d537f",
+              "fbd343d57675e4c4ef611075e70d95dd",
+              "677bbad08568be876b2eef180d40f95d",
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119A:3:fact:0",
+            "candidate_ids": [
+              "E2E20261119A"
+            ],
+            "dimension_numbers": [
+              3
+            ],
+            "kind": "fact",
+            "text": "使用300条人工标注问题进行评测，并报告Recall@10从70%提升至88%",
+            "anchor_ids": [
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119A:3:fact:1",
+            "candidate_ids": [
+              "E2E20261119A"
+            ],
+            "dimension_numbers": [
+              3
+            ],
+            "kind": "fact",
+            "text": "未报告MRR、NDCG、Hit Rate等任一其他检索评测指标的具体数值",
+            "anchor_ids": [
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119A:3:fact:2",
+            "candidate_ids": [
+              "E2E20261119A"
+            ],
+            "dimension_numbers": [
+              3
+            ],
+            "kind": "fact",
+            "text": "未提供评测数据集、脚本、可视化图表或正式评测报告",
+            "anchor_ids": [
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119A:3:fact:3",
+            "candidate_ids": [
+              "E2E20261119A"
+            ],
+            "dimension_numbers": [
+              3
+            ],
+            "kind": "fact",
+            "text": "未说明评测场景（如FAQ匹配/长文档段落召回）、基线模型名称或归因分析",
+            "anchor_ids": [
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119A:3:score",
+            "candidate_ids": [
+              "E2E20261119A"
+            ],
+            "dimension_numbers": [
+              3
+            ],
+            "kind": "score",
+            "text": "维度：量化检索评测能力；定义：评估候选人是否具备设计并执行可复现、可归因的检索评测流程的能力，能输出明确指标（如MRR、NDCG、Hit Rate）并关联业务效果。；评分锚点：[{'score': 0, 'description': '未开展过系统性检索评测，仅凭主观判断效果'}, {'score': 3, 'description': '执行过基础评测（如人工抽样打分），但缺乏指标体系与统计显著性分析'}, {'score': 5, 'description': '设计并落地量化检索评测方案，覆盖多维度指标、AB测试与业务漏斗归因，结果驱动模型/策略迭代'}]；拟评3分；依据：候选人提供了Recall@10（即召回率）的量化结果（70%→88%），满足‘列出具体评测指标及数值结果’要求；但未提供MRR、NDCG、Hit Rate等其他核心指标数值，也无评测数据集、脚本、图表或AB测试描述，更未说明评测场景（如FAQ匹配）、基线对比与归因分析。证据明确显示其仅执行了基础量化评测，缺乏多维指标体系、统计显著性分析及业务归因，符合3分锚点‘执行过基础评测（如人工抽样打分），但缺乏指标体系与统计显著性分析’。",
+            "anchor_ids": [
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119B:1:fact:0",
+            "candidate_ids": [
+              "E2E20261119B"
+            ],
+            "dimension_numbers": [
+              1
+            ],
+            "kind": "fact",
+            "text": "具备5年Python后端工程经验，使用FastAPI开发REST API",
+            "anchor_ids": [
+              "a0b9ccacb8b62079409797147a176e6c",
+              "35b867d99ddf6a7c88a3b29736e0474e"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119B:1:fact:1",
+            "candidate_ids": [
+              "E2E20261119B"
+            ],
+            "dimension_numbers": [
+              1
+            ],
+            "kind": "fact",
+            "text": "负责REST API开发、PostgreSQL查询优化、Redis缓存与Docker部署，并将API吞吐量从150提升至300 QPS",
+            "anchor_ids": [
+              "0394b868430d5ba3f9c62ff410d46a8b",
+              "7dfe38e29e9a65f3695dad9a585d85bd"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119B:1:fact:2",
+            "candidate_ids": [
+              "E2E20261119B"
+            ],
+            "dimension_numbers": [
+              1
+            ],
+            "kind": "fact",
+            "text": "编写API集成测试，参与代码评审与部署文档编写",
+            "anchor_ids": [
+              "f1681e4773a54c48a87f2c2d8e39ad5b",
+              "5fc98d5f2ee995e3eed47be7aa715da0"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119B:1:score",
+            "candidate_ids": [
+              "E2E20261119B"
+            ],
+            "dimension_numbers": [
+              1
+            ],
+            "kind": "score",
+            "text": "维度：Python后端开发能力；定义：评估候选人是否具备扎实的Python后端开发能力，能独立完成服务端逻辑设计、API开发与集成。；评分锚点：[{'score': 0, 'description': '无Python后端项目经验，仅使用Python做脚本或数据分析'}, {'score': 3, 'description': '参与过Python后端项目，承担模块开发，但未主导核心架构或上线'}, {'score': 5, 'description': '独立负责Python后端服务从设计、开发到上线的全过程，有线上稳定运行系统证明'}]；拟评3分；依据：候选人明确具备5年Python后端工程经验，使用FastAPI开发REST API，并完成集成测试、PostgreSQL优化、Redis缓存与Docker部署，且有性能提升数据（API吞吐量150→300 QPS），满足‘参与后端项目并承担模块开发’要求。但证据中无GitHub/内部代码库链接（E21/E22反证不可验证）、未提Flask/Django使用（E15–E18均只提FastAPI）、无技术博客或面试中框架选型阐述（E15–E26均未涉及），故不满足主导核心架构或上线的5分锚点，亦不满足0分（有明确后端项目而非仅脚本）。符合3分锚点：参与项目、承担模块（API、缓存、部署）、有可验证成果（性能提升），但缺线上系统证明与架构主导证据。",
+            "anchor_ids": [
+              "a0b9ccacb8b62079409797147a176e6c",
+              "35b867d99ddf6a7c88a3b29736e0474e",
+              "0394b868430d5ba3f9c62ff410d46a8b",
+              "7dfe38e29e9a65f3695dad9a585d85bd",
+              "f1681e4773a54c48a87f2c2d8e39ad5b",
+              "5fc98d5f2ee995e3eed47be7aa715da0"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119B:highlights:0",
+            "candidate_ids": [
+              "E2E20261119B"
+            ],
+            "dimension_numbers": [
+              1
+            ],
+            "kind": "fact",
+            "text": "具备5年Python后端工程经验，使用FastAPI开发REST API",
+            "anchor_ids": [
+              "a0b9ccacb8b62079409797147a176e6c",
+              "35b867d99ddf6a7c88a3b29736e0474e",
+              "0394b868430d5ba3f9c62ff410d46a8b",
+              "7dfe38e29e9a65f3695dad9a585d85bd"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119B:highlights:1",
+            "candidate_ids": [
+              "E2E20261119B"
+            ],
+            "dimension_numbers": [
+              1
+            ],
+            "kind": "fact",
+            "text": "负责REST API开发、PostgreSQL查询优化、Redis缓存与Docker部署，并将API吞吐量从150提升至300 QPS",
+            "anchor_ids": [
+              "0394b868430d5ba3f9c62ff410d46a8b",
+              "7dfe38e29e9a65f3695dad9a585d85bd"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119B:highlights:2",
+            "candidate_ids": [
+              "E2E20261119B"
+            ],
+            "dimension_numbers": [
+              1
+            ],
+            "kind": "fact",
+            "text": "编写API集成测试，参与代码评审与部署文档编写",
+            "anchor_ids": [
+              "f1681e4773a54c48a87f2c2d8e39ad5b",
+              "5fc98d5f2ee995e3eed47be7aa715da0"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119B:risk_points:0",
+            "candidate_ids": [
+              "E2E20261119B"
+            ],
+            "dimension_numbers": [
+              1
+            ],
+            "kind": "fact",
+            "text": "无GitHub或内部代码库链接，无法验证代码真实性与可维护性",
+            "anchor_ids": [
+              "a0b9ccacb8b62079409797147a176e6c",
+              "35b867d99ddf6a7c88a3b29736e0474e",
+              "0394b868430d5ba3f9c62ff410d46a8b",
+              "7dfe38e29e9a65f3695dad9a585d85bd",
+              "f1681e4773a54c48a87f2c2d8e39ad5b",
+              "5fc98d5f2ee995e3eed47be7aa715da0"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119B:risk_points:1",
+            "candidate_ids": [
+              "E2E20261119B"
+            ],
+            "dimension_numbers": [
+              1
+            ],
+            "kind": "fact",
+            "text": "仅提及FastAPI，未提Flask或Django使用，缺乏多框架比较与选型经验佐证",
+            "anchor_ids": [
+              "a0b9ccacb8b62079409797147a176e6c",
+              "35b867d99ddf6a7c88a3b29736e0474e",
+              "0394b868430d5ba3f9c62ff410d46a8b",
+              "7dfe38e29e9a65f3695dad9a585d85bd"
+            ],
+            "assessment_refs": []
+          },
+          {
+            "claim_id": "E2E20261119B:risk_points:2",
+            "candidate_ids": [
+              "E2E20261119B"
+            ],
+            "dimension_numbers": [
+              1
+            ],
+            "kind": "fact",
+            "text": "无技术博客、面试记录或文档说明其对API架构权衡（如中间件、依赖注入、异步处理）的理解",
+            "anchor_ids": [
+              "a0b9ccacb8b62079409797147a176e6c",
+              "35b867d99ddf6a7c88a3b29736e0474e",
+              "0394b868430d5ba3f9c62ff410d46a8b",
+              "7dfe38e29e9a65f3695dad9a585d85bd",
+              "f1681e4773a54c48a87f2c2d8e39ad5b",
+              "5fc98d5f2ee995e3eed47be7aa715da0"
+            ],
+            "assessment_refs": []
+          }
+        ],
+        "reviews": [
+          {
+            "claim_id": "E2E20261119A:1:fact:0",
+            "verdict": "supported",
+            "reason_code": "原文明确'技术负责人'+'独立构建'+'Python+FastAPI'+'企业级知识助手后端服务'",
+            "reason": "锚点E1/E2原文'Technical lead for a synthetic enterprise knowledge assistant. Built Python, FastAPI...'，'Built'与'技术负责人'共同支持'独立构建'；'synthetic enterprise knowledge assistant'对应'企业级知识助手'；'Python, FastAPI'直接匹配技术栈。",
+            "anchor_ids": [
+              "8b81ac40f7891dd487a75e7220a35c14",
+              "bf1bddaec8b97cd3a7c13baca36bad88"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119A:1:fact:1",
+            "verdict": "supported",
+            "reason_code": "原文'7年Python后端工程经验'+'主导RAG交付、检索评估与生产运维'",
+            "reason": "锚点E3/E4原文'Seven years of Python backend engineering. Led enterprise knowledge-base RAG delivery, retrieval evaluation and production operations.'逐字匹配所有要素：年限、领域、动词'Led'及三项职责。",
+            "anchor_ids": [
+              "66eb1cef06808014c07c01853ced82f3",
+              "ffd2528214ea824aedca4a7b9f4d537f"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119A:1:fact:2",
+            "verdict": "supported",
+            "reason_code": "原文'个人负责检索与评估流水线'+'技术负责人'共同体现端到端参与",
+            "reason": "锚点E1/E2原文'Personally owned the retrieval and evaluation pipeline.'中'owned'等价于'个人负责'；结合'技术负责人'角色，可支持'服务端逻辑设计与上线落地的端到端参与'，未超出原文限定。",
+            "anchor_ids": [
+              "8b81ac40f7891dd487a75e7220a35c14",
+              "bf1bddaec8b97cd3a7c13baca36bad88"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119A:1:score",
+            "verdict": "insufficient",
+            "reason_code": "缺少'线上稳定运行系统证明'及'设计到上线全过程'直接证据",
+            "reason": "评分锚点5分要求'有线上稳定运行系统证明'，但所有锚点仅提'built'和'owned pipeline'，未出现'production'、'deployed'、'live'、'stable'等词；'独立负责全过程'需设计、开发、上线三阶段证据，原文无设计决策（如架构图）、上线动作（如CI/CD、发布记录）描述。其他证据如七年经验、主导RAG交付属能力佐证，但不替代该锚点硬性条件。",
+            "anchor_ids": [
+              "8b81ac40f7891dd487a75e7220a35c14",
+              "bf1bddaec8b97cd3a7c13baca36bad88",
+              "66eb1cef06808014c07c01853ced82f3",
+              "ffd2528214ea824aedca4a7b9f4d537f"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119A:2:fact:0",
+            "verdict": "supported",
+            "reason_code": "原文明确技术栈、项目性质及非Demo属性",
+            "reason": "锚点E1/E2原文'Technical lead for a synthetic enterprise knowledge assistant. Built Python, FastAPI, LangGraph, Milvus hybrid retrieval, embedding and reranking.'中'synthetic enterprise knowledge assistant'即'面向企业的合成知识助手'；所列技术栈完全匹配；'Built'隐含非Demo（与'led delivery'互证），且无任何'prototype'、'demo'、'academic'等限定词。",
+            "anchor_ids": [
+              "8b81ac40f7891dd487a75e7220a35c14",
+              "bf1bddaec8b97cd3a7c13baca36bad88"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119A:2:fact:1",
+            "verdict": "supported",
+            "reason_code": "多处原文重复'Led enterprise knowledge-base RAG delivery...'",
+            "reason": "锚点E3/E4/E5/E6四次出现'Led enterprise knowledge-base RAG delivery, retrieval evaluation and production operations.'，动词'Led'直接支持'主导'；三项职责（交付、评估、运维）与命题完全一致；'enterprise knowledge-base RAG system'由'enterprise knowledge-base RAG'可合理指代。",
+            "anchor_ids": [
+              "66eb1cef06808014c07c01853ced82f3",
+              "ffd2528214ea824aedca4a7b9f4d537f",
+              "fbd343d57675e4c4ef611075e70d95dd",
+              "677bbad08568be876b2eef180d40f95d"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119A:2:fact:2",
+            "verdict": "supported",
+            "reason_code": "all_metrics_and_scale_reported",
+            "reason": "原文E7/E8明确写出'Evaluated 300 manually labelled questions. Recall@10 improved from 70% to 88%; answer groundedness improved from 76% to 91%. Reduced median response latency from 4.5 to 2.8 seconds.'，完全覆盖命题中所有指标名称、数值、提升幅度及问题数量。末句'These are fictional test metrics.'为属性说明，不否定前述量化陈述。",
+            "anchor_ids": [
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119A:2:score",
+            "verdict": "contradicted",
+            "reason_code": "fictional_metrics_undermine_business_verification",
+            "reason": "评分锚点5分要求'可验证的业务指标提升'，但E7/E8原文末尾明确声明'These are fictional test metrics.'，直接否定指标的业务可验证性；尽管项目技术栈（Milvus/LangGraph等）和角色表述（'Led enterprise knowledge-base RAG delivery'）属实，但核心评分依据——'可验证的业务指标提升'——被原文自证为虚构，不满足5分锚点必要条件。",
+            "anchor_ids": [
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119A:3:fact:0",
+            "verdict": "supported",
+            "reason_code": "metric_and_values_directly_stated",
+            "reason": "原文E7/E8明确写出'Evaluated 300 manually labelled questions. Recall@10 improved from 70% to 88%'，与命题完全一致，包含问题数量、指标名称、起始值与终值。",
+            "anchor_ids": [
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119A:3:fact:1",
+            "verdict": "insufficient",
+            "reason_code": "no_mention_of_other_metrics",
+            "reason": "原文E7/E8仅报告Recall@10，未提及MRR、NDCG、Hit Rate等其他指标，既未报告其数值，也未说明是否计算或为何未报告，因此无法确认'未报告'这一否定性命题是否成立。",
+            "anchor_ids": [
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119A:3:fact:2",
+            "verdict": "supported",
+            "reason_code": "no_evidence_of_artifacts_mentioned",
+            "reason": "原文E7/E8仅描述指标变化，未提评测数据集、脚本、图表或正式报告；其他锚点（E1–E6）均聚焦架构、角色、技术栈，无任何关于交付评测资产的陈述，故'未提供'成立。",
+            "anchor_ids": [
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119A:3:fact:3",
+            "verdict": "supported",
+            "reason_code": "no_contextual_details_in_quote",
+            "reason": "原文E7/E8仅列出三项指标变化，未说明评测场景（如FAQ/长文档）、基线模型名称或归因分析；其余锚点（E1–E6）亦未补充此类信息，故命题中三项'未说明'均成立。",
+            "anchor_ids": [
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119A:3:score",
+            "verdict": "supported",
+            "reason_code": "原文明确列出Recall@10数值变化，但未提及其他指标、AB测试、数据集、脚本、图表或业务归因，符合3分锚点描述",
+            "reason": "原文'Evaluated 300 manually labelled questions. Recall@10 improved from 70% to 88%;...'直接支持存在基础量化评测（Recall@10数值结果），且全文未出现MRR、NDCG、Hit Rate、AB测试、评测数据集、脚本、图表、业务漏斗归因等3分锚点中限定缺失要素，与'执行过基础评测（如人工抽样打分），但缺乏指标体系与统计显著性分析'完全对应。",
+            "anchor_ids": [
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119B:1:fact:0",
+            "verdict": "supported",
+            "reason_code": "quote matches all elements",
+            "reason": "原文明确陈述'Five years of Python backend engineering. Strong FastAPI, SQL, Docker, PostgreSQL and Redis experience.'，直接支持5年Python后端经验及使用FastAPI开发REST API。",
+            "anchor_ids": [
+              "a0b9ccacb8b62079409797147a176e6c",
+              "35b867d99ddf6a7c88a3b29736e0474e"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119B:1:fact:1",
+            "verdict": "supported",
+            "reason_code": "quote matches all elements",
+            "reason": "两处原文均明确列出'REST APIs, PostgreSQL query optimisation, Redis caching and Docker deployment'及'Improved API throughput from 150 to 300 requests per second in a synthetic load test.'，完全覆盖职责与性能提升数据。",
+            "anchor_ids": [
+              "0394b868430d5ba3f9c62ff410d46a8b",
+              "7dfe38e29e9a65f3695dad9a585d85bd"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119B:1:fact:2",
+            "verdict": "supported",
+            "reason_code": "quote matches all elements",
+            "reason": "原文明确提及'Wrote API integration tests, reviewed changes with four colleagues, and documented deployment steps.'，对应集成测试、代码评审与部署文档编写三项行为。",
+            "anchor_ids": [
+              "f1681e4773a54c48a87f2c2d8e39ad5b",
+              "5fc98d5f2ee995e3eed47be7aa715da0"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119B:1:score",
+            "verdict": "supported",
+            "reason_code": "evidence matches 3-point anchor fully",
+            "reason": "证据支持参与项目（5年经验、FastAPI、PostgreSQL/Redis/Docker）、承担模块（API开发、查询优化、缓存、部署）、有可验证成果（QPS提升）；未提GitHub链接、Flask/Django、技术博客或架构主导，故不满足5分锚点；但明确有后端项目而非仅脚本，故排除0分；符合3分锚点全部要求。",
+            "anchor_ids": [
+              "a0b9ccacb8b62079409797147a176e6c",
+              "35b867d99ddf6a7c88a3b29736e0474e",
+              "0394b868430d5ba3f9c62ff410d46a8b",
+              "7dfe38e29e9a65f3695dad9a585d85bd",
+              "f1681e4773a54c48a87f2c2d8e39ad5b",
+              "5fc98d5f2ee995e3eed47be7aa715da0"
+            ]
+          },
+          {
+            "claim_id": "E2E20261119B:highlights:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "E2E20261119B:highlights:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "E2E20261119B:highlights:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "E2E20261119B:risk_points:0",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "E2E20261119B:risk_points:1",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          },
+          {
+            "claim_id": "E2E20261119B:risk_points:2",
+            "verdict": "error",
+            "reason_code": "grounding_unavailable",
+            "reason": "该命题暂未完成依据审查，需要重试。",
+            "anchor_ids": []
+          }
+        ],
+        "anchors": [
+          {
+            "evidence_id": "8b81ac40f7891dd487a75e7220a35c14",
+            "candidate_id": "E2E20261119A",
+            "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+            "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+            "chunk_id": "dd828275-e528-4603-a6eb-474e98d139b1",
+            "quote_start": 0,
+            "quote_end": 253,
+            "quote": "Technical lead for a synthetic enterprise knowledge assistant. Built Python, FastAPI, LangGraph, Milvus hybrid retrieval, embedding and reranking. Used parent-child chunks and page-level citations. Personally owned the retrieval and evaluation pipeline.",
+            "citation_url": "/api/evidence/citations/dd828275-e528-4603-a6eb-474e98d139b1?quote_start=0&quote_end=253",
+            "model_ref": "E1"
+          },
+          {
+            "evidence_id": "bf1bddaec8b97cd3a7c13baca36bad88",
+            "candidate_id": "E2E20261119A",
+            "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+            "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+            "chunk_id": "2433d004-c08f-47fe-9163-18791f32287f",
+            "quote_start": 0,
+            "quote_end": 253,
+            "quote": "Technical lead for a synthetic enterprise knowledge assistant. Built Python, FastAPI, LangGraph, Milvus hybrid retrieval, embedding and reranking. Used parent-child chunks and page-level citations. Personally owned the retrieval and evaluation pipeline.",
+            "citation_url": "/api/evidence/citations/2433d004-c08f-47fe-9163-18791f32287f?quote_start=0&quote_end=253",
+            "model_ref": "E2"
+          },
+          {
+            "evidence_id": "66eb1cef06808014c07c01853ced82f3",
+            "candidate_id": "E2E20261119A",
+            "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+            "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+            "chunk_id": "50c8d950-d1e6-4367-a51a-6401bbf77a97",
+            "quote_start": 0,
+            "quote_end": 134,
+            "quote": "Seven years of Python backend engineering. Led enterprise knowledge-base RAG delivery, retrieval evaluation and production operations.",
+            "citation_url": "/api/evidence/citations/50c8d950-d1e6-4367-a51a-6401bbf77a97?quote_start=0&quote_end=134",
+            "model_ref": "E3"
+          },
+          {
+            "evidence_id": "ffd2528214ea824aedca4a7b9f4d537f",
+            "candidate_id": "E2E20261119A",
+            "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+            "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+            "chunk_id": "6a447355-9a35-4e8b-86a5-907ab4163fa3",
+            "quote_start": 0,
+            "quote_end": 134,
+            "quote": "Seven years of Python backend engineering. Led enterprise knowledge-base RAG delivery, retrieval evaluation and production operations.",
+            "citation_url": "/api/evidence/citations/6a447355-9a35-4e8b-86a5-907ab4163fa3?quote_start=0&quote_end=134",
+            "model_ref": "E4"
+          },
+          {
+            "evidence_id": "fbd343d57675e4c4ef611075e70d95dd",
+            "candidate_id": "E2E20261119A",
+            "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+            "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+            "chunk_id": "50c8d950-d1e6-4367-a51a-6401bbf77a97",
+            "quote_start": 43,
+            "quote_end": 134,
+            "quote": "Led enterprise knowledge-base RAG delivery, retrieval evaluation and production operations.",
+            "citation_url": "/api/evidence/citations/50c8d950-d1e6-4367-a51a-6401bbf77a97?quote_start=43&quote_end=134",
+            "model_ref": "E5"
+          },
+          {
+            "evidence_id": "677bbad08568be876b2eef180d40f95d",
+            "candidate_id": "E2E20261119A",
+            "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+            "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+            "chunk_id": "6a447355-9a35-4e8b-86a5-907ab4163fa3",
+            "quote_start": 43,
+            "quote_end": 134,
+            "quote": "Led enterprise knowledge-base RAG delivery, retrieval evaluation and production operations.",
+            "citation_url": "/api/evidence/citations/6a447355-9a35-4e8b-86a5-907ab4163fa3?quote_start=43&quote_end=134",
+            "model_ref": "E6"
+          },
+          {
+            "evidence_id": "1e5a78585831738e8d9dcb4f6e04ba9a",
+            "candidate_id": "E2E20261119A",
+            "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+            "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+            "chunk_id": "081fa1e9-d535-4276-bb2d-3642298a5a27",
+            "quote_start": 0,
+            "quote_end": 215,
+            "quote": "Evaluated 300 manually labelled questions. Recall@10 improved from 70% to 88%; answer groundedness improved from 76% to 91%. Reduced median response latency from 4.5 to 2.8 seconds. These are fictional test metrics.",
+            "citation_url": "/api/evidence/citations/081fa1e9-d535-4276-bb2d-3642298a5a27?quote_start=0&quote_end=215",
+            "model_ref": "E7"
+          },
+          {
+            "evidence_id": "d69fd24edac5955b6e26a15e1f7dcd75",
+            "candidate_id": "E2E20261119A",
+            "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+            "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+            "chunk_id": "1d665605-f1e0-4a7a-a335-bcb8c4f25a7f",
+            "quote_start": 0,
+            "quote_end": 215,
+            "quote": "Evaluated 300 manually labelled questions. Recall@10 improved from 70% to 88%; answer groundedness improved from 76% to 91%. Reduced median response latency from 4.5 to 2.8 seconds. These are fictional test metrics.",
+            "citation_url": "/api/evidence/citations/1d665605-f1e0-4a7a-a335-bcb8c4f25a7f?quote_start=0&quote_end=215",
+            "model_ref": "E8"
+          },
+          {
+            "evidence_id": "423a4820c43b388a4b5b3efe6af38894",
+            "candidate_id": "E2E20261119A",
+            "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+            "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+            "chunk_id": "51911357-955c-48c0-b9e8-51cac77865c0",
+            "quote_start": 0,
+            "quote_end": 178,
+            "quote": "Deployed Docker services with PostgreSQL and Redis, added health checks, retries and rollback.   \nMentored three engineers and collaborated with HR to define acceptance criteria.",
+            "citation_url": "/api/evidence/citations/51911357-955c-48c0-b9e8-51cac77865c0?quote_start=0&quote_end=178",
+            "model_ref": "E9"
+          },
+          {
+            "evidence_id": "77fb82c7e6c83a14ee2bd6be36e87bfa",
+            "candidate_id": "E2E20261119A",
+            "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+            "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+            "chunk_id": "8c211109-c385-42fb-93f0-2519da303e5d",
+            "quote_start": 0,
+            "quote_end": 178,
+            "quote": "Deployed Docker services with PostgreSQL and Redis, added health checks, retries and rollback.   \nMentored three engineers and collaborated with HR to define acceptance criteria.",
+            "citation_url": "/api/evidence/citations/8c211109-c385-42fb-93f0-2519da303e5d?quote_start=0&quote_end=178",
+            "model_ref": "E10"
+          },
+          {
+            "evidence_id": "f637133ae0b762e4eba838973b2caa41",
+            "candidate_id": "E2E20261119A",
+            "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+            "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+            "chunk_id": "7599f43e-0e2c-4fc3-8f68-2a25b78f2bcd",
+            "quote_start": 0,
+            "quote_end": 55,
+            "quote": "Shanghai | 7 years experience | AI Application Engineer",
+            "citation_url": "/api/evidence/citations/7599f43e-0e2c-4fc3-8f68-2a25b78f2bcd?quote_start=0&quote_end=55",
+            "model_ref": "E11"
+          },
+          {
+            "evidence_id": "c1312535d55a7cb170548d3f3c1145df",
+            "candidate_id": "E2E20261119A",
+            "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+            "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+            "chunk_id": "968e9d42-dc7a-4dcd-beb5-4bb493780123",
+            "quote_start": 0,
+            "quote_end": 55,
+            "quote": "Shanghai | 7 years experience | AI Application Engineer",
+            "citation_url": "/api/evidence/citations/968e9d42-dc7a-4dcd-beb5-4bb493780123?quote_start=0&quote_end=55",
+            "model_ref": "E12"
+          },
+          {
+            "evidence_id": "1b8ec40d20e4d8dc31331c3508f2d6b2",
+            "candidate_id": "E2E20261119A",
+            "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+            "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+            "chunk_id": "51911357-955c-48c0-b9e8-51cac77865c0",
+            "quote_start": 0,
+            "quote_end": 94,
+            "quote": "Deployed Docker services with PostgreSQL and Redis, added health checks, retries and rollback.",
+            "citation_url": "/api/evidence/citations/51911357-955c-48c0-b9e8-51cac77865c0?quote_start=0&quote_end=94",
+            "model_ref": "E13"
+          },
+          {
+            "evidence_id": "e120466744d4777bbd1a22e00c306b76",
+            "candidate_id": "E2E20261119A",
+            "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+            "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+            "chunk_id": "8c211109-c385-42fb-93f0-2519da303e5d",
+            "quote_start": 0,
+            "quote_end": 94,
+            "quote": "Deployed Docker services with PostgreSQL and Redis, added health checks, retries and rollback.",
+            "citation_url": "/api/evidence/citations/8c211109-c385-42fb-93f0-2519da303e5d?quote_start=0&quote_end=94",
+            "model_ref": "E14"
+          },
+          {
+            "evidence_id": "a0b9ccacb8b62079409797147a176e6c",
+            "candidate_id": "E2E20261119B",
+            "document_id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+            "document_version_id": "039369cc-cbd8-4ae9-9275-564dbee417cc",
+            "chunk_id": "3180ca5e-7f6f-4a8c-a9dc-fc7cc773e052",
+            "quote_start": 0,
+            "quote_end": 187,
+            "quote": "Five years of Python backend engineering. Strong FastAPI, SQL, Docker, PostgreSQL and Redis experience. Participated in an internal RAG prototype but did not lead production RAG delivery.",
+            "citation_url": "/api/evidence/citations/3180ca5e-7f6f-4a8c-a9dc-fc7cc773e052?quote_start=0&quote_end=187",
+            "model_ref": "E15"
+          },
+          {
+            "evidence_id": "35b867d99ddf6a7c88a3b29736e0474e",
+            "candidate_id": "E2E20261119B",
+            "document_id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+            "document_version_id": "039369cc-cbd8-4ae9-9275-564dbee417cc",
+            "chunk_id": "c2d46b42-f6da-4fb8-9cbd-99d40daf0d08",
+            "quote_start": 0,
+            "quote_end": 187,
+            "quote": "Five years of Python backend engineering. Strong FastAPI, SQL, Docker, PostgreSQL and Redis experience. Participated in an internal RAG prototype but did not lead production RAG delivery.",
+            "citation_url": "/api/evidence/citations/c2d46b42-f6da-4fb8-9cbd-99d40daf0d08?quote_start=0&quote_end=187",
+            "model_ref": "E16"
+          },
+          {
+            "evidence_id": "0394b868430d5ba3f9c62ff410d46a8b",
+            "candidate_id": "E2E20261119B",
+            "document_id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+            "document_version_id": "039369cc-cbd8-4ae9-9275-564dbee417cc",
+            "chunk_id": "c70f9f29-1ae0-480e-a089-5b073a354696",
+            "quote_start": 0,
+            "quote_end": 198,
+            "quote": "Backend developer responsible for REST APIs, PostgreSQL query optimisation, Redis caching and Docker deployment. Improved API throughput from 150 to 300 requests per second in a synthetic load test.",
+            "citation_url": "/api/evidence/citations/c70f9f29-1ae0-480e-a089-5b073a354696?quote_start=0&quote_end=198",
+            "model_ref": "E17"
+          },
+          {
+            "evidence_id": "7dfe38e29e9a65f3695dad9a585d85bd",
+            "candidate_id": "E2E20261119B",
+            "document_id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+            "document_version_id": "039369cc-cbd8-4ae9-9275-564dbee417cc",
+            "chunk_id": "a1ea1115-f038-4ff0-a23f-467b3366ae2b",
+            "quote_start": 0,
+            "quote_end": 198,
+            "quote": "Backend developer responsible for REST APIs, PostgreSQL query optimisation, Redis caching and Docker deployment. Improved API throughput from 150 to 300 requests per second in a synthetic load test.",
+            "citation_url": "/api/evidence/citations/a1ea1115-f038-4ff0-a23f-467b3366ae2b?quote_start=0&quote_end=198",
+            "model_ref": "E18"
+          },
+          {
+            "evidence_id": "f1681e4773a54c48a87f2c2d8e39ad5b",
+            "candidate_id": "E2E20261119B",
+            "document_id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+            "document_version_id": "039369cc-cbd8-4ae9-9275-564dbee417cc",
+            "chunk_id": "4dff32b0-b757-4298-b1d2-09082359d7d0",
+            "quote_start": 0,
+            "quote_end": 151,
+            "quote": "Wrote API integration tests, reviewed changes with four colleagues, and documented deployment steps. Reliable delivery in established backend services.",
+            "citation_url": "/api/evidence/citations/4dff32b0-b757-4298-b1d2-09082359d7d0?quote_start=0&quote_end=151",
+            "model_ref": "E19"
+          },
+          {
+            "evidence_id": "5fc98d5f2ee995e3eed47be7aa715da0",
+            "candidate_id": "E2E20261119B",
+            "document_id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+            "document_version_id": "039369cc-cbd8-4ae9-9275-564dbee417cc",
+            "chunk_id": "a4e2f8e1-c94e-4561-93ea-17a5c65fd433",
+            "quote_start": 0,
+            "quote_end": 151,
+            "quote": "Wrote API integration tests, reviewed changes with four colleagues, and documented deployment steps. Reliable delivery in established backend services.",
+            "citation_url": "/api/evidence/citations/a4e2f8e1-c94e-4561-93ea-17a5c65fd433?quote_start=0&quote_end=151",
+            "model_ref": "E20"
+          },
+          {
+            "evidence_id": "bc6367da9167e793f208cec53821e9a0",
+            "candidate_id": "E2E20261119B",
+            "document_id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+            "document_version_id": "039369cc-cbd8-4ae9-9275-564dbee417cc",
+            "chunk_id": "ecd28262-91d5-4a6a-87f6-2a0f2f57a8fd",
+            "quote_start": 0,
+            "quote_end": 175,
+            "quote": "Production RAG operations and retrieval evaluation are unverified. Needs mentoring on LangGraph orchestration and parent-child chunking. These records are fictional test data.",
+            "citation_url": "/api/evidence/citations/ecd28262-91d5-4a6a-87f6-2a0f2f57a8fd?quote_start=0&quote_end=175",
+            "model_ref": "E21"
+          },
+          {
+            "evidence_id": "f98397eae8e0f0d02a636f9660a50d91",
+            "candidate_id": "E2E20261119B",
+            "document_id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+            "document_version_id": "039369cc-cbd8-4ae9-9275-564dbee417cc",
+            "chunk_id": "9e36dd84-abd1-4610-97d3-ca5acf207256",
+            "quote_start": 0,
+            "quote_end": 175,
+            "quote": "Production RAG operations and retrieval evaluation are unverified. Needs mentoring on LangGraph orchestration and parent-child chunking. These records are fictional test data.",
+            "citation_url": "/api/evidence/citations/9e36dd84-abd1-4610-97d3-ca5acf207256?quote_start=0&quote_end=175",
+            "model_ref": "E22"
+          },
+          {
+            "evidence_id": "f2a300ac1c447641ff48c097c70e9a78",
+            "candidate_id": "E2E20261119B",
+            "document_id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+            "document_version_id": "039369cc-cbd8-4ae9-9275-564dbee417cc",
+            "chunk_id": "faeebc3e-0c0a-4184-8cbf-c17e9b6dda16",
+            "quote_start": 0,
+            "quote_end": 55,
+            "quote": "Shanghai | 5 years experience | AI Application Engineer",
+            "citation_url": "/api/evidence/citations/faeebc3e-0c0a-4184-8cbf-c17e9b6dda16?quote_start=0&quote_end=55",
+            "model_ref": "E23"
+          },
+          {
+            "evidence_id": "67dc865d4f21f27b52b12f61f7ba39cc",
+            "candidate_id": "E2E20261119B",
+            "document_id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+            "document_version_id": "039369cc-cbd8-4ae9-9275-564dbee417cc",
+            "chunk_id": "6b79c668-8a7a-4d21-a301-fc1f102aedfd",
+            "quote_start": 0,
+            "quote_end": 55,
+            "quote": "Shanghai | 5 years experience | AI Application Engineer",
+            "citation_url": "/api/evidence/citations/6b79c668-8a7a-4d21-a301-fc1f102aedfd?quote_start=0&quote_end=55",
+            "model_ref": "E24"
+          },
+          {
+            "evidence_id": "3593f507669f5089b1250ef4448e1b98",
+            "candidate_id": "E2E20261119B",
+            "document_id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+            "document_version_id": "039369cc-cbd8-4ae9-9275-564dbee417cc",
+            "chunk_id": "96ebd6df-acaa-473d-92df-c275b881b454",
+            "quote_start": 0,
+            "quote_end": 227,
+            "quote": "Integrated a vector search API for a small knowledge-base proof of concept. Assisted with document ingestion. No ownership of hybrid retrieval, reranking or production evaluation. No measured RAG recall or groundedness results.",
+            "citation_url": "/api/evidence/citations/96ebd6df-acaa-473d-92df-c275b881b454?quote_start=0&quote_end=227",
+            "model_ref": "E25"
+          },
+          {
+            "evidence_id": "97f3e4912079e457ca16b6628466e2e1",
+            "candidate_id": "E2E20261119B",
+            "document_id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+            "document_version_id": "039369cc-cbd8-4ae9-9275-564dbee417cc",
+            "chunk_id": "9eea441d-a97f-45a8-8e04-b25b899c3b04",
+            "quote_start": 0,
+            "quote_end": 227,
+            "quote": "Integrated a vector search API for a small knowledge-base proof of concept. Assisted with document ingestion. No ownership of hybrid retrieval, reranking or production evaluation. No measured RAG recall or groundedness results.",
+            "citation_url": "/api/evidence/citations/9eea441d-a97f-45a8-8e04-b25b899c3b04?quote_start=0&quote_end=227",
+            "model_ref": "E26"
+          },
+          {
+            "evidence_id": "ae3b1a1ee70c344d425c00d53feacc93",
+            "candidate_id": "E2E20261119B",
+            "document_id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+            "document_version_id": "039369cc-cbd8-4ae9-9275-564dbee417cc",
+            "chunk_id": "3180ca5e-7f6f-4a8c-a9dc-fc7cc773e052",
+            "quote_start": 104,
+            "quote_end": 187,
+            "quote": "Participated in an internal RAG prototype but did not lead production RAG delivery.",
+            "citation_url": "/api/evidence/citations/3180ca5e-7f6f-4a8c-a9dc-fc7cc773e052?quote_start=104&quote_end=187",
+            "model_ref": "E27"
+          },
+          {
+            "evidence_id": "47ff2c9755c934e5ea3481a918bf1207",
+            "candidate_id": "E2E20261119B",
+            "document_id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+            "document_version_id": "039369cc-cbd8-4ae9-9275-564dbee417cc",
+            "chunk_id": "c2d46b42-f6da-4fb8-9cbd-99d40daf0d08",
+            "quote_start": 104,
+            "quote_end": 187,
+            "quote": "Participated in an internal RAG prototype but did not lead production RAG delivery.",
+            "citation_url": "/api/evidence/citations/c2d46b42-f6da-4fb8-9cbd-99d40daf0d08?quote_start=104&quote_end=187",
+            "model_ref": "E28"
+          }
+        ],
+        "original_assessments": [
+          {
+            "task_id": "E2E20261119A:1",
+            "candidate_id": "E2E20261119A",
+            "dimension_number": 1,
+            "evidence_status": "partial",
+            "score": 5,
+            "confidence": "high",
+            "evidence_refs": [
+              "8b81ac40f7891dd487a75e7220a35c14",
+              "bf1bddaec8b97cd3a7c13baca36bad88",
+              "66eb1cef06808014c07c01853ced82f3",
+              "ffd2528214ea824aedca4a7b9f4d537f"
+            ],
+            "missing_items": [
+              "GitHub or internal code repository usage is not mentioned",
+              "Flask or Django usage is explicitly absent",
+              "No explicit mention of service deployment with public code visibility or verifiability",
+              "No mention of Flask or Django usage",
+              "No description of framework selection rationale (e.g., why FastAPI over Flask/Django)",
+              "No evidence of technical blogging or interview-style articulation of implementation details",
+              "GitHub/内部代码库链接或可验证代码证据",
+              "技术博客或面试中关于框架选型（如FastAPI vs Flask/Django）及实现细节的清晰阐述",
+              "线上系统稳定运行的直接证明（如访问链接、监控截图、SLO报告等）"
+            ],
+            "conflicts": [],
+            "rationale": "证据显示候选人作为技术负责人，用Python+FastAPI独立构建了企业级知识助手后端，并‘个人负责检索与评估流水线’，符合5分锚点中‘独立负责设计、开发到上线全过程’的核心要求；七年Python后端经验与主导RAG交付也佐证其能力深度。但缺少代码库可验证性（E1/E2未提GitHub/内部库）、无框架选型 rationale 或技术表达证据（E1/E2仅列技术栈，未说明为何选FastAPI）、亦无线上稳定运行的直接证明，故不满足5分全部条件。3分锚点要求‘参与项目、承担模块但未主导核心架构或上线’，而证据明确显示其‘技术负责人’‘个人拥有流水线’，已超越模块开发层级。因此最贴近5分锚点，但因关键证据缺失，按规则降为partial，score=5。",
+            "reason_code": "",
+            "fact_claims": [
+              {
+                "text": "候选人担任技术负责人，独立构建了基于Python和FastAPI的企业级知识助手后端服务",
+                "evidence_refs": [
+                  "8b81ac40f7891dd487a75e7220a35c14",
+                  "bf1bddaec8b97cd3a7c13baca36bad88"
+                ]
+              },
+              {
+                "text": "候选人有七年Python后端工程经验，并主导企业知识库RAG交付、检索评估与生产运维",
+                "evidence_refs": [
+                  "66eb1cef06808014c07c01853ced82f3",
+                  "ffd2528214ea824aedca4a7b9f4d537f"
+                ]
+              },
+              {
+                "text": "候选人个人负责检索与评估流水线，体现对服务端逻辑设计与上线落地的端到端参与",
+                "evidence_refs": [
+                  "8b81ac40f7891dd487a75e7220a35c14",
+                  "bf1bddaec8b97cd3a7c13baca36bad88"
+                ]
+              }
+            ]
+          },
+          {
+            "task_id": "E2E20261119A:2",
+            "candidate_id": "E2E20261119A",
+            "dimension_number": 2,
+            "evidence_status": "sufficient",
+            "score": 5,
+            "confidence": "high",
+            "evidence_refs": [
+              "8b81ac40f7891dd487a75e7220a35c14",
+              "bf1bddaec8b97cd3a7c13baca36bad88",
+              "66eb1cef06808014c07c01853ced82f3",
+              "ffd2528214ea824aedca4a7b9f4d537f",
+              "fbd343d57675e4c4ef611075e70d95dd",
+              "677bbad08568be876b2eef180d40f95d",
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ],
+            "missing_items": [
+              "system screenshot",
+              "deployment link",
+              "customer acceptance document",
+              "knowledge source types (e.g., PDF, database, CRM) not specified",
+              "specific recall strategies beyond 'hybrid retrieval' not detailed",
+              "effect optimization techniques beyond embedding, reranking, and parent-child chunking not described",
+              "LlamaIndex usage not mentioned",
+              "no explicit mention of retrieval-augmented generation (RAG) architecture components beyond retrieval"
+            ],
+            "conflicts": [],
+            "rationale": "证据E1/E2明确项目为'synthetic enterprise knowledge assistant'，使用Milvus、LangGraph、混合检索、reranking等RAG关键技术，符合'企业级RAG项目（非Demo或学术实验）'要求；E3–E6多次强调'led enterprise knowledge-base RAG delivery'，体现端到端交付与核心角色；E7/E8提供可验证的业务指标提升（Recall@10 +18%、groundedness +15%、latency -1.7s），满足5分锚点中'主导/核心成员完成上线+可验证业务指标提升'全部条件。",
+            "reason_code": "",
+            "fact_claims": [
+              {
+                "text": "候选人作为技术负责人构建了面向企业的合成知识助手（synthetic enterprise knowledge assistant），明确使用Milvus向量数据库、LangGraph、混合检索、嵌入与重排序等RAG核心技术，且非Demo或学术实验。",
+                "evidence_refs": [
+                  "8b81ac40f7891dd487a75e7220a35c14",
+                  "bf1bddaec8b97cd3a7c13baca36bad88"
+                ]
+              },
+              {
+                "text": "候选人主导（led）企业级知识库RAG系统的交付、检索评估与生产运维，表明其端到端参与并承担核心责任。",
+                "evidence_refs": [
+                  "66eb1cef06808014c07c01853ced82f3",
+                  "ffd2528214ea824aedca4a7b9f4d537f",
+                  "fbd343d57675e4c4ef611075e70d95dd",
+                  "677bbad08568be876b2eef180d40f95d"
+                ]
+              },
+              {
+                "text": "候选人对300个手工标注问题开展检索评估，量化报告Recall@10（70%→88%）、答案可信度（76%→91%）及响应延迟（4.5s→2.8s）等业务可验证指标提升。",
+                "evidence_refs": [
+                  "1e5a78585831738e8d9dcb4f6e04ba9a",
+                  "d69fd24edac5955b6e26a15e1f7dcd75"
+                ]
+              }
+            ]
+          },
+          {
+            "task_id": "E2E20261119A:3",
+            "candidate_id": "E2E20261119A",
+            "dimension_number": 3,
+            "evidence_status": "partial",
+            "score": 3,
+            "confidence": "high",
+            "evidence_refs": [
+              "1e5a78585831738e8d9dcb4f6e04ba9a",
+              "d69fd24edac5955b6e26a15e1f7dcd75"
+            ],
+            "missing_items": [
+              "MRR numerical result",
+              "NDCG numerical result",
+              "Hit Rate numerical result",
+              "AB test description or results",
+              "Formal evaluation report document reference",
+              "Whether 'Recall@10' is explicitly labeled as 'recall rate' in context",
+              "MRR metrics",
+              "NDCG metrics",
+              "Hit Rate metrics",
+              "evaluation report",
+              "AB testing execution or design",
+              "evaluation dataset",
+              "evaluation script",
+              "visualization charts",
+              "MRR, NDCG, or Hit Rate metrics",
+              "Explicit description of evaluation scenario (e.g., FAQ matching, long-document paragraph retrieval)",
+              "AB testing methodology or results",
+              "Baseline model or system name used for comparison",
+              "Root-cause or attribution analysis linking changes to specific technical interventions",
+              "Evaluation dataset",
+              "Evaluation script",
+              "Visualization charts",
+              "Explicit evaluation scenario (e.g., FAQ matching)",
+              "Baseline model name",
+              "Root-cause attribution analysis"
+            ],
+            "conflicts": [],
+            "rationale": "候选人提供了Recall@10（即召回率）的量化结果（70%→88%），满足‘列出具体评测指标及数值结果’要求；但未提供MRR、NDCG、Hit Rate等其他核心指标数值，也无评测数据集、脚本、图表或AB测试描述，更未说明评测场景（如FAQ匹配）、基线对比与归因分析。证据明确显示其仅执行了基础量化评测，缺乏多维指标体系、统计显著性分析及业务归因，符合3分锚点‘执行过基础评测（如人工抽样打分），但缺乏指标体系与统计显著性分析’。",
+            "reason_code": "",
+            "fact_claims": [
+              {
+                "text": "使用300条人工标注问题进行评测，并报告Recall@10从70%提升至88%",
+                "evidence_refs": [
+                  "1e5a78585831738e8d9dcb4f6e04ba9a",
+                  "d69fd24edac5955b6e26a15e1f7dcd75"
+                ]
+              },
+              {
+                "text": "未报告MRR、NDCG、Hit Rate等任一其他检索评测指标的具体数值",
+                "evidence_refs": [
+                  "1e5a78585831738e8d9dcb4f6e04ba9a",
+                  "d69fd24edac5955b6e26a15e1f7dcd75"
+                ]
+              },
+              {
+                "text": "未提供评测数据集、脚本、可视化图表或正式评测报告",
+                "evidence_refs": [
+                  "1e5a78585831738e8d9dcb4f6e04ba9a",
+                  "d69fd24edac5955b6e26a15e1f7dcd75"
+                ]
+              },
+              {
+                "text": "未说明评测场景（如FAQ匹配/长文档段落召回）、基线模型名称或归因分析",
+                "evidence_refs": [
+                  "1e5a78585831738e8d9dcb4f6e04ba9a",
+                  "d69fd24edac5955b6e26a15e1f7dcd75"
+                ]
+              }
+            ]
+          },
+          {
+            "task_id": "E2E20261119A:4",
+            "candidate_id": "E2E20261119A",
+            "dimension_number": 4,
+            "evidence_status": "failed",
+            "score": null,
+            "confidence": "unavailable",
+            "evidence_refs": [
+              "423a4820c43b388a4b5b3efe6af38894",
+              "77fb82c7e6c83a14ee2bd6be36e87bfa",
+              "8b81ac40f7891dd487a75e7220a35c14",
+              "bf1bddaec8b97cd3a7c13baca36bad88",
+              "f637133ae0b762e4eba838973b2caa41",
+              "c1312535d55a7cb170548d3f3c1145df",
+              "66eb1cef06808014c07c01853ced82f3",
+              "ffd2528214ea824aedca4a7b9f4d537f",
+              "1b8ec40d20e4d8dc31331c3508f2d6b2",
+              "e120466744d4777bbd1a22e00c306b76"
+            ],
+            "missing_items": [],
+            "conflicts": [],
+            "rationale": "模型评分结果未通过证据校验，当前维度不纳入评分。",
+            "reason_code": "",
+            "fact_claims": []
+          },
+          {
+            "task_id": "E2E20261119B:1",
+            "candidate_id": "E2E20261119B",
+            "dimension_number": 1,
+            "evidence_status": "partial",
+            "score": 3,
+            "confidence": "high",
+            "evidence_refs": [
+              "a0b9ccacb8b62079409797147a176e6c",
+              "35b867d99ddf6a7c88a3b29736e0474e",
+              "0394b868430d5ba3f9c62ff410d46a8b",
+              "7dfe38e29e9a65f3695dad9a585d85bd",
+              "f1681e4773a54c48a87f2c2d8e39ad5b",
+              "5fc98d5f2ee995e3eed47be7aa715da0"
+            ],
+            "missing_items": [
+              "GitHub or internal code repository links or evidence of publicly/internal verifiable Python service code",
+              "Explicit mention of Flask or Django usage (beyond FastAPI)",
+              "Specific project names or codebase identifiers where Python backend services were deployed",
+              "No mention of Flask or Django usage or comparison",
+              "No evidence of technical blog writing or public articulation of framework design decisions",
+              "No description of API architecture trade-offs, middleware, dependency injection, async handling, or serialization choices in FastAPI/Flask/Django",
+              "No indication of experience explaining framework selection (e.g., FastAPI vs Flask vs Django) in interviews or documentation",
+              "GitHub或内部代码库中可验证的Python服务代码链接",
+              "Flask或Django框架使用证据",
+              "技术博客或面试中关于框架选型与实现细节的阐述"
+            ],
+            "conflicts": [],
+            "rationale": "候选人明确具备5年Python后端工程经验，使用FastAPI开发REST API，并完成集成测试、PostgreSQL优化、Redis缓存与Docker部署，且有性能提升数据（API吞吐量150→300 QPS），满足‘参与后端项目并承担模块开发’要求。但证据中无GitHub/内部代码库链接（E21/E22反证不可验证）、未提Flask/Django使用（E15–E18均只提FastAPI）、无技术博客或面试中框架选型阐述（E15–E26均未涉及），故不满足主导核心架构或上线的5分锚点，亦不满足0分（有明确后端项目而非仅脚本）。符合3分锚点：参与项目、承担模块（API、缓存、部署）、有可验证成果（性能提升），但缺线上系统证明与架构主导证据。",
+            "reason_code": "",
+            "fact_claims": [
+              {
+                "text": "具备5年Python后端工程经验，使用FastAPI开发REST API",
+                "evidence_refs": [
+                  "a0b9ccacb8b62079409797147a176e6c",
+                  "35b867d99ddf6a7c88a3b29736e0474e"
+                ]
+              },
+              {
+                "text": "负责REST API开发、PostgreSQL查询优化、Redis缓存与Docker部署，并将API吞吐量从150提升至300 QPS",
+                "evidence_refs": [
+                  "0394b868430d5ba3f9c62ff410d46a8b",
+                  "7dfe38e29e9a65f3695dad9a585d85bd"
+                ]
+              },
+              {
+                "text": "编写API集成测试，参与代码评审与部署文档编写",
+                "evidence_refs": [
+                  "f1681e4773a54c48a87f2c2d8e39ad5b",
+                  "5fc98d5f2ee995e3eed47be7aa715da0"
+                ]
+              }
+            ]
+          },
+          {
+            "task_id": "E2E20261119B:2",
+            "candidate_id": "E2E20261119B",
+            "dimension_number": 2,
+            "evidence_status": "failed",
+            "score": null,
+            "confidence": "unavailable",
+            "evidence_refs": [
+              "ae3b1a1ee70c344d425c00d53feacc93",
+              "47ff2c9755c934e5ea3481a918bf1207",
+              "3593f507669f5089b1250ef4448e1b98",
+              "97f3e4912079e457ca16b6628466e2e1",
+              "bc6367da9167e793f208cec53821e9a0",
+              "f98397eae8e0f0d02a636f9660a50d91",
+              "a0b9ccacb8b62079409797147a176e6c",
+              "35b867d99ddf6a7c88a3b29736e0474e"
+            ],
+            "missing_items": [],
+            "conflicts": [],
+            "rationale": "模型评分结果未通过证据校验，当前维度不纳入评分。",
+            "reason_code": "",
+            "fact_claims": []
+          },
+          {
+            "task_id": "E2E20261119B:3",
+            "candidate_id": "E2E20261119B",
+            "dimension_number": 3,
+            "evidence_status": "failed",
+            "score": null,
+            "confidence": "unavailable",
+            "evidence_refs": [
+              "3593f507669f5089b1250ef4448e1b98",
+              "97f3e4912079e457ca16b6628466e2e1",
+              "bc6367da9167e793f208cec53821e9a0",
+              "f98397eae8e0f0d02a636f9660a50d91",
+              "a0b9ccacb8b62079409797147a176e6c",
+              "35b867d99ddf6a7c88a3b29736e0474e"
+            ],
+            "missing_items": [],
+            "conflicts": [],
+            "rationale": "模型评分结果未通过证据校验，当前维度不纳入评分。",
+            "reason_code": "",
+            "fact_claims": []
+          },
+          {
+            "task_id": "E2E20261119B:4",
+            "candidate_id": "E2E20261119B",
+            "dimension_number": 4,
+            "evidence_status": "missing",
+            "score": null,
+            "confidence": "high",
+            "evidence_refs": [],
+            "missing_items": [
+              "No mention of 'independent主导', 'Owner', or 'from 0 to 1' language for any of the required capabilities",
+              "No project name or timeline (e.g., start/end month-year) provided",
+              "No evidence of CI/CD pipeline design, gray release strategy, SLA monitoring/alerting implementation, or Kubernetes usage",
+              "No indication of responsibility scope beyond 'responsible for Docker deployment' in a team context",
+              "Docker deployment record",
+              "CI/CD pipeline screenshot or configuration",
+              "Kubernetes configuration snippet",
+              "Gray release implementation or documentation",
+              "SLA monitoring setup or metrics",
+              "Alerting system configuration or evidence",
+              "CI/CD pipeline design and automation",
+              "Gray release strategy and execution",
+              "SLA definition, measurement, and reporting mechanisms",
+              "Monitoring and alerting infrastructure (e.g., Prometheus, Grafana, Alertmanager)",
+              "Kubernetes cluster management or service orchestration",
+              "Incident response and fault resolution workflow documentation",
+              "SLA保障措施的具体内容（如冗余、自动扩缩容、熔断降级等）",
+              "监控看板（dashboard）的技术栈、指标覆盖范围及使用效果",
+              "简历中缺乏‘独立主导’‘Owner’‘从0到1上线’等表述及对应项目周期",
+              "未提供Docker部署记录、CI/CD流水线截图或K8s配置片段",
+              "未说明故障处理过程、SLA保障措施及监控看板建设情况"
+            ],
+            "conflicts": [],
+            "rationale": "证据中仅提及‘Docker部署’，但未说明是否独立主导、是否覆盖全链路（如CI/CD、灰度发布、SLA保障、监控告警、K8s编排等），也无项目周期、部署记录、流水线截图、配置片段或故障处理/监控看板建设的任何描述。所有三项证据要求均未满足，无法判断其是否具备独立主导上线与工程交付能力。",
+            "reason_code": "",
+            "fact_claims": []
+          }
+        ],
+        "candidates": [
+          {
+            "candidate_id": "E2E20261119B",
+            "confirmed_score": 15.0,
+            "possible_score": 90.0,
+            "evidence_coverage_percent": 25,
+            "confidence": "low",
+            "dimensions": [
+              {
+                "task_id": "E2E20261119B:1",
+                "candidate_id": "E2E20261119B",
+                "dimension_number": 1,
+                "evidence_status": "partial",
+                "score": 3,
+                "confidence": "high",
+                "evidence_refs": [
+                  "a0b9ccacb8b62079409797147a176e6c",
+                  "35b867d99ddf6a7c88a3b29736e0474e",
+                  "0394b868430d5ba3f9c62ff410d46a8b",
+                  "7dfe38e29e9a65f3695dad9a585d85bd",
+                  "f1681e4773a54c48a87f2c2d8e39ad5b",
+                  "5fc98d5f2ee995e3eed47be7aa715da0"
+                ],
+                "missing_items": [
+                  "GitHub or internal code repository links or evidence of publicly/internal verifiable Python service code",
+                  "Explicit mention of Flask or Django usage (beyond FastAPI)",
+                  "Specific project names or codebase identifiers where Python backend services were deployed",
+                  "No mention of Flask or Django usage or comparison",
+                  "No evidence of technical blog writing or public articulation of framework design decisions",
+                  "No description of API architecture trade-offs, middleware, dependency injection, async handling, or serialization choices in FastAPI/Flask/Django",
+                  "No indication of experience explaining framework selection (e.g., FastAPI vs Flask vs Django) in interviews or documentation",
+                  "GitHub或内部代码库中可验证的Python服务代码链接",
+                  "Flask或Django框架使用证据",
+                  "技术博客或面试中关于框架选型与实现细节的阐述"
+                ],
+                "conflicts": [],
+                "rationale": "候选人明确具备5年Python后端工程经验，使用FastAPI开发REST API，并完成集成测试、PostgreSQL优化、Redis缓存与Docker部署，且有性能提升数据（API吞吐量150→300 QPS），满足‘参与后端项目并承担模块开发’要求。但证据中无GitHub/内部代码库链接（E21/E22反证不可验证）、未提Flask/Django使用（E15–E18均只提FastAPI）、无技术博客或面试中框架选型阐述（E15–E26均未涉及），故不满足主导核心架构或上线的5分锚点，亦不满足0分（有明确后端项目而非仅脚本）。符合3分锚点：参与项目、承担模块（API、缓存、部署）、有可验证成果（性能提升），但缺线上系统证明与架构主导证据。",
+                "reason_code": "",
+                "fact_claims": [
+                  {
+                    "text": "具备5年Python后端工程经验，使用FastAPI开发REST API",
+                    "evidence_refs": [
+                      "a0b9ccacb8b62079409797147a176e6c",
+                      "35b867d99ddf6a7c88a3b29736e0474e"
+                    ]
+                  },
+                  {
+                    "text": "负责REST API开发、PostgreSQL查询优化、Redis缓存与Docker部署，并将API吞吐量从150提升至300 QPS",
+                    "evidence_refs": [
+                      "0394b868430d5ba3f9c62ff410d46a8b",
+                      "7dfe38e29e9a65f3695dad9a585d85bd"
+                    ]
+                  },
+                  {
+                    "text": "编写API集成测试，参与代码评审与部署文档编写",
+                    "evidence_refs": [
+                      "f1681e4773a54c48a87f2c2d8e39ad5b",
+                      "5fc98d5f2ee995e3eed47be7aa715da0"
+                    ]
+                  }
+                ]
+              },
+              {
+                "task_id": "E2E20261119B:2",
+                "candidate_id": "E2E20261119B",
+                "dimension_number": 2,
+                "evidence_status": "failed",
+                "score": null,
+                "confidence": "unavailable",
+                "evidence_refs": [
+                  "ae3b1a1ee70c344d425c00d53feacc93",
+                  "47ff2c9755c934e5ea3481a918bf1207",
+                  "3593f507669f5089b1250ef4448e1b98",
+                  "97f3e4912079e457ca16b6628466e2e1",
+                  "bc6367da9167e793f208cec53821e9a0",
+                  "f98397eae8e0f0d02a636f9660a50d91",
+                  "a0b9ccacb8b62079409797147a176e6c",
+                  "35b867d99ddf6a7c88a3b29736e0474e"
+                ],
+                "missing_items": [],
+                "conflicts": [],
+                "rationale": "模型评分结果未通过证据校验，当前维度不纳入评分。",
+                "reason_code": "",
+                "fact_claims": []
+              },
+              {
+                "task_id": "E2E20261119B:3",
+                "candidate_id": "E2E20261119B",
+                "dimension_number": 3,
+                "evidence_status": "failed",
+                "score": null,
+                "confidence": "unavailable",
+                "evidence_refs": [
+                  "3593f507669f5089b1250ef4448e1b98",
+                  "97f3e4912079e457ca16b6628466e2e1",
+                  "bc6367da9167e793f208cec53821e9a0",
+                  "f98397eae8e0f0d02a636f9660a50d91",
+                  "a0b9ccacb8b62079409797147a176e6c",
+                  "35b867d99ddf6a7c88a3b29736e0474e"
+                ],
+                "missing_items": [],
+                "conflicts": [],
+                "rationale": "模型评分结果未通过证据校验，当前维度不纳入评分。",
+                "reason_code": "",
+                "fact_claims": []
+              },
+              {
+                "task_id": "E2E20261119B:4",
+                "candidate_id": "E2E20261119B",
+                "dimension_number": 4,
+                "evidence_status": "missing",
+                "score": null,
+                "confidence": "high",
+                "evidence_refs": [],
+                "missing_items": [
+                  "No mention of 'independent主导', 'Owner', or 'from 0 to 1' language for any of the required capabilities",
+                  "No project name or timeline (e.g., start/end month-year) provided",
+                  "No evidence of CI/CD pipeline design, gray release strategy, SLA monitoring/alerting implementation, or Kubernetes usage",
+                  "No indication of responsibility scope beyond 'responsible for Docker deployment' in a team context",
+                  "Docker deployment record",
+                  "CI/CD pipeline screenshot or configuration",
+                  "Kubernetes configuration snippet",
+                  "Gray release implementation or documentation",
+                  "SLA monitoring setup or metrics",
+                  "Alerting system configuration or evidence",
+                  "CI/CD pipeline design and automation",
+                  "Gray release strategy and execution",
+                  "SLA definition, measurement, and reporting mechanisms",
+                  "Monitoring and alerting infrastructure (e.g., Prometheus, Grafana, Alertmanager)",
+                  "Kubernetes cluster management or service orchestration",
+                  "Incident response and fault resolution workflow documentation",
+                  "SLA保障措施的具体内容（如冗余、自动扩缩容、熔断降级等）",
+                  "监控看板（dashboard）的技术栈、指标覆盖范围及使用效果",
+                  "简历中缺乏‘独立主导’‘Owner’‘从0到1上线’等表述及对应项目周期",
+                  "未提供Docker部署记录、CI/CD流水线截图或K8s配置片段",
+                  "未说明故障处理过程、SLA保障措施及监控看板建设情况"
+                ],
+                "conflicts": [],
+                "rationale": "证据中仅提及‘Docker部署’，但未说明是否独立主导、是否覆盖全链路（如CI/CD、灰度发布、SLA保障、监控告警、K8s编排等），也无项目周期、部署记录、流水线截图、配置片段或故障处理/监控看板建设的任何描述。所有三项证据要求均未满足，无法判断其是否具备独立主导上线与工程交付能力。",
+                "reason_code": "",
+                "fact_claims": []
+              }
+            ],
+            "consistency_issues": []
+          },
+          {
+            "candidate_id": "E2E20261119A",
+            "confirmed_score": 0.0,
+            "possible_score": 100.0,
+            "evidence_coverage_percent": 0,
+            "confidence": "low",
+            "dimensions": [
+              {
+                "task_id": "E2E20261119A:1",
+                "candidate_id": "E2E20261119A",
+                "dimension_number": 1,
+                "evidence_status": "failed",
+                "score": null,
+                "confidence": "unavailable",
+                "evidence_refs": [
+                  "8b81ac40f7891dd487a75e7220a35c14",
+                  "bf1bddaec8b97cd3a7c13baca36bad88",
+                  "66eb1cef06808014c07c01853ced82f3",
+                  "ffd2528214ea824aedca4a7b9f4d537f"
+                ],
+                "missing_items": [
+                  "GitHub or internal code repository usage is not mentioned",
+                  "Flask or Django usage is explicitly absent",
+                  "No explicit mention of service deployment with public code visibility or verifiability",
+                  "No mention of Flask or Django usage",
+                  "No description of framework selection rationale (e.g., why FastAPI over Flask/Django)",
+                  "No evidence of technical blogging or interview-style articulation of implementation details",
+                  "GitHub/内部代码库链接或可验证代码证据",
+                  "技术博客或面试中关于框架选型（如FastAPI vs Flask/Django）及实现细节的清晰阐述",
+                  "线上系统稳定运行的直接证明（如访问链接、监控截图、SLO报告等）"
+                ],
+                "conflicts": [],
+                "rationale": "评分依据尚未通过审查，本维度暂未评分。",
+                "reason_code": "score_grounding_rejected",
+                "fact_claims": [
+                  {
+                    "text": "候选人担任技术负责人，独立构建了基于Python和FastAPI的企业级知识助手后端服务",
+                    "evidence_refs": [
+                      "8b81ac40f7891dd487a75e7220a35c14",
+                      "bf1bddaec8b97cd3a7c13baca36bad88"
+                    ]
+                  },
+                  {
+                    "text": "候选人有七年Python后端工程经验，并主导企业知识库RAG交付、检索评估与生产运维",
+                    "evidence_refs": [
+                      "66eb1cef06808014c07c01853ced82f3",
+                      "ffd2528214ea824aedca4a7b9f4d537f"
+                    ]
+                  },
+                  {
+                    "text": "候选人个人负责检索与评估流水线，体现对服务端逻辑设计与上线落地的端到端参与",
+                    "evidence_refs": [
+                      "8b81ac40f7891dd487a75e7220a35c14",
+                      "bf1bddaec8b97cd3a7c13baca36bad88"
+                    ]
+                  }
+                ]
+              },
+              {
+                "task_id": "E2E20261119A:2",
+                "candidate_id": "E2E20261119A",
+                "dimension_number": 2,
+                "evidence_status": "failed",
+                "score": null,
+                "confidence": "unavailable",
+                "evidence_refs": [
+                  "8b81ac40f7891dd487a75e7220a35c14",
+                  "bf1bddaec8b97cd3a7c13baca36bad88",
+                  "66eb1cef06808014c07c01853ced82f3",
+                  "ffd2528214ea824aedca4a7b9f4d537f",
+                  "fbd343d57675e4c4ef611075e70d95dd",
+                  "677bbad08568be876b2eef180d40f95d",
+                  "1e5a78585831738e8d9dcb4f6e04ba9a",
+                  "d69fd24edac5955b6e26a15e1f7dcd75"
+                ],
+                "missing_items": [
+                  "system screenshot",
+                  "deployment link",
+                  "customer acceptance document",
+                  "knowledge source types (e.g., PDF, database, CRM) not specified",
+                  "specific recall strategies beyond 'hybrid retrieval' not detailed",
+                  "effect optimization techniques beyond embedding, reranking, and parent-child chunking not described",
+                  "LlamaIndex usage not mentioned",
+                  "no explicit mention of retrieval-augmented generation (RAG) architecture components beyond retrieval"
+                ],
+                "conflicts": [],
+                "rationale": "评分依据尚未通过审查，本维度暂未评分。",
+                "reason_code": "score_grounding_rejected",
+                "fact_claims": [
+                  {
+                    "text": "候选人作为技术负责人构建了面向企业的合成知识助手（synthetic enterprise knowledge assistant），明确使用Milvus向量数据库、LangGraph、混合检索、嵌入与重排序等RAG核心技术，且非Demo或学术实验。",
+                    "evidence_refs": [
+                      "8b81ac40f7891dd487a75e7220a35c14",
+                      "bf1bddaec8b97cd3a7c13baca36bad88"
+                    ]
+                  },
+                  {
+                    "text": "候选人主导（led）企业级知识库RAG系统的交付、检索评估与生产运维，表明其端到端参与并承担核心责任。",
+                    "evidence_refs": [
+                      "66eb1cef06808014c07c01853ced82f3",
+                      "ffd2528214ea824aedca4a7b9f4d537f",
+                      "fbd343d57675e4c4ef611075e70d95dd",
+                      "677bbad08568be876b2eef180d40f95d"
+                    ]
+                  },
+                  {
+                    "text": "候选人对300个手工标注问题开展检索评估，量化报告Recall@10（70%→88%）、答案可信度（76%→91%）及响应延迟（4.5s→2.8s）等业务可验证指标提升。",
+                    "evidence_refs": [
+                      "1e5a78585831738e8d9dcb4f6e04ba9a",
+                      "d69fd24edac5955b6e26a15e1f7dcd75"
+                    ]
+                  }
+                ]
+              },
+              {
+                "task_id": "E2E20261119A:3",
+                "candidate_id": "E2E20261119A",
+                "dimension_number": 3,
+                "evidence_status": "failed",
+                "score": null,
+                "confidence": "unavailable",
+                "evidence_refs": [
+                  "1e5a78585831738e8d9dcb4f6e04ba9a",
+                  "d69fd24edac5955b6e26a15e1f7dcd75"
+                ],
+                "missing_items": [
+                  "MRR numerical result",
+                  "NDCG numerical result",
+                  "Hit Rate numerical result",
+                  "AB test description or results",
+                  "Formal evaluation report document reference",
+                  "Whether 'Recall@10' is explicitly labeled as 'recall rate' in context",
+                  "MRR metrics",
+                  "NDCG metrics",
+                  "Hit Rate metrics",
+                  "evaluation report",
+                  "AB testing execution or design",
+                  "evaluation dataset",
+                  "evaluation script",
+                  "visualization charts",
+                  "MRR, NDCG, or Hit Rate metrics",
+                  "Explicit description of evaluation scenario (e.g., FAQ matching, long-document paragraph retrieval)",
+                  "AB testing methodology or results",
+                  "Baseline model or system name used for comparison",
+                  "Root-cause or attribution analysis linking changes to specific technical interventions",
+                  "Evaluation dataset",
+                  "Evaluation script",
+                  "Visualization charts",
+                  "Explicit evaluation scenario (e.g., FAQ matching)",
+                  "Baseline model name",
+                  "Root-cause attribution analysis"
+                ],
+                "conflicts": [],
+                "rationale": "评分依据尚未通过审查，本维度暂未评分。",
+                "reason_code": "score_grounding_rejected",
+                "fact_claims": [
+                  {
+                    "text": "使用300条人工标注问题进行评测，并报告Recall@10从70%提升至88%",
+                    "evidence_refs": [
+                      "1e5a78585831738e8d9dcb4f6e04ba9a",
+                      "d69fd24edac5955b6e26a15e1f7dcd75"
+                    ]
+                  },
+                  {
+                    "text": "未报告MRR、NDCG、Hit Rate等任一其他检索评测指标的具体数值",
+                    "evidence_refs": [
+                      "1e5a78585831738e8d9dcb4f6e04ba9a",
+                      "d69fd24edac5955b6e26a15e1f7dcd75"
+                    ]
+                  },
+                  {
+                    "text": "未提供评测数据集、脚本、可视化图表或正式评测报告",
+                    "evidence_refs": [
+                      "1e5a78585831738e8d9dcb4f6e04ba9a",
+                      "d69fd24edac5955b6e26a15e1f7dcd75"
+                    ]
+                  },
+                  {
+                    "text": "未说明评测场景（如FAQ匹配/长文档段落召回）、基线模型名称或归因分析",
+                    "evidence_refs": [
+                      "1e5a78585831738e8d9dcb4f6e04ba9a",
+                      "d69fd24edac5955b6e26a15e1f7dcd75"
+                    ]
+                  }
+                ]
+              },
+              {
+                "task_id": "E2E20261119A:4",
+                "candidate_id": "E2E20261119A",
+                "dimension_number": 4,
+                "evidence_status": "failed",
+                "score": null,
+                "confidence": "unavailable",
+                "evidence_refs": [
+                  "423a4820c43b388a4b5b3efe6af38894",
+                  "77fb82c7e6c83a14ee2bd6be36e87bfa",
+                  "8b81ac40f7891dd487a75e7220a35c14",
+                  "bf1bddaec8b97cd3a7c13baca36bad88",
+                  "f637133ae0b762e4eba838973b2caa41",
+                  "c1312535d55a7cb170548d3f3c1145df",
+                  "66eb1cef06808014c07c01853ced82f3",
+                  "ffd2528214ea824aedca4a7b9f4d537f",
+                  "1b8ec40d20e4d8dc31331c3508f2d6b2",
+                  "e120466744d4777bbd1a22e00c306b76"
+                ],
+                "missing_items": [],
+                "conflicts": [],
+                "rationale": "模型评分结果未通过证据校验，当前维度不纳入评分。",
+                "reason_code": "",
+                "fact_claims": []
+              }
+            ],
+            "consistency_issues": []
+          }
+        ],
+        "verification": {
+          "template_version": "verification-templates-v1",
+          "candidates": {
+            "E2E20261119A": {
+              "items": [
+                {
+                  "item_id": "6b27ba6cec0116f2f5cf1040ac485f50",
+                  "candidate_id": "E2E20261119A",
+                  "dimension_numbers": [
+                    1
+                  ],
+                  "reason_type": "unsupported",
+                  "trigger_ids": [
+                    "E2E20261119A:1:score"
+                  ],
+                  "anchor_ids": [
+                    "8b81ac40f7891dd487a75e7220a35c14",
+                    "bf1bddaec8b97cd3a7c13baca36bad88",
+                    "66eb1cef06808014c07c01853ced82f3",
+                    "ffd2528214ea824aedca4a7b9f4d537f"
+                  ],
+                  "trigger_details": [
+                    "维度：Python后端开发能力；定义：评估候选人是否具备扎实的Python后端开发能力，能独立完成服务端逻辑设计、API开发与集成。；评分锚点：[{'score': 0, 'description': '无Python后端项目经验，仅使用Python做脚本或数据分析'}, {'score': 3, 'description': '参与过Python后端项目，承担模块开发，但未主导核心架构或上线'}, {'score': 5, 'description': '独立负责Python后端服务从设计、开发到上线的全过程，有线上稳定运行系统证明'}]；拟评5分；依据：证据显示候选人作为技术负责人，用Python+FastAPI独立构建了企业级知识助手后端，并‘个人负责检索与评估流水线’，符合5分锚点中‘独立负责设计、开发到上线全过程’的核心要求；七年Python后端经验与主导RAG交付也佐证其能力深度。但缺少代码库可验证性（E1/E2未提GitHub/内部库）、无框架选型 rationale 或技术表达证据（E1/E2仅列技术栈，未说明为何选FastAPI）、亦无线上稳定运行的直接证明，故不满足5分全部条件。3分锚点要求‘参与项目、承担模块但未主导核心架构或上线’，而证据明确显示其‘技术负责人’‘个人拥有流水线’，已超越模块开发层级。因此最贴近5分锚点，但因关键证据缺失，按规则降为partial，score=5。"
+                  ],
+                  "question": "关于Python后端开发能力：当前判断尚缺少直接依据，请说明实际职责与交付范围。",
+                  "expected_material": "请提供可核实的职责分工、项目记录或效果指标。",
+                  "priority": 25
+                },
+                {
+                  "item_id": "b9038ebe6ea14e27ced43a0a07e94cd8",
+                  "candidate_id": "E2E20261119A",
+                  "dimension_numbers": [
+                    3
+                  ],
+                  "reason_type": "unsupported",
+                  "trigger_ids": [
+                    "E2E20261119A:3:fact:1"
+                  ],
+                  "anchor_ids": [
+                    "1e5a78585831738e8d9dcb4f6e04ba9a",
+                    "d69fd24edac5955b6e26a15e1f7dcd75"
+                  ],
+                  "trigger_details": [
+                    "未报告MRR、NDCG、Hit Rate等任一其他检索评测指标的具体数值"
+                  ],
+                  "question": "关于量化检索评测能力：当前判断尚缺少直接依据，请说明实际职责与交付范围。",
+                  "expected_material": "请提供可核实的职责分工、项目记录或效果指标。",
+                  "priority": 25
+                },
+                {
+                  "item_id": "b97a18ada3b2ed29bddeb80590c8a38c",
+                  "candidate_id": "E2E20261119A",
+                  "dimension_numbers": [
+                    2
+                  ],
+                  "reason_type": "unsupported",
+                  "trigger_ids": [
+                    "E2E20261119A:2:score"
+                  ],
+                  "anchor_ids": [
+                    "8b81ac40f7891dd487a75e7220a35c14",
+                    "bf1bddaec8b97cd3a7c13baca36bad88",
+                    "66eb1cef06808014c07c01853ced82f3",
+                    "ffd2528214ea824aedca4a7b9f4d537f",
+                    "fbd343d57675e4c4ef611075e70d95dd",
+                    "677bbad08568be876b2eef180d40f95d",
+                    "1e5a78585831738e8d9dcb4f6e04ba9a",
+                    "d69fd24edac5955b6e26a15e1f7dcd75"
+                  ],
+                  "trigger_details": [
+                    "维度：企业知识库RAG项目实操经验；定义：评估候选人是否真实参与并交付过面向企业场景的知识库RAG系统，涵盖数据接入、检索增强、LLM集成与业务落地。；评分锚点：[{'score': 0, 'description': '无RAG相关经验，或仅调用现成API做简单问答'}, {'score': 3, 'description': '参与RAG项目，负责其中一环（如向量入库或Prompt调优），但未端到端交付'}, {'score': 5, 'description': '主导或作为核心成员完成企业知识库RAG项目上线，有可验证的业务指标提升（如客服响应准确率+X%）'}]；拟评5分；依据：证据E1/E2明确项目为'synthetic enterprise knowledge assistant'，使用Milvus、LangGraph、混合检索、reranking等RAG关键技术，符合'企业级RAG项目（非Demo或学术实验）'要求；E3–E6多次强调'led enterprise knowledge-base RAG delivery'，体现端到端交付与核心角色；E7/E8提供可验证的业务指标提升（Recall@10 +18%、groundedness +15%、latency -1.7s），满足5分锚点中'主导/核心成员完成上线+可验证业务指标提升'全部条件。"
+                  ],
+                  "question": "关于企业知识库RAG项目实操经验：当前判断尚缺少直接依据，请说明实际职责与交付范围。",
+                  "expected_material": "请提供可核实的职责分工、项目记录或效果指标。",
+                  "priority": 25
+                }
+              ],
+              "technical_actions": [
+                {
+                  "item_id": "cb68fa59c58da1f46470df65c5d79b5e",
+                  "candidate_id": "E2E20261119A",
+                  "dimension_numbers": [
+                    4
+                  ],
+                  "trigger_ids": [
+                    "E2E20261119A:4"
+                  ],
+                  "reason_type": "technical",
+                  "reason_code": "evaluation_failed",
+                  "question": "独立主导上线与工程交付能力评分暂未完成，需要重试。"
+                }
+              ],
+              "omitted_count": 0
+            },
+            "E2E20261119B": {
+              "items": [
+                {
+                  "item_id": "015a13b2f1253ba41a9be911156c57e6",
+                  "candidate_id": "E2E20261119B",
+                  "dimension_numbers": [
+                    4
+                  ],
+                  "reason_type": "missing",
+                  "trigger_ids": [
+                    "2aa3668de049b43a40b061d0d985c511"
+                  ],
+                  "anchor_ids": [],
+                  "trigger_details": [
+                    "Gray release implementation or documentation"
+                  ],
+                  "question": "关于独立主导上线与工程交付能力：请补充说明相关项目、时期、职责与结果。",
+                  "expected_material": "请提供可核实的职责分工、项目记录或效果指标。",
+                  "priority": 25
+                },
+                {
+                  "item_id": "065fde2bc5ea56ce0086bee469488bae",
+                  "candidate_id": "E2E20261119B",
+                  "dimension_numbers": [
+                    4
+                  ],
+                  "reason_type": "missing",
+                  "trigger_ids": [
+                    "61aa5393ac12ca32d4892c0686ff0e68"
+                  ],
+                  "anchor_ids": [],
+                  "trigger_details": [
+                    "SLA definition, measurement, and reporting mechanisms"
+                  ],
+                  "question": "关于独立主导上线与工程交付能力：请补充说明相关项目、时期、职责与结果。",
+                  "expected_material": "请提供可核实的职责分工、项目记录或效果指标。",
+                  "priority": 25
+                },
+                {
+                  "item_id": "12eb7410370460ba0a97aba888db07f0",
+                  "candidate_id": "E2E20261119B",
+                  "dimension_numbers": [
+                    1
+                  ],
+                  "reason_type": "missing",
+                  "trigger_ids": [
+                    "ffcd89e747cbb18d7faf5cfc240b6a4e"
+                  ],
+                  "anchor_ids": [],
+                  "trigger_details": [
+                    "技术博客或面试中关于框架选型与实现细节的阐述"
+                  ],
+                  "question": "关于Python后端开发能力：请补充说明相关项目、时期、职责与结果。",
+                  "expected_material": "请提供可核实的职责分工、项目记录或效果指标。",
+                  "priority": 25
+                },
+                {
+                  "item_id": "196e84b9f9a84f15ef0c05e11d2368d1",
+                  "candidate_id": "E2E20261119B",
+                  "dimension_numbers": [
+                    4
+                  ],
+                  "reason_type": "missing",
+                  "trigger_ids": [
+                    "934b69d3a2a923038453f22d289c6afc"
+                  ],
+                  "anchor_ids": [],
+                  "trigger_details": [
+                    "Alerting system configuration or evidence"
+                  ],
+                  "question": "关于独立主导上线与工程交付能力：请补充说明相关项目、时期、职责与结果。",
+                  "expected_material": "请提供可核实的职责分工、项目记录或效果指标。",
+                  "priority": 25
+                },
+                {
+                  "item_id": "1a3cb554a0959663aa3a7bdf74a334c4",
+                  "candidate_id": "E2E20261119B",
+                  "dimension_numbers": [
+                    4
+                  ],
+                  "reason_type": "missing",
+                  "trigger_ids": [
+                    "0636e7cdcf7112394240b91c7634ea1a"
+                  ],
+                  "anchor_ids": [],
+                  "trigger_details": [
+                    "Docker deployment record"
+                  ],
+                  "question": "关于独立主导上线与工程交付能力：请补充说明相关项目、时期、职责与结果。",
+                  "expected_material": "请提供可核实的职责分工、项目记录或效果指标。",
+                  "priority": 25
+                },
+                {
+                  "item_id": "226f6bbe78cefe2e5ee82a7131600000",
+                  "candidate_id": "E2E20261119B",
+                  "dimension_numbers": [
+                    4
+                  ],
+                  "reason_type": "missing",
+                  "trigger_ids": [
+                    "2642c8b567d6a9044c937ade61a94da9"
+                  ],
+                  "anchor_ids": [],
+                  "trigger_details": [
+                    "Monitoring and alerting infrastructure (e.g., Prometheus, Grafana, Alertmanager)"
+                  ],
+                  "question": "关于独立主导上线与工程交付能力：请补充说明相关项目、时期、职责与结果。",
+                  "expected_material": "请提供可核实的职责分工、项目记录或效果指标。",
+                  "priority": 25
+                },
+                {
+                  "item_id": "2328cd3885e6515e9fbb56c47f13cffc",
+                  "candidate_id": "E2E20261119B",
+                  "dimension_numbers": [
+                    4
+                  ],
+                  "reason_type": "missing",
+                  "trigger_ids": [
+                    "53ca470536d63aac1a94782e7efb0b84"
+                  ],
+                  "anchor_ids": [],
+                  "trigger_details": [
+                    "SLA monitoring setup or metrics"
+                  ],
+                  "question": "关于独立主导上线与工程交付能力：请补充说明相关项目、时期、职责与结果。",
+                  "expected_material": "请提供可核实的职责分工、项目记录或效果指标。",
+                  "priority": 25
+                },
+                {
+                  "item_id": "281cb1e6420aa37917c86840f8864df7",
+                  "candidate_id": "E2E20261119B",
+                  "dimension_numbers": [
+                    1
+                  ],
+                  "reason_type": "missing",
+                  "trigger_ids": [
+                    "4b8cd37a6166d7572db2b887b556b574"
+                  ],
+                  "anchor_ids": [],
+                  "trigger_details": [
+                    "No indication of experience explaining framework selection (e.g., FastAPI vs Flask vs Django) in interviews or documentation"
+                  ],
+                  "question": "关于Python后端开发能力：请补充说明相关项目、时期、职责与结果。",
+                  "expected_material": "请提供可核实的职责分工、项目记录或效果指标。",
+                  "priority": 25
+                }
+              ],
+              "technical_actions": [
+                {
+                  "item_id": "d10120f69cdefb390c7670139a29dbd6",
+                  "candidate_id": "E2E20261119B",
+                  "dimension_numbers": [
+                    2
+                  ],
+                  "trigger_ids": [
+                    "E2E20261119B:2"
+                  ],
+                  "reason_type": "technical",
+                  "reason_code": "evaluation_failed",
+                  "question": "企业知识库RAG项目实操经验评分暂未完成，需要重试。"
+                },
+                {
+                  "item_id": "d2d824d50c059cd92c3a4449ac8366e0",
+                  "candidate_id": "E2E20261119B",
+                  "dimension_numbers": [
+                    3
+                  ],
+                  "trigger_ids": [
+                    "E2E20261119B:3"
+                  ],
+                  "reason_type": "technical",
+                  "reason_code": "evaluation_failed",
+                  "question": "量化检索评测能力评分暂未完成，需要重试。"
+                },
+                {
+                  "item_id": "cacbb5731c5cae81c2dd7ff8906f4ba3",
+                  "reason_type": "technical",
+                  "trigger_ids": [
+                    "E2E20261119B:highlights:0"
+                  ],
+                  "reason_code": "grounding_unavailable",
+                  "question": "报告命题依据审查暂未完成，需要重试。"
+                },
+                {
+                  "item_id": "30e3a5ad54cc58cece7df3a8aef0ec94",
+                  "reason_type": "technical",
+                  "trigger_ids": [
+                    "E2E20261119B:highlights:1"
+                  ],
+                  "reason_code": "grounding_unavailable",
+                  "question": "报告命题依据审查暂未完成，需要重试。"
+                },
+                {
+                  "item_id": "e6f8e03e93993759263cbea4d91d3271",
+                  "reason_type": "technical",
+                  "trigger_ids": [
+                    "E2E20261119B:highlights:2"
+                  ],
+                  "reason_code": "grounding_unavailable",
+                  "question": "报告命题依据审查暂未完成，需要重试。"
+                },
+                {
+                  "item_id": "6312bf9c9dbbcf4a6338589107ab05c9",
+                  "reason_type": "technical",
+                  "trigger_ids": [
+                    "E2E20261119B:risk_points:0"
+                  ],
+                  "reason_code": "grounding_unavailable",
+                  "question": "报告命题依据审查暂未完成，需要重试。"
+                },
+                {
+                  "item_id": "38f4cf4158e1fdf988049ca5ed69d794",
+                  "reason_type": "technical",
+                  "trigger_ids": [
+                    "E2E20261119B:risk_points:1"
+                  ],
+                  "reason_code": "grounding_unavailable",
+                  "question": "报告命题依据审查暂未完成，需要重试。"
+                },
+                {
+                  "item_id": "369833b1f0ec76287906905a09039f7e",
+                  "reason_type": "technical",
+                  "trigger_ids": [
+                    "E2E20261119B:risk_points:2"
+                  ],
+                  "reason_code": "grounding_unavailable",
+                  "question": "报告命题依据审查暂未完成，需要重试。"
+                }
+              ],
+              "omitted_count": 23
+            }
+          }
+        },
+        "summary": {
+          "submitted": 23,
+          "supported": 14,
+          "blocked": 3,
+          "errors": 6,
+          "report_error": false
+        }
+      },
+      "citations": [
+        {
+          "ref": "E1",
+          "candidate": "E2E20261119A",
+          "document": "链路验收A简历（虚构 PDF）",
+          "quote": "Technical lead for a synthetic enterprise knowledge assistant. Built Python, FastAPI, LangGraph, Milvus hybrid retrieval, embedding and reranking. Used parent-child chunks and page-level citations. Personally owned the retrieval and evaluation pipeline.",
+          "url": "/api/evidence/citations/dd828275-e528-4603-a6eb-474e98d139b1?quote_start=0&quote_end=253"
+        },
+        {
+          "ref": "E2",
+          "candidate": "E2E20261119A",
+          "document": "链路验收A简历（虚构 PDF）",
+          "quote": "Technical lead for a synthetic enterprise knowledge assistant. Built Python, FastAPI, LangGraph, Milvus hybrid retrieval, embedding and reranking. Used parent-child chunks and page-level citations. Personally owned the retrieval and evaluation pipeline.",
+          "url": "/api/evidence/citations/2433d004-c08f-47fe-9163-18791f32287f?quote_start=0&quote_end=253"
+        },
+        {
+          "ref": "E3",
+          "candidate": "E2E20261119A",
+          "document": "链路验收A简历（虚构 PDF）",
+          "quote": "Seven years of Python backend engineering. Led enterprise knowledge-base RAG delivery, retrieval evaluation and production operations.",
+          "url": "/api/evidence/citations/50c8d950-d1e6-4367-a51a-6401bbf77a97?quote_start=0&quote_end=134"
+        },
+        {
+          "ref": "E4",
+          "candidate": "E2E20261119A",
+          "document": "链路验收A简历（虚构 PDF）",
+          "quote": "Seven years of Python backend engineering. Led enterprise knowledge-base RAG delivery, retrieval evaluation and production operations.",
+          "url": "/api/evidence/citations/6a447355-9a35-4e8b-86a5-907ab4163fa3?quote_start=0&quote_end=134"
+        },
+        {
+          "ref": "E5",
+          "candidate": "E2E20261119A",
+          "document": "链路验收A简历（虚构 PDF）",
+          "quote": "Led enterprise knowledge-base RAG delivery, retrieval evaluation and production operations.",
+          "url": "/api/evidence/citations/50c8d950-d1e6-4367-a51a-6401bbf77a97?quote_start=43&quote_end=134"
+        },
+        {
+          "ref": "E6",
+          "candidate": "E2E20261119A",
+          "document": "链路验收A简历（虚构 PDF）",
+          "quote": "Led enterprise knowledge-base RAG delivery, retrieval evaluation and production operations.",
+          "url": "/api/evidence/citations/6a447355-9a35-4e8b-86a5-907ab4163fa3?quote_start=43&quote_end=134"
+        },
+        {
+          "ref": "E7",
+          "candidate": "E2E20261119A",
+          "document": "链路验收A简历（虚构 PDF）",
+          "quote": "Evaluated 300 manually labelled questions. Recall@10 improved from 70% to 88%; answer groundedness improved from 76% to 91%. Reduced median response latency from 4.5 to 2.8 seconds. These are fictional test metrics.",
+          "url": "/api/evidence/citations/081fa1e9-d535-4276-bb2d-3642298a5a27?quote_start=0&quote_end=215"
+        },
+        {
+          "ref": "E8",
+          "candidate": "E2E20261119A",
+          "document": "链路验收A简历（虚构 PDF）",
+          "quote": "Evaluated 300 manually labelled questions. Recall@10 improved from 70% to 88%; answer groundedness improved from 76% to 91%. Reduced median response latency from 4.5 to 2.8 seconds. These are fictional test metrics.",
+          "url": "/api/evidence/citations/1d665605-f1e0-4a7a-a335-bcb8c4f25a7f?quote_start=0&quote_end=215"
+        },
+        {
+          "ref": "E9",
+          "candidate": "E2E20261119A",
+          "document": "链路验收A简历（虚构 PDF）",
+          "quote": "Deployed Docker services with PostgreSQL and Redis, added health checks, retries and rollback.   \nMentored three engineers and collaborated with HR to define acceptance criteria.",
+          "url": "/api/evidence/citations/51911357-955c-48c0-b9e8-51cac77865c0?quote_start=0&quote_end=178"
+        },
+        {
+          "ref": "E10",
+          "candidate": "E2E20261119A",
+          "document": "链路验收A简历（虚构 PDF）",
+          "quote": "Deployed Docker services with PostgreSQL and Redis, added health checks, retries and rollback.   \nMentored three engineers and collaborated with HR to define acceptance criteria.",
+          "url": "/api/evidence/citations/8c211109-c385-42fb-93f0-2519da303e5d?quote_start=0&quote_end=178"
+        },
+        {
+          "ref": "E11",
+          "candidate": "E2E20261119A",
+          "document": "链路验收A简历（虚构 PDF）",
+          "quote": "Shanghai | 7 years experience | AI Application Engineer",
+          "url": "/api/evidence/citations/7599f43e-0e2c-4fc3-8f68-2a25b78f2bcd?quote_start=0&quote_end=55"
+        },
+        {
+          "ref": "E12",
+          "candidate": "E2E20261119A",
+          "document": "链路验收A简历（虚构 PDF）",
+          "quote": "Shanghai | 7 years experience | AI Application Engineer",
+          "url": "/api/evidence/citations/968e9d42-dc7a-4dcd-beb5-4bb493780123?quote_start=0&quote_end=55"
+        },
+        {
+          "ref": "E13",
+          "candidate": "E2E20261119A",
+          "document": "链路验收A简历（虚构 PDF）",
+          "quote": "Deployed Docker services with PostgreSQL and Redis, added health checks, retries and rollback.",
+          "url": "/api/evidence/citations/51911357-955c-48c0-b9e8-51cac77865c0?quote_start=0&quote_end=94"
+        },
+        {
+          "ref": "E14",
+          "candidate": "E2E20261119A",
+          "document": "链路验收A简历（虚构 PDF）",
+          "quote": "Deployed Docker services with PostgreSQL and Redis, added health checks, retries and rollback.",
+          "url": "/api/evidence/citations/8c211109-c385-42fb-93f0-2519da303e5d?quote_start=0&quote_end=94"
+        },
+        {
+          "ref": "E15",
+          "candidate": "E2E20261119B",
+          "document": "链路验收B简历（虚构 PDF）",
+          "quote": "Five years of Python backend engineering. Strong FastAPI, SQL, Docker, PostgreSQL and Redis experience. Participated in an internal RAG prototype but did not lead production RAG delivery.",
+          "url": "/api/evidence/citations/3180ca5e-7f6f-4a8c-a9dc-fc7cc773e052?quote_start=0&quote_end=187"
+        },
+        {
+          "ref": "E16",
+          "candidate": "E2E20261119B",
+          "document": "链路验收B简历（虚构 PDF）",
+          "quote": "Five years of Python backend engineering. Strong FastAPI, SQL, Docker, PostgreSQL and Redis experience. Participated in an internal RAG prototype but did not lead production RAG delivery.",
+          "url": "/api/evidence/citations/c2d46b42-f6da-4fb8-9cbd-99d40daf0d08?quote_start=0&quote_end=187"
+        },
+        {
+          "ref": "E17",
+          "candidate": "E2E20261119B",
+          "document": "链路验收B简历（虚构 PDF）",
+          "quote": "Backend developer responsible for REST APIs, PostgreSQL query optimisation, Redis caching and Docker deployment. Improved API throughput from 150 to 300 requests per second in a synthetic load test.",
+          "url": "/api/evidence/citations/c70f9f29-1ae0-480e-a089-5b073a354696?quote_start=0&quote_end=198"
+        },
+        {
+          "ref": "E18",
+          "candidate": "E2E20261119B",
+          "document": "链路验收B简历（虚构 PDF）",
+          "quote": "Backend developer responsible for REST APIs, PostgreSQL query optimisation, Redis caching and Docker deployment. Improved API throughput from 150 to 300 requests per second in a synthetic load test.",
+          "url": "/api/evidence/citations/a1ea1115-f038-4ff0-a23f-467b3366ae2b?quote_start=0&quote_end=198"
+        },
+        {
+          "ref": "E19",
+          "candidate": "E2E20261119B",
+          "document": "链路验收B简历（虚构 PDF）",
+          "quote": "Wrote API integration tests, reviewed changes with four colleagues, and documented deployment steps. Reliable delivery in established backend services.",
+          "url": "/api/evidence/citations/4dff32b0-b757-4298-b1d2-09082359d7d0?quote_start=0&quote_end=151"
+        },
+        {
+          "ref": "E20",
+          "candidate": "E2E20261119B",
+          "document": "链路验收B简历（虚构 PDF）",
+          "quote": "Wrote API integration tests, reviewed changes with four colleagues, and documented deployment steps. Reliable delivery in established backend services.",
+          "url": "/api/evidence/citations/a4e2f8e1-c94e-4561-93ea-17a5c65fd433?quote_start=0&quote_end=151"
+        },
+        {
+          "ref": "E21",
+          "candidate": "E2E20261119B",
+          "document": "链路验收B简历（虚构 PDF）",
+          "quote": "Production RAG operations and retrieval evaluation are unverified. Needs mentoring on LangGraph orchestration and parent-child chunking. These records are fictional test data.",
+          "url": "/api/evidence/citations/ecd28262-91d5-4a6a-87f6-2a0f2f57a8fd?quote_start=0&quote_end=175"
+        },
+        {
+          "ref": "E22",
+          "candidate": "E2E20261119B",
+          "document": "链路验收B简历（虚构 PDF）",
+          "quote": "Production RAG operations and retrieval evaluation are unverified. Needs mentoring on LangGraph orchestration and parent-child chunking. These records are fictional test data.",
+          "url": "/api/evidence/citations/9e36dd84-abd1-4610-97d3-ca5acf207256?quote_start=0&quote_end=175"
+        },
+        {
+          "ref": "E23",
+          "candidate": "E2E20261119B",
+          "document": "链路验收B简历（虚构 PDF）",
+          "quote": "Shanghai | 5 years experience | AI Application Engineer",
+          "url": "/api/evidence/citations/faeebc3e-0c0a-4184-8cbf-c17e9b6dda16?quote_start=0&quote_end=55"
+        },
+        {
+          "ref": "E24",
+          "candidate": "E2E20261119B",
+          "document": "链路验收B简历（虚构 PDF）",
+          "quote": "Shanghai | 5 years experience | AI Application Engineer",
+          "url": "/api/evidence/citations/6b79c668-8a7a-4d21-a301-fc1f102aedfd?quote_start=0&quote_end=55"
+        },
+        {
+          "ref": "E25",
+          "candidate": "E2E20261119B",
+          "document": "链路验收B简历（虚构 PDF）",
+          "quote": "Integrated a vector search API for a small knowledge-base proof of concept. Assisted with document ingestion. No ownership of hybrid retrieval, reranking or production evaluation. No measured RAG recall or groundedness results.",
+          "url": "/api/evidence/citations/96ebd6df-acaa-473d-92df-c275b881b454?quote_start=0&quote_end=227"
+        },
+        {
+          "ref": "E26",
+          "candidate": "E2E20261119B",
+          "document": "链路验收B简历（虚构 PDF）",
+          "quote": "Integrated a vector search API for a small knowledge-base proof of concept. Assisted with document ingestion. No ownership of hybrid retrieval, reranking or production evaluation. No measured RAG recall or groundedness results.",
+          "url": "/api/evidence/citations/9eea441d-a97f-45a8-8e04-b25b899c3b04?quote_start=0&quote_end=227"
+        },
+        {
+          "ref": "E27",
+          "candidate": "E2E20261119B",
+          "document": "链路验收B简历（虚构 PDF）",
+          "quote": "Participated in an internal RAG prototype but did not lead production RAG delivery.",
+          "url": "/api/evidence/citations/3180ca5e-7f6f-4a8c-a9dc-fc7cc773e052?quote_start=104&quote_end=187"
+        },
+        {
+          "ref": "E28",
+          "candidate": "E2E20261119B",
+          "document": "链路验收B简历（虚构 PDF）",
+          "quote": "Participated in an internal RAG prototype but did not lead production RAG delivery.",
+          "url": "/api/evidence/citations/c2d46b42-f6da-4fb8-9cbd-99d40daf0d08?quote_start=104&quote_end=187"
+        }
+      ],
+      "trace_id": "0307474c-d187-4152-8afe-64eaa10f29a4"
+    },
+    "schema_version": "1.0"
+  },
+  {
+    "event_id": "0307474c-d187-4152-8afe-64eaa10f29a4:30",
+    "sequence": 30,
+    "type": "run.completed",
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "timestamp": "2026-11-19T10:54:06.405229+00:00",
+    "data": {
+      "message": "评估完成",
+      "graph_status": "completed",
+      "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4"
+    },
+    "schema_version": "1.0"
+  }
+]

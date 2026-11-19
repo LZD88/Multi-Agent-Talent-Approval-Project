@@ -1,0 +1,2 @@
+{"check": "cancellation", "detail": {"run_id": "553701ba-e3dc-4854-a0ef-4dbc98a8c6d7", "status": "cancelled", "idempotent": true}}
+VERIFICATION PASSED: cancel

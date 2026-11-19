@@ -1,0 +1,253 @@
+{
+  "dataset_version": "synthetic-assessment-v1.1",
+  "dataset_hash": "0ee61e9bfe0e33eeb4aee68f10fb8fa5c237a822ee1be13e83d01e759fc9d630",
+  "imported_cases": 60,
+  "pending": 60,
+  "exported_confirmed": 0,
+  "runs": [
+    {
+      "run_id": "41a83f8d-3e86-4fe7-bf70-1a0322109fc4",
+      "status": "completed",
+      "turn_no": 1,
+      "conversation_id": "76a5e565-83cb-49dd-8521-7c71625eab00",
+      "report_chars": 3841,
+      "citations": 38,
+      "schema_version": "1.0",
+      "grounding_status": "degraded",
+      "summary": {
+        "submitted": 29,
+        "supported": 9,
+        "blocked": 5,
+        "errors": 15,
+        "report_error": false
+      },
+      "review_verdicts": {
+        "error": 15,
+        "supported": 9,
+        "insufficient": 5
+      },
+      "billing_error": false
+    },
+    {
+      "run_id": "3b4e14b7-22f5-4f1f-ae27-7a936bdf7137",
+      "status": "failed",
+      "turn_no": 2,
+      "conversation_id": "76a5e565-83cb-49dd-8521-7c71625eab00",
+      "report_chars": 0,
+      "citations": 0,
+      "schema_version": null,
+      "grounding_status": null,
+      "summary": null,
+      "review_verdicts": {},
+      "billing_error": true
+    },
+    {
+      "run_id": "f19c51f0-7aa1-45ec-920d-656d52fca4ec",
+      "status": "cancelled",
+      "turn_no": 1,
+      "conversation_id": "0aefbcb5-6353-4e38-839a-668464ebc80a",
+      "report_chars": 0,
+      "citations": 0,
+      "schema_version": null,
+      "grounding_status": null,
+      "summary": null,
+      "review_verdicts": {},
+      "billing_error": false
+    },
+    {
+      "run_id": "grounding-ui-fixture-offline-v1",
+      "status": "completed",
+      "turn_no": 1,
+      "conversation_id": "grounding-ui-fixture-offline-v1",
+      "report_chars": 368,
+      "citations": 0,
+      "schema_version": "1.0",
+      "grounding_status": "complete",
+      "summary": {
+        "submitted": 2,
+        "supported": 2,
+        "blocked": 0,
+        "errors": 0,
+        "report_error": false
+      },
+      "review_verdicts": {
+        "supported": 2
+      },
+      "billing_error": false
+    }
+  ],
+  "containers": [
+    {
+      "Command": "\"uv run python -m ap…\"",
+      "CreatedAt": "2026-11-08 20:29:15 +0800 CST",
+      "ID": "5951cf63cd80",
+      "Image": "5d8cfeeeac6d",
+      "Labels": "com.docker.compose.version=1.29.2,com.docker.compose.config-hash=868ddd97057d0d100955c92f297bd23abf78b7da200c6a8b5cfb47a17efaabad,com.docker.compose.container-number=1,com.docker.compose.oneoff=False,com.docker.compose.project=talent-eval-agents-course,com.docker.compose.project.config_files=docker-compose.yml,docker-compose-mineru.yml,com.docker.compose.project.working_dir=/root/talent-eval-agents,com.docker.compose.service=worker",
+      "LocalVolumes": "0",
+      "Mounts": "/root/talent-e…",
+      "Names": "talent-eval-agents-course_worker_1",
+      "Networks": "talent-eval-agents-course_default",
+      "Ports": "",
+      "RunningFor": "10 days ago",
+      "Size": "66.1MB (virtual 913MB)",
+      "State": "running",
+      "Status": "Up 2 minutes"
+    },
+    {
+      "Command": "\"uv run uvicorn app.…\"",
+      "CreatedAt": "2026-11-08 20:29:14 +0800 CST",
+      "ID": "7a801b795463",
+      "Image": "5d8cfeeeac6d",
+      "Labels": "com.docker.compose.config-hash=eeb24db1d34ef52a66ee06c9f3b130951b757acab60ba440826a608459e65380,com.docker.compose.container-number=1,com.docker.compose.oneoff=False,com.docker.compose.project=talent-eval-agents-course,com.docker.compose.project.config_files=docker-compose.yml,docker-compose-mineru.yml,com.docker.compose.project.working_dir=/root/talent-eval-agents,com.docker.compose.service=backend,com.docker.compose.version=1.29.2",
+      "LocalVolumes": "0",
+      "Mounts": "/root/talent-e…",
+      "Names": "talent-eval-agents-course_backend_1",
+      "Networks": "talent-eval-agents-course_default",
+      "Ports": "127.0.0.1:18080->18080/tcp",
+      "RunningFor": "10 days ago",
+      "Size": "90.6MB (virtual 937MB)",
+      "State": "running",
+      "Status": "Up 2 minutes"
+    },
+    {
+      "Command": "\"uv run mineru-api -…\"",
+      "CreatedAt": "2026-11-08 20:26:18 +0800 CST",
+      "ID": "bee04dd95653",
+      "Image": "talent-eval-agents-course_mineru",
+      "Labels": "com.docker.compose.config-hash=bd4a26c40ac898910aa3620b161f2e9a442a7d0a0eafb449c0f6ff7719342ea8,com.docker.compose.container-number=1,com.docker.compose.oneoff=False,com.docker.compose.project=talent-eval-agents-course,com.docker.compose.project.config_files=docker-compose.yml,docker-compose-mineru.yml,com.docker.compose.project.working_dir=/root/talent-eval-agents,com.docker.compose.service=mineru,com.docker.compose.version=1.29.2",
+      "LocalVolumes": "1",
+      "Mounts": "talent-eval-ag…",
+      "Names": "talent-eval-agents-course_mineru_1",
+      "Networks": "talent-eval-agents-course_default",
+      "Ports": "127.0.0.1:18001->18001/tcp",
+      "RunningFor": "10 days ago",
+      "Size": "2.11MB (virtual 5.8GB)",
+      "State": "running",
+      "Status": "Up 2 hours (healthy)"
+    },
+    {
+      "Command": "\"/docker-entrypoint.…\"",
+      "CreatedAt": "2026-11-08 19:20:00 +0800 CST",
+      "ID": "84137ad37423",
+      "Image": "ca5b6da4c300",
+      "Labels": "com.docker.compose.config-hash=bc48457f9559e9a3ec06d30b01b302cc686acd3d8e8d0329424cf166c2cb07c5,com.docker.compose.container-number=1,com.docker.compose.project=talent-eval-agents-course,com.docker.compose.project.config_files=docker-compose.yml,com.docker.compose.project.working_dir=/root/talent-eval-agents,com.docker.compose.service=frontend,com.docker.compose.oneoff=False,com.docker.compose.version=1.29.2,maintainer=NGINX Docker Maintainers <docker-maint@nginx.com>",
+      "LocalVolumes": "0",
+      "Mounts": "",
+      "Names": "talent-eval-agents-course_frontend_1",
+      "Networks": "talent-eval-agents-course_default",
+      "Ports": "127.0.0.1:15173->80/tcp",
+      "RunningFor": "10 days ago",
+      "Size": "2.29MB (virtual 51.5MB)",
+      "State": "running",
+      "Status": "Up 2 hours"
+    },
+    {
+      "Command": "\"/tini -- milvus run…\"",
+      "CreatedAt": "2026-11-08 19:17:53 +0800 CST",
+      "ID": "27d8375e358b",
+      "Image": "milvusdb/milvus:v2.6.17",
+      "Labels": "com.docker.compose.container-number=1,com.docker.compose.project=talent-eval-agents-course,com.docker.compose.project.working_dir=/root/talent-eval-agents,com.docker.compose.service=milvus,com.docker.compose.version=1.29.2,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04,com.docker.compose.config-hash=9dbd2a4cda0a7357d1434f0d6ac074d9ab381727a344f5ddb779c92983589e85,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=docker-compose.yml",
+      "LocalVolumes": "1",
+      "Mounts": "talent-eval-ag…",
+      "Names": "talent-eval-agents-course_milvus_1",
+      "Networks": "talent-eval-agents-course_default",
+      "Ports": "127.0.0.1:19091->9091/tcp, 127.0.0.1:19531->19530/tcp",
+      "RunningFor": "10 days ago",
+      "Size": "47kB (virtual 913MB)",
+      "State": "running",
+      "Status": "Up 2 hours (healthy)"
+    },
+    {
+      "Command": "\"docker-entrypoint.s…\"",
+      "CreatedAt": "2026-11-08 19:17:46 +0800 CST",
+      "ID": "44ce095d9851",
+      "Image": "docker.1ms.run/redis:6-alpine",
+      "Labels": "com.docker.compose.oneoff=False,com.docker.compose.project=talent-eval-agents-course,com.docker.compose.project.config_files=docker-compose.yml,com.docker.compose.project.working_dir=/root/talent-eval-agents,com.docker.compose.service=redis,com.docker.compose.version=1.29.2,com.docker.compose.config-hash=5dec71b5ec62ae7a57ecf2b32b876a4f5736bbb4f9e362dd2c50aaa5a9913051,com.docker.compose.container-number=1",
+      "LocalVolumes": "1",
+      "Mounts": "fffc177dfefe44…",
+      "Names": "talent-eval-agents-course_redis_1",
+      "Networks": "talent-eval-agents-course_default",
+      "Ports": "127.0.0.1:16379->6379/tcp",
+      "RunningFor": "10 days ago",
+      "Size": "0B (virtual 27.8MB)",
+      "State": "running",
+      "Status": "Up 2 hours (healthy)"
+    },
+    {
+      "Command": "\"/usr/bin/docker-ent…\"",
+      "CreatedAt": "2026-11-08 19:17:46 +0800 CST",
+      "ID": "1f2bb84c4c70",
+      "Image": "docker.1panel.live/minio/minio:latest",
+      "Labels": "com.docker.compose.container-number=1,description=MinIO object storage is fundamentally different. Designed for performance and the S3 API, it is 100% open-source. MinIO is ideal for large, private cloud environments with stringent security requirements and delivers mission-critical availability across a diverse range of workloads.,io.k8s.description=The Universal Base Image Minimal is a stripped down image that uses microdnf as a package manager. This base image is freely redistributable, but Red Hat only supports Red Hat technologies through subscriptions for Red Hat products. This image is maintained by Red Hat and updated regularly.,summary=MinIO is a High Performance Object Storage, API compatible with Amazon S3 cloud storage service.,url=https://access.redhat.com/containers/#/registry.access.redhat.com/ubi8-minimal/images/8.8-1014,vcs-ref=dee8029ddcc7ecbfbebb0905d2b15e134338616c,architecture=x86_64,com.docker.compose.config-hash=cc34cb00d6d4faa1da26082eef202f549794d1eef2bc8ec1e595689d86918c73,com.docker.compose.project.working_dir=/root/talent-eval-agents,com.docker.compose.service=minio,io.buildah.version=1.29.0,version=RELEASE.2023-07-07T07-13-57Z,build-date=2023-06-23T02:02:47,name=MinIO,com.redhat.component=ubi8-minimal-container,io.openshift.tags=minimal rhel8,release=RELEASE.2023-07-07T07-13-57Z,com.docker.compose.project=talent-eval-agents-course,maintainer=MinIO Inc <dev@min.io>,vcs-type=git,com.docker.compose.project.config_files=docker-compose.yml,com.docker.compose.version=1.29.2,com.redhat.license_terms=https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI,distribution-scope=public,io.openshift.expose-services=,com.docker.compose.oneoff=False,io.k8s.display-name=Red Hat Universal Base Image 8 Minimal,vendor=MinIO Inc <dev@min.io>",
+      "LocalVolumes": "1",
+      "Mounts": "talent-eval-ag…",
+      "Names": "talent-eval-agents-course_minio_1",
+      "Networks": "talent-eval-agents-course_default",
+      "Ports": "127.0.0.1:19000->9000/tcp, 127.0.0.1:19001->9001/tcp",
+      "RunningFor": "10 days ago",
+      "Size": "0B (virtual 277MB)",
+      "State": "running",
+      "Status": "Up 2 hours (healthy)"
+    },
+    {
+      "Command": "\"docker-entrypoint.s…\"",
+      "CreatedAt": "2026-11-08 19:17:46 +0800 CST",
+      "ID": "a28266218e56",
+      "Image": "docker.1ms.run/postgres:15-alpine",
+      "Labels": "com.docker.compose.project.config_files=docker-compose.yml,com.docker.compose.project.working_dir=/root/talent-eval-agents,com.docker.compose.service=postgres,com.docker.compose.version=1.29.2,com.docker.compose.config-hash=a48e7f9829efbe39b869285c37a4d2c846d7a2da19bdf086fa93b97f69bf9fa8,com.docker.compose.container-number=1,com.docker.compose.oneoff=False,com.docker.compose.project=talent-eval-agents-course",
+      "LocalVolumes": "1",
+      "Mounts": "/root/talent-e…,talent-eval-ag…",
+      "Names": "talent-eval-agents-course_postgres_1",
+      "Networks": "talent-eval-agents-course_default",
+      "Ports": "127.0.0.1:15432->5432/tcp",
+      "RunningFor": "10 days ago",
+      "Size": "63B (virtual 292MB)",
+      "State": "running",
+      "Status": "Up 2 hours (healthy)"
+    },
+    {
+      "Command": "\"etcd -advertise-cli…\"",
+      "CreatedAt": "2026-11-08 19:17:46 +0800 CST",
+      "ID": "37b4b85077f6",
+      "Image": "quay.io/coreos/etcd:v3.5.18",
+      "Labels": "com.docker.compose.container-number=1,com.docker.compose.oneoff=False,com.docker.compose.project=talent-eval-agents-course,com.docker.compose.project.config_files=docker-compose.yml,com.docker.compose.service=etcd,com.docker.compose.config-hash=ffbf4ca9da3d57cd77a41ffc6667c276ce8b10007e27e7145c58a75a966e1995,com.docker.compose.version=1.29.2,io.buildah.version=1.38.0,com.docker.compose.project.working_dir=/root/talent-eval-agents",
+      "LocalVolumes": "1",
+      "Mounts": "talent-eval-ag…",
+      "Names": "talent-eval-agents-course_etcd_1",
+      "Networks": "talent-eval-agents-course_default",
+      "Ports": "2379-2380/tcp",
+      "RunningFor": "10 days ago",
+      "Size": "0B (virtual 59MB)",
+      "State": "running",
+      "Status": "Up 2 hours (healthy)"
+    }
+  ],
+  "files": [
+    {
+      "path": "backend/app/assessment_grounding.py",
+      "sha256": "39f88d8cfb9d1b0c395b705d2484adcee382bc7479603fcdb83996759a493c37",
+      "deployed_match": true
+    },
+    {
+      "path": "backend/app/model_provider.py",
+      "sha256": "4c4afd4e1c8c9a1b0e6a74371e9dcab3cc31939c01d3a8e13a6258163557ca99",
+      "deployed_match": true
+    },
+    {
+      "path": "frontend/dist/index.html",
+      "sha256": "ddd27e8e1c2828cdfe594606640fe6c9648c9afb867b38eed09a2cc778b35ed0",
+      "deployed_match": true
+    }
+  ],
+  "http": [
+    {
+      "url": "http://127.0.0.1:15173/",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:18080/api/health",
+      "status": 200
+    }
+  ],
+  "checked_at": "2026-11-19T09:07:31.754117+00:00"
+}

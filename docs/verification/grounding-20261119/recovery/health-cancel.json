@@ -1,0 +1,17 @@
+{
+  "http": [
+    {
+      "url": "http://127.0.0.1:18080/api/health",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:15173/",
+      "status": 200
+    }
+  ],
+  "cancellation": {
+    "run_id": "553701ba-e3dc-4854-a0ef-4dbc98a8c6d7",
+    "status": "cancelled",
+    "idempotent": true
+  }
+}

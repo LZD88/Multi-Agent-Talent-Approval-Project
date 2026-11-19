@@ -1,0 +1,38 @@
+{
+  "citation_id": "dd828275-e528-4603-a6eb-474e98d139b1",
+  "chunk_id": "dd828275-e528-4603-a6eb-474e98d139b1",
+  "candidate_id": "E2E20261119A",
+  "document_id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+  "document_title": "链路验收A简历（虚构 PDF）",
+  "document_version_id": "54798c61-c076-44af-9fb3-6de902381117",
+  "version_no": 1,
+  "version_state": "current",
+  "permission_scope": "hr_private",
+  "content": "Technical lead for a synthetic enterprise knowledge assistant. Built Python, FastAPI, LangGraph, Milvus hybrid retrieval, embedding and reranking. Used parent-child chunks and page-level citations. Personally owned the retrieval and evaluation pipeline.",
+  "heading_path": [
+    "SYNTHETIC TEST DATA",
+    "Project: Atlas Enterprise RAG (2024-2026)"
+  ],
+  "markdown_start": 327,
+  "markdown_end": 580,
+  "source_locators": [
+    {
+      "bbox": [
+        124,
+        274,
+        852,
+        321
+      ],
+      "kind": "page_region",
+      "page": 1
+    }
+  ],
+  "quote_start": null,
+  "quote_end": null,
+  "page_start": 1,
+  "page_end": 1,
+  "timestamp_start": null,
+  "timestamp_end": null,
+  "parser_version": null,
+  "parent_chunk_id": "2433d004-c08f-47fe-9163-18791f32287f"
+}

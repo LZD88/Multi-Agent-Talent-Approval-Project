@@ -17,4 +17,9 @@ dist/
 logs/
 backend/.langgraph_api/
 docs/
+!docs/
+docs/*
+!docs/verification/
+docs/verification/*
+!docs/verification/grounding-20261119/
 

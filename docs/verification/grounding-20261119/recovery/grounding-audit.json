@@ -1,0 +1,78 @@
+[
+  {
+    "run_id": "74b965d2-126c-4804-bed1-ba0dc4e876c5",
+    "turn_no": 1,
+    "status": "completed",
+    "grounding_status": "degraded",
+    "summary": {
+      "submitted": 28,
+      "supported": 19,
+      "blocked": 3,
+      "errors": 6,
+      "report_error": false
+    },
+    "dimension_statuses": {
+      "sufficient": 1,
+      "partial": 1,
+      "failed": 6
+    },
+    "citations_checked": 40,
+    "anchors": 40,
+    "candidates": [
+      {
+        "candidate_id": "E2E20261119A",
+        "confirmed_score": 40.0,
+        "possible_score": 90.0,
+        "evidence_coverage_percent": 50
+      },
+      {
+        "candidate_id": "E2E20261119B",
+        "confirmed_score": 0.0,
+        "possible_score": 100.0,
+        "evidence_coverage_percent": 0
+      }
+    ],
+    "sse_history_equal": true,
+    "refresh_equal": true,
+    "numeric_aggregation_equal": true,
+    "claim_publication_filter_equal": true
+  },
+  {
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "turn_no": 2,
+    "status": "completed",
+    "grounding_status": "degraded",
+    "summary": {
+      "submitted": 23,
+      "supported": 14,
+      "blocked": 3,
+      "errors": 6,
+      "report_error": false
+    },
+    "dimension_statuses": {
+      "partial": 1,
+      "failed": 6,
+      "missing": 1
+    },
+    "citations_checked": 28,
+    "anchors": 28,
+    "candidates": [
+      {
+        "candidate_id": "E2E20261119B",
+        "confirmed_score": 15.0,
+        "possible_score": 90.0,
+        "evidence_coverage_percent": 25
+      },
+      {
+        "candidate_id": "E2E20261119A",
+        "confirmed_score": 0.0,
+        "possible_score": 100.0,
+        "evidence_coverage_percent": 0
+      }
+    ],
+    "sse_history_equal": true,
+    "refresh_equal": true,
+    "numeric_aggregation_equal": true,
+    "claim_publication_filter_equal": true
+  }
+]

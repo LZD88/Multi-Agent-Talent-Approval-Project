@@ -1,0 +1,8 @@
+....................                                                     [100%]
+=============================== warnings summary ===============================
+app/model_provider.py:1
+  /tmp/talent-grounding-check/app/model_provider.py:1: DeprecationWarning: `langchain-community` is being sunset and is no longer actively maintained. See https://github.com/langchain-ai/langchain-community/issues/674 for details and migration guidance toward standalone integration packages.
+    from langchain_community.embeddings import DashScopeEmbeddings
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+20 passed, 1 warning in 4.88s

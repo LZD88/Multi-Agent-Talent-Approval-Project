@@ -1,0 +1,19 @@
+{"run": "evaluation", "sequence": 1, "type": "run.started", "data": {}}
+{"run": "evaluation", "sequence": 2, "type": "step.started", "data": {"step_id": "understand_request"}}
+{"run": "evaluation", "sequence": 3, "type": "conversation.updated", "data": {}}
+{"run": "evaluation", "sequence": 4, "type": "step.completed", "data": {"step_id": "understand_request", "summary": "plan_ready"}}
+{"run": "evaluation", "sequence": 5, "type": "step.started", "data": {"step_id": "filter_candidates"}}
+{"run": "evaluation", "sequence": 6, "type": "step.completed", "data": {"step_id": "filter_candidates", "summary": "candidates_ready"}}
+{"run": "evaluation", "sequence": 7, "type": "step.started", "data": {"step_id": "build_dimensions"}}
+{"run": "evaluation", "sequence": 9, "type": "step.completed", "data": {"step_id": "build_dimensions", "summary": "dimensions_valid"}}
+{"run": "evaluation", "sequence": 10, "type": "step.started", "data": {"step_id": "parallel_assessment"}}
+{"run": "evaluation", "sequence": 20, "type": "step.completed", "data": {"step_id": "parallel_assessment", "summary": "8 ��������֧��ɣ�ȡ֤ʧ��=0��succeeded=8"}}
+{"run": "evaluation", "sequence": 21, "type": "step.started", "data": {"step_id": "score_candidates"}}
+{"run": "evaluation", "sequence": 23, "type": "step.completed", "data": {"step_id": "score_candidates", "summary": "candidates_ranked"}}
+{"run": "evaluation", "sequence": 24, "type": "step.started", "data": {"step_id": "compose_report"}}
+{"run": "evaluation", "sequence": 27, "type": "step.completed", "data": {"step_id": "compose_report", "summary": "completed"}}
+{"run": "evaluation", "sequence": 28, "type": "report.completed", "data": {}}
+{"run": "evaluation", "sequence": 29, "type": "run.completed", "data": {}}
+{"check": "evaluation", "detail": {"run_id": "74b965d2-126c-4804-bed1-ba0dc4e876c5", "conversation_id": "0bf1e75c-ab7f-4e32-9e07-504da55c163a", "turn_no": 1, "events": 29, "report_chars": 3428, "citations": 40, "cases": 43, "case_statuses": ["failed", "succeeded"]}}
+{"check": "citation", "detail": {"chunk_id": "dd828275-e528-4603-a6eb-474e98d139b1", "page": 1, "locators": 1, "tenant_and_scope_denied": true, "bad_quote_denied": true}}
+VERIFICATION PASSED: run

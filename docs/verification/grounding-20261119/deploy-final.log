@@ -1,0 +1,35 @@
+Sending build context to Docker daemon  3.056MB
+
+
+Step 1/4 : FROM talent-eval-agents-course-backend:grounding-20261119-170446-before
+ ---> 00df0932a785
+Step 2/4 : COPY backend/app /app/app
+ ---> 1cd1f371af5c
+Step 3/4 : COPY backend/scripts /app/scripts
+ ---> f3bbe09e2573
+Step 4/4 : COPY backend/samples /app/samples
+ ---> 6513717c45af
+Successfully built 6513717c45af
+Successfully tagged talent-eval-agents-course-backend:latest
+Sending build context to Docker daemon  3.056MB
+
+
+Step 1/2 : FROM talent-eval-agents-course_frontend:grounding-20261119-170446-before
+ ---> a5131d0626db
+Step 2/2 : COPY frontend/dist /usr/share/nginx/html
+ ---> 25d18dca6c98
+Successfully built 25d18dca6c98
+Successfully tagged talent-eval-agents-course_frontend:latest
+ALTER TABLE
+talent-eval-agents-course_backend_1
+talent-eval-agents-course_worker_1
+DEPLOYED_RELEASE=grounding-20261119-170446
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+NOTICE:  column "assessment_grounding" of relation "talent_runs" already exists, skipping

@@ -1,0 +1,253 @@
+{
+  "changeName": "add-evidence-grounded-assessment",
+  "changeDir": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment",
+  "schemaName": "spec-driven",
+  "contextFiles": {
+    "proposal": [
+      "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\proposal.md"
+    ],
+    "specs": [
+      "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\specs\\assessment-claim-grounding\\spec.md",
+      "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\specs\\assessment-quality-regression\\spec.md",
+      "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\specs\\assessment-verification-checklist\\spec.md"
+    ],
+    "design": [
+      "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\design.md"
+    ],
+    "tasks": [
+      "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md"
+    ]
+  },
+  "progress": {
+    "total": 31,
+    "complete": 27,
+    "remaining": 4
+  },
+  "tasks": [
+    {
+      "id": "1",
+      "description": "1.1 新增 `assessment_grounding.py` 的 anchor、命题、审查结果及版本化快照协议，明确否定命题受支持与证据缺失的区别；以合法零分、未评分、冲突和未知版本协议测试验证。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 5
+    },
+    {
+      "id": "2",
+      "description": "1.2 将来源加载和报告证据映射升级为候选人、材料版本、chunk、起止区间的身份，贯穿评分、一致性审查及模型短编号；以同块两段原文不覆盖、跨候选人及版本不符被拒绝的回归验证。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 6
+    },
+    {
+      "id": "3",
+      "description": "1.3 保留现有引用 URL 和权限回查，更新证据模型及相关调用点；运行 `tests/test_evidence_citations.py`、`tests/test_evidence_pack.py` 和报告引用测试，验证旧 URL 可读及越权拒绝不退化。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 7
+    },
+    {
+      "id": "4",
+      "description": "1.4 在后端文档记录状态表、anchor 身份、协议版本和原文支持不等于事实真实性；核对示例可被新增协议解析。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 8
+    },
+    {
+      "id": "5",
+      "description": "2.1 在配置和模型提供器中增加独立审查模型选择、请求超时及有限重试，复用 CHAT 凭据并关闭底层隐式重试；以模拟超时、取消、重复/遗漏 claim ID 验证每批调用次数和截止边界。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 12
+    },
+    {
+      "id": "6",
+      "description": "2.2 扩展维度评分输出以保留有界事实命题和评分锚点关系，加入 `ground_dimension_assessments` 节点；以原型误写生产、合法零分和锚点不受支持的案例验证计分资格。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 13
+    },
+    {
+      "id": "7",
+      "description": "2.3 将未通过的评分置空并保留原因，先审查再执行一致性检查、聚合与排序；运行报告图测试，验证失败维度不增加覆盖率、有效维度继续完成、原有计算公式不变。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 14
+    },
+    {
+      "id": "8",
+      "description": "2.4 实施候选人隔离批处理、并发上限及审查计数和耗时日志，确保不打印原文与密钥；用模拟客户端验证批次隔离与最大并发，并在 `.env.example` 和后端文档列出默认值及降级含义。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 15
+    },
+    {
+      "id": "9",
+      "description": "3.1 将 overview、summary 和 risks 的自由事实叙述改为有依据的结构化命题，分数、状态和总览数字改由程序生成；以未评分被写零分和模型改写总分的回归验证无旁路输出。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 19
+    },
+    {
+      "id": "10",
+      "description": "3.2 新增 `ground_report_claims` 节点并保留 `validate_report` 作为最终输出节点，拦截错误引用和不受支持的命题；用重复项目计数、时期混淆、跨候选人比较缺一方依据及事实风险样例验证。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 20
+    },
+    {
+      "id": "11",
+      "description": "3.3 实现部分审查失败和全部不可评估的程序化报告，记录拒绝原因、批准/拦截/错误数量；注入审查不可用验证未放行原始草稿、未把故障写成能力低分，且已经通过的结果仍可见。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 21
+    },
+    {
+      "id": "12",
+      "description": "3.4 更新报告运行文档和协议样例，说明理论上限、当前材料顺序及 complete/partial/degraded 的含义；运行现有与新增 `test_talent_evaluation_report.py` 回归并核对展示样例。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 22
+    },
+    {
+      "id": "13",
+      "description": "4.1 新增 `assessment_verification.py`，将缺失、冲突和被拦截命题映射为中立模板问题及来源；以缺失无引用、冲突双引用和 unsupported 命题验证不生成额外能力断言。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 26
+    },
+    {
+      "id": "14",
+      "description": "4.2 实现稳定标识、按权重排序、触发记录去重、每人八条上限及剩余数量；用重复触发、跨维度和超过八条的样例验证结果可重复。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 27
+    },
+    {
+      "id": "15",
+      "description": "4.3 将超时和协议错误生成为独立技术事项，接入报告节点；以零事项、纯技术失败和混合事项验证技术问题不占面试问题名额，文档明确本期只读且不回写评分。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 28
+    },
+    {
+      "id": "16",
+      "description": "5.1 为 `models.py`、`database/init.sql` 和新增 `025_assessment_grounding.sql` 加入可空快照列；在测试 PostgreSQL 上重复执行迁移两次并验证旧记录可读，记录部署与保留列回滚步骤。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 32
+    },
+    {
+      "id": "17",
+      "description": "5.2 将快照接入报告子图、`talent_decision_engine.py`、轮次清理、`talent_run_stream.py` 及进度投影；通过父图和 SSE 测试验证每轮隔离、取消传播、原事件字段兼容及完整快照输出。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 33
+    },
+    {
+      "id": "18",
+      "description": "5.3 在 `talent_run_history.py` 原子保存报告、精确引用和快照，并向详情及每个历史轮次返回可选字段；用重新读取、多轮和空快照数据库测试验证实时与历史一致。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 34
+    },
+    {
+      "id": "19",
+      "description": "5.4 扩展 `talentRunState.ts` 的类型、reducer 与历史恢复；在 Vitest 中验证新旧事件、未知协议版本、刷新恢复和新轮次清空，避免复用上一轮的审查状态。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 35
+    },
+    {
+      "id": "20",
+      "description": "5.5 在 `TalentChatPage.tsx` 展示维度状态、结论依据、降级说明、核实清单及技术事项，复用引用抽屉并替换固定保证文案；通过构建、状态测试和浏览器实际点击验证同块不同区间定位、旧报告标记与空清单。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 36
+    },
+    {
+      "id": "21",
+      "description": "6.1 为 `evaluation_case.py` 增加 `dimension_scoring / report_grounding`，为报告节点与并发调用显式传递运行上下文并冻结输入；以运行/候选人/维度身份、尝试序号及采集失败隔离测试验证。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 40
+    },
+    {
+      "id": "22",
+      "description": "6.2 扩展 `evaluation_judge.py` 的任务协议、输出 Schema 与新模块回放处理器，保持原四类模块兼容；用冻结版本材料、无 Judge 配置和不兼容协议测试验证不重新查询最新材料。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 41
+    },
+    {
+      "id": "23",
+      "description": "6.3 在 `evaluation_api.py` 新增基于人工 Golden 的质量指标，保留通用 Judge 结果并独立统计执行失败；用明确分子分母、空分母、全部拦截、审查超时与未人工确认案例验证指标不可被虚增。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 42
+    },
+    {
+      "id": "24",
+      "description": "6.4 扩展评测前端模块筛选、步骤反馈、Golden 展示及质量指标结果；以现有前端测试和构建验证兼容，并在评测文档说明人工标签、状态标签和辅助 Judge 分数的区别。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 43
+    },
+    {
+      "id": "25",
+      "description": "7.1 新建明确标记虚构的至少 60 个模块案例和来源说明，按场景划分 40 dev / 20 test，覆盖全部规格失败模式及正常反例；用清单校验验证场景不跨 split、test 至少 60 个命题且 supported/非 supported 各至少 20 个。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 47
+    },
+    {
+      "id": "26",
+      "description": "7.2 导入人工审核候选标签并通过现有流程确认，冻结最终 Golden 和清单 hash；以导出产物证明正式样本均有人工确认记录，未经确认部分保持待审核且不计入质量验收。",
+      "done": false,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 48
+    },
+    {
+      "id": "27",
+      "description": "7.3 新增基准脚本，默认运行注入审查器的离线验证，显式选项才发送指定虚构样本到模型；以无密钥离线运行、版本不兼容、服务失败及共同样本比较测试验证结果输出。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 49
+    },
+    {
+      "id": "28",
+      "description": "7.4 编写基准说明，明确指标公式、设计目标、耗时、失败计数和受限样本范围；显式运行真实模型基线与当前配置比较并保存实际报告，未达目标时保留失败案例，不能把目标写为实测结果。",
+      "done": false,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 50
+    },
+    {
+      "id": "29",
+      "description": "8.1 运行后端相关单测与既有核心回归、前端 `npm run test` 和 `npm run build`；保存准确命令、通过/跳过/缺少样本情况，不能用局部通过宣称全套通过。",
+      "done": true,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 54
+    },
+    {
+      "id": "30",
+      "description": "8.2 用隔离虚构数据完成正常评估、证据不足、明确否定、冲突、审查不可用、同会话续问和取消；逐条核对程序分数、已发布命题、精确引用、技术事项及刷新后的历史结果，保存验收记录。",
+      "done": false,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 55
+    },
+    {
+      "id": "31",
+      "description": "8.3 在留出测试集核对发布支持率与拦截率至少 95%、正确结论误拦率不高于 10%、模型评分资格一致率至少 95%，且非法引用发布为零；任何必要指标为空或执行不完整时记录 incomplete，完成失败分析后再复验。",
+      "done": false,
+      "sourcePath": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project\\openspec\\changes\\add-evidence-grounded-assessment\\tasks.md",
+      "line": 56
+    }
+  ],
+  "taskTrackingConfigured": true,
+  "state": "ready",
+  "instruction": "Read context files, work through pending tasks, mark complete as you go.\nPause if you hit blockers or need clarification.",
+  "context": "Language: zh-CN\nAll artifacts must be written in zh-CN.\nKeep OpenSpec structural headings and SHALL/MUST keywords in English.\n",
+  "root": {
+    "path": "D:\\codex\\2026-11-03\\https-github-com-lzd88-multi-agent\\Multi-Agent-Talent-Approval-Project",
+    "source": "nearest"
+  }
+}

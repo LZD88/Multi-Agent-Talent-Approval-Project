@@ -1,0 +1,1254 @@
+{
+  "final_dataset_hash": "0ee61e9bfe0e33eeb4aee68f10fb8fa5c237a822ee1be13e83d01e759fc9d630",
+  "acceptance": "incomplete",
+  "limitations": [
+    "No human-confirmed Golden labels.",
+    "Initial live pair used an earlier dataset and reviewer configuration.",
+    "The old conflict scoring fixture was incomplete; its score agreement is not a valid quality claim.",
+    "Current final configuration could not be revalidated because the provider returned Arrearage.",
+    "live-current-billing.json and live-current.json reuse the initial current artifact, not a new successful rerun."
+  ],
+  "initial_pair_same_dataset": true,
+  "initial_pair_common_inputs": [
+    "fictional-score-test-09",
+    "fictional-score-test-10",
+    "fictional-score-test-11",
+    "fictional-score-test-12",
+    "fictional-test-33",
+    "fictional-test-34",
+    "fictional-test-35",
+    "fictional-test-36",
+    "fictional-test-37",
+    "fictional-test-38",
+    "fictional-test-39",
+    "fictional-test-40",
+    "fictional-test-41",
+    "fictional-test-42",
+    "fictional-test-43",
+    "fictional-test-44",
+    "fictional-test-45",
+    "fictional-test-46",
+    "fictional-test-47",
+    "fictional-test-48"
+  ],
+  "artifacts": [
+    {
+      "file": "backend/samples/assessment-grounding-v1/results/offline.json",
+      "sha256": "34ab8436d9c3d5c1228fe22acc3e9ed8cf673f42538af8620d279e22642ee662",
+      "mode": "offline_injected",
+      "dataset_hash": "0ee61e9bfe0e33eeb4aee68f10fb8fa5c237a822ee1be13e83d01e759fc9d630",
+      "final_dataset_match": true,
+      "acceptance": "incomplete",
+      "duration_ms": 50,
+      "formal": {
+        "counts": {
+          "unconfirmed": 60
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "published_claim_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "reference_validation": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          }
+        }
+      },
+      "provisional": {
+        "counts": {
+          "requested": 60,
+          "completed": 60,
+          "references_submitted": 208,
+          "references_valid": 200,
+          "published": 96,
+          "illegal_reference_published": 0,
+          "published_supported": 96,
+          "supported": 96,
+          "false_blocks": 0,
+          "unsupported": 96,
+          "unsafe_blocks": 96,
+          "review_errors": 0,
+          "dimensions": 12,
+          "dimensions_correct": 12
+        },
+        "complete": true,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 12,
+            "denominator": 12,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "published_claim_support": {
+            "numerator": 96,
+            "denominator": 96,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 96,
+            "denominator": 96,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 0,
+            "denominator": 96,
+            "value": 0.0,
+            "unavailable_reason": null
+          },
+          "reference_validation": {
+            "numerator": 200,
+            "denominator": 208,
+            "value": 0.9615384615384616,
+            "unavailable_reason": null
+          }
+        }
+      },
+      "compatible_with_final": [
+        "fictional-dev-01",
+        "fictional-dev-02",
+        "fictional-dev-03",
+        "fictional-dev-04",
+        "fictional-dev-05",
+        "fictional-dev-06",
+        "fictional-dev-07",
+        "fictional-dev-08",
+        "fictional-dev-09",
+        "fictional-dev-10",
+        "fictional-dev-11",
+        "fictional-dev-12",
+        "fictional-dev-13",
+        "fictional-dev-14",
+        "fictional-dev-15",
+        "fictional-dev-16",
+        "fictional-dev-17",
+        "fictional-dev-18",
+        "fictional-dev-19",
+        "fictional-dev-20",
+        "fictional-dev-21",
+        "fictional-dev-22",
+        "fictional-dev-23",
+        "fictional-dev-24",
+        "fictional-dev-25",
+        "fictional-dev-26",
+        "fictional-dev-27",
+        "fictional-dev-28",
+        "fictional-dev-29",
+        "fictional-dev-30",
+        "fictional-dev-31",
+        "fictional-dev-32",
+        "fictional-test-33",
+        "fictional-test-34",
+        "fictional-test-35",
+        "fictional-test-36",
+        "fictional-test-37",
+        "fictional-test-38",
+        "fictional-test-39",
+        "fictional-test-40",
+        "fictional-test-41",
+        "fictional-test-42",
+        "fictional-test-43",
+        "fictional-test-44",
+        "fictional-test-45",
+        "fictional-test-46",
+        "fictional-test-47",
+        "fictional-test-48",
+        "fictional-score-dev-01",
+        "fictional-score-dev-02",
+        "fictional-score-dev-03",
+        "fictional-score-dev-04",
+        "fictional-score-dev-05",
+        "fictional-score-dev-06",
+        "fictional-score-dev-07",
+        "fictional-score-dev-08",
+        "fictional-score-test-09",
+        "fictional-score-test-10",
+        "fictional-score-test-11",
+        "fictional-score-test-12"
+      ],
+      "incompatible_with_final": []
+    },
+    {
+      "file": "backend/samples/assessment-grounding-v1/results/outage.json",
+      "sha256": "65c5b55c2360216b459227d0f3a117e711fc13488ea2800f485fb801d75c143b",
+      "mode": "offline_injected",
+      "dataset_hash": "553b34241446bedbb42761da8dd7d0a20965a32d3ced738740f6f981b374b14c",
+      "final_dataset_match": false,
+      "acceptance": "incomplete",
+      "duration_ms": 49,
+      "formal": {
+        "counts": {
+          "unconfirmed": 60
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "published_claim_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "reference_validation": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          }
+        }
+      },
+      "provisional": {
+        "counts": {
+          "requested": 60,
+          "completed": 12,
+          "execution_failed": 48,
+          "references_submitted": 208,
+          "references_valid": 200,
+          "published": 0,
+          "illegal_reference_published": 0,
+          "published_supported": 0,
+          "supported": 96,
+          "false_blocks": 96,
+          "unsupported": 96,
+          "unsafe_blocks": 96,
+          "review_errors": 184,
+          "dimensions": 12,
+          "dimensions_correct": 12
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 12,
+            "denominator": 12,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "published_claim_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 96,
+            "denominator": 96,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 96,
+            "denominator": 96,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "reference_validation": {
+            "numerator": 200,
+            "denominator": 208,
+            "value": 0.9615384615384616,
+            "unavailable_reason": null
+          }
+        }
+      },
+      "compatible_with_final": [
+        "fictional-dev-01",
+        "fictional-dev-02",
+        "fictional-dev-03",
+        "fictional-dev-04",
+        "fictional-dev-05",
+        "fictional-dev-06",
+        "fictional-dev-07",
+        "fictional-dev-08",
+        "fictional-dev-09",
+        "fictional-dev-10",
+        "fictional-dev-11",
+        "fictional-dev-12",
+        "fictional-dev-13",
+        "fictional-dev-14",
+        "fictional-dev-15",
+        "fictional-dev-16",
+        "fictional-dev-17",
+        "fictional-dev-18",
+        "fictional-dev-19",
+        "fictional-dev-20",
+        "fictional-dev-21",
+        "fictional-dev-22",
+        "fictional-dev-23",
+        "fictional-dev-24",
+        "fictional-dev-25",
+        "fictional-dev-26",
+        "fictional-dev-27",
+        "fictional-dev-28",
+        "fictional-dev-29",
+        "fictional-dev-30",
+        "fictional-dev-31",
+        "fictional-dev-32",
+        "fictional-test-33",
+        "fictional-test-34",
+        "fictional-test-35",
+        "fictional-test-36",
+        "fictional-test-37",
+        "fictional-test-38",
+        "fictional-test-39",
+        "fictional-test-40",
+        "fictional-test-41",
+        "fictional-test-42",
+        "fictional-test-43",
+        "fictional-test-44",
+        "fictional-test-45",
+        "fictional-test-46",
+        "fictional-test-47",
+        "fictional-test-48",
+        "fictional-score-dev-01",
+        "fictional-score-dev-02",
+        "fictional-score-dev-04",
+        "fictional-score-dev-05",
+        "fictional-score-dev-06",
+        "fictional-score-dev-08",
+        "fictional-score-test-09",
+        "fictional-score-test-10",
+        "fictional-score-test-12"
+      ],
+      "incompatible_with_final": [
+        "fictional-score-dev-03",
+        "fictional-score-dev-07",
+        "fictional-score-test-11"
+      ]
+    },
+    {
+      "file": "backend/samples/assessment-grounding-v1/results/outage-final.json",
+      "sha256": "0eeb0f685ef1f6e48164dc8863c8093b01fb08d99e2daf97ec16dfa1336205b7",
+      "mode": "offline_injected",
+      "dataset_hash": "0ee61e9bfe0e33eeb4aee68f10fb8fa5c237a822ee1be13e83d01e759fc9d630",
+      "final_dataset_match": true,
+      "acceptance": "incomplete",
+      "duration_ms": 31,
+      "formal": {
+        "counts": {
+          "unconfirmed": 60
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "published_claim_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "reference_validation": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          }
+        }
+      },
+      "provisional": {
+        "counts": {
+          "requested": 60,
+          "completed": 12,
+          "execution_failed": 48,
+          "references_submitted": 208,
+          "references_valid": 200,
+          "published": 0,
+          "illegal_reference_published": 0,
+          "published_supported": 0,
+          "supported": 96,
+          "false_blocks": 96,
+          "unsupported": 96,
+          "unsafe_blocks": 96,
+          "review_errors": 184,
+          "dimensions": 12,
+          "dimensions_correct": 12
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 12,
+            "denominator": 12,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "published_claim_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 96,
+            "denominator": 96,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 96,
+            "denominator": 96,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "reference_validation": {
+            "numerator": 200,
+            "denominator": 208,
+            "value": 0.9615384615384616,
+            "unavailable_reason": null
+          }
+        }
+      },
+      "compatible_with_final": [
+        "fictional-dev-01",
+        "fictional-dev-02",
+        "fictional-dev-03",
+        "fictional-dev-04",
+        "fictional-dev-05",
+        "fictional-dev-06",
+        "fictional-dev-07",
+        "fictional-dev-08",
+        "fictional-dev-09",
+        "fictional-dev-10",
+        "fictional-dev-11",
+        "fictional-dev-12",
+        "fictional-dev-13",
+        "fictional-dev-14",
+        "fictional-dev-15",
+        "fictional-dev-16",
+        "fictional-dev-17",
+        "fictional-dev-18",
+        "fictional-dev-19",
+        "fictional-dev-20",
+        "fictional-dev-21",
+        "fictional-dev-22",
+        "fictional-dev-23",
+        "fictional-dev-24",
+        "fictional-dev-25",
+        "fictional-dev-26",
+        "fictional-dev-27",
+        "fictional-dev-28",
+        "fictional-dev-29",
+        "fictional-dev-30",
+        "fictional-dev-31",
+        "fictional-dev-32",
+        "fictional-test-33",
+        "fictional-test-34",
+        "fictional-test-35",
+        "fictional-test-36",
+        "fictional-test-37",
+        "fictional-test-38",
+        "fictional-test-39",
+        "fictional-test-40",
+        "fictional-test-41",
+        "fictional-test-42",
+        "fictional-test-43",
+        "fictional-test-44",
+        "fictional-test-45",
+        "fictional-test-46",
+        "fictional-test-47",
+        "fictional-test-48",
+        "fictional-score-dev-01",
+        "fictional-score-dev-02",
+        "fictional-score-dev-03",
+        "fictional-score-dev-04",
+        "fictional-score-dev-05",
+        "fictional-score-dev-06",
+        "fictional-score-dev-07",
+        "fictional-score-dev-08",
+        "fictional-score-test-09",
+        "fictional-score-test-10",
+        "fictional-score-test-11",
+        "fictional-score-test-12"
+      ],
+      "incompatible_with_final": []
+    },
+    {
+      "file": "backend/samples/assessment-grounding-v1/results/live-baseline-first.json",
+      "sha256": "8b3af4aab000d0de3106ee90875e090096f43e4ced0085365a0a2cb4e6155530",
+      "mode": "live",
+      "dataset_hash": "553b34241446bedbb42761da8dd7d0a20965a32d3ced738740f6f981b374b14c",
+      "final_dataset_match": false,
+      "acceptance": "incomplete",
+      "duration_ms": 49805,
+      "formal": {
+        "counts": {
+          "unconfirmed": 20
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "published_claim_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "reference_validation": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          }
+        }
+      },
+      "provisional": {
+        "counts": {
+          "requested": 20,
+          "completed": 20,
+          "references_submitted": 72,
+          "references_valid": 68,
+          "published": 29,
+          "illegal_reference_published": 0,
+          "published_supported": 29,
+          "supported": 32,
+          "false_blocks": 3,
+          "unsupported": 32,
+          "unsafe_blocks": 32,
+          "review_errors": 4,
+          "dimensions": 4,
+          "dimensions_correct": 3
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 3,
+            "denominator": 4,
+            "value": 0.75,
+            "unavailable_reason": null
+          },
+          "published_claim_support": {
+            "numerator": 29,
+            "denominator": 29,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 32,
+            "denominator": 32,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 3,
+            "denominator": 32,
+            "value": 0.09375,
+            "unavailable_reason": null
+          },
+          "reference_validation": {
+            "numerator": 68,
+            "denominator": 72,
+            "value": 0.9444444444444444,
+            "unavailable_reason": null
+          }
+        }
+      },
+      "compatible_with_final": [
+        "fictional-test-33",
+        "fictional-test-34",
+        "fictional-test-35",
+        "fictional-test-36",
+        "fictional-test-37",
+        "fictional-test-38",
+        "fictional-test-39",
+        "fictional-test-40",
+        "fictional-test-41",
+        "fictional-test-42",
+        "fictional-test-43",
+        "fictional-test-44",
+        "fictional-test-45",
+        "fictional-test-46",
+        "fictional-test-47",
+        "fictional-test-48",
+        "fictional-score-test-09",
+        "fictional-score-test-10",
+        "fictional-score-test-12"
+      ],
+      "incompatible_with_final": [
+        "fictional-score-test-11"
+      ]
+    },
+    {
+      "file": "backend/samples/assessment-grounding-v1/results/live-current-first.json",
+      "sha256": "c7e3610d84d7238557388ca528eae09c3cd94d494edb7f25b71a3cadb17afeb3",
+      "mode": "live",
+      "dataset_hash": "553b34241446bedbb42761da8dd7d0a20965a32d3ced738740f6f981b374b14c",
+      "final_dataset_match": false,
+      "acceptance": "incomplete",
+      "duration_ms": 47104,
+      "formal": {
+        "counts": {
+          "unconfirmed": 20
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "published_claim_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "reference_validation": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          }
+        }
+      },
+      "provisional": {
+        "counts": {
+          "requested": 20,
+          "completed": 20,
+          "references_submitted": 72,
+          "references_valid": 68,
+          "published": 24,
+          "illegal_reference_published": 0,
+          "published_supported": 24,
+          "supported": 32,
+          "false_blocks": 8,
+          "unsupported": 32,
+          "unsafe_blocks": 32,
+          "review_errors": 14,
+          "dimensions": 4,
+          "dimensions_correct": 3
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 3,
+            "denominator": 4,
+            "value": 0.75,
+            "unavailable_reason": null
+          },
+          "published_claim_support": {
+            "numerator": 24,
+            "denominator": 24,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 32,
+            "denominator": 32,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 8,
+            "denominator": 32,
+            "value": 0.25,
+            "unavailable_reason": null
+          },
+          "reference_validation": {
+            "numerator": 68,
+            "denominator": 72,
+            "value": 0.9444444444444444,
+            "unavailable_reason": null
+          }
+        }
+      },
+      "compatible_with_final": [
+        "fictional-test-33",
+        "fictional-test-34",
+        "fictional-test-35",
+        "fictional-test-36",
+        "fictional-test-37",
+        "fictional-test-38",
+        "fictional-test-39",
+        "fictional-test-40",
+        "fictional-test-41",
+        "fictional-test-42",
+        "fictional-test-43",
+        "fictional-test-44",
+        "fictional-test-45",
+        "fictional-test-46",
+        "fictional-test-47",
+        "fictional-test-48",
+        "fictional-score-test-09",
+        "fictional-score-test-10",
+        "fictional-score-test-12"
+      ],
+      "incompatible_with_final": [
+        "fictional-score-test-11"
+      ]
+    },
+    {
+      "file": "backend/samples/assessment-grounding-v1/results/live-baseline-billing.json",
+      "sha256": "2004fa244251a3493d883cc656bbc069cdf4be6fd43f48a04083f3ef3e19f382",
+      "mode": "live",
+      "dataset_hash": "553b34241446bedbb42761da8dd7d0a20965a32d3ced738740f6f981b374b14c",
+      "final_dataset_match": false,
+      "acceptance": "incomplete",
+      "duration_ms": 2946,
+      "formal": {
+        "counts": {
+          "unconfirmed": 20
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "published_claim_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "reference_validation": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          }
+        }
+      },
+      "provisional": {
+        "counts": {
+          "requested": 20,
+          "completed": 0,
+          "execution_failed": 20,
+          "references_submitted": 72,
+          "references_valid": 68,
+          "published": 0,
+          "illegal_reference_published": 0,
+          "published_supported": 0,
+          "supported": 32,
+          "false_blocks": 32,
+          "unsupported": 32,
+          "unsafe_blocks": 32,
+          "review_errors": 60,
+          "dimensions": 4
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 0,
+            "denominator": 4,
+            "value": 0.0,
+            "unavailable_reason": null
+          },
+          "published_claim_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 32,
+            "denominator": 32,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 32,
+            "denominator": 32,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "reference_validation": {
+            "numerator": 68,
+            "denominator": 72,
+            "value": 0.9444444444444444,
+            "unavailable_reason": null
+          }
+        }
+      },
+      "compatible_with_final": [
+        "fictional-test-33",
+        "fictional-test-34",
+        "fictional-test-35",
+        "fictional-test-36",
+        "fictional-test-37",
+        "fictional-test-38",
+        "fictional-test-39",
+        "fictional-test-40",
+        "fictional-test-41",
+        "fictional-test-42",
+        "fictional-test-43",
+        "fictional-test-44",
+        "fictional-test-45",
+        "fictional-test-46",
+        "fictional-test-47",
+        "fictional-test-48",
+        "fictional-score-test-09",
+        "fictional-score-test-10",
+        "fictional-score-test-12"
+      ],
+      "incompatible_with_final": [
+        "fictional-score-test-11"
+      ]
+    },
+    {
+      "file": "backend/samples/assessment-grounding-v1/results/live-current-billing.json",
+      "sha256": "c7e3610d84d7238557388ca528eae09c3cd94d494edb7f25b71a3cadb17afeb3",
+      "mode": "live",
+      "dataset_hash": "553b34241446bedbb42761da8dd7d0a20965a32d3ced738740f6f981b374b14c",
+      "final_dataset_match": false,
+      "acceptance": "incomplete",
+      "duration_ms": 47104,
+      "formal": {
+        "counts": {
+          "unconfirmed": 20
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "published_claim_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "reference_validation": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          }
+        }
+      },
+      "provisional": {
+        "counts": {
+          "requested": 20,
+          "completed": 20,
+          "references_submitted": 72,
+          "references_valid": 68,
+          "published": 24,
+          "illegal_reference_published": 0,
+          "published_supported": 24,
+          "supported": 32,
+          "false_blocks": 8,
+          "unsupported": 32,
+          "unsafe_blocks": 32,
+          "review_errors": 14,
+          "dimensions": 4,
+          "dimensions_correct": 3
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 3,
+            "denominator": 4,
+            "value": 0.75,
+            "unavailable_reason": null
+          },
+          "published_claim_support": {
+            "numerator": 24,
+            "denominator": 24,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 32,
+            "denominator": 32,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 8,
+            "denominator": 32,
+            "value": 0.25,
+            "unavailable_reason": null
+          },
+          "reference_validation": {
+            "numerator": 68,
+            "denominator": 72,
+            "value": 0.9444444444444444,
+            "unavailable_reason": null
+          }
+        }
+      },
+      "compatible_with_final": [
+        "fictional-test-33",
+        "fictional-test-34",
+        "fictional-test-35",
+        "fictional-test-36",
+        "fictional-test-37",
+        "fictional-test-38",
+        "fictional-test-39",
+        "fictional-test-40",
+        "fictional-test-41",
+        "fictional-test-42",
+        "fictional-test-43",
+        "fictional-test-44",
+        "fictional-test-45",
+        "fictional-test-46",
+        "fictional-test-47",
+        "fictional-test-48",
+        "fictional-score-test-09",
+        "fictional-score-test-10",
+        "fictional-score-test-12"
+      ],
+      "incompatible_with_final": [
+        "fictional-score-test-11"
+      ]
+    },
+    {
+      "file": "backend/samples/assessment-grounding-v1/results/live-baseline.json",
+      "sha256": "2004fa244251a3493d883cc656bbc069cdf4be6fd43f48a04083f3ef3e19f382",
+      "mode": "live",
+      "dataset_hash": "553b34241446bedbb42761da8dd7d0a20965a32d3ced738740f6f981b374b14c",
+      "final_dataset_match": false,
+      "acceptance": "incomplete",
+      "duration_ms": 2946,
+      "formal": {
+        "counts": {
+          "unconfirmed": 20
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "published_claim_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "reference_validation": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          }
+        }
+      },
+      "provisional": {
+        "counts": {
+          "requested": 20,
+          "completed": 0,
+          "execution_failed": 20,
+          "references_submitted": 72,
+          "references_valid": 68,
+          "published": 0,
+          "illegal_reference_published": 0,
+          "published_supported": 0,
+          "supported": 32,
+          "false_blocks": 32,
+          "unsupported": 32,
+          "unsafe_blocks": 32,
+          "review_errors": 60,
+          "dimensions": 4
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 0,
+            "denominator": 4,
+            "value": 0.0,
+            "unavailable_reason": null
+          },
+          "published_claim_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 32,
+            "denominator": 32,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 32,
+            "denominator": 32,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "reference_validation": {
+            "numerator": 68,
+            "denominator": 72,
+            "value": 0.9444444444444444,
+            "unavailable_reason": null
+          }
+        }
+      },
+      "compatible_with_final": [
+        "fictional-test-33",
+        "fictional-test-34",
+        "fictional-test-35",
+        "fictional-test-36",
+        "fictional-test-37",
+        "fictional-test-38",
+        "fictional-test-39",
+        "fictional-test-40",
+        "fictional-test-41",
+        "fictional-test-42",
+        "fictional-test-43",
+        "fictional-test-44",
+        "fictional-test-45",
+        "fictional-test-46",
+        "fictional-test-47",
+        "fictional-test-48",
+        "fictional-score-test-09",
+        "fictional-score-test-10",
+        "fictional-score-test-12"
+      ],
+      "incompatible_with_final": [
+        "fictional-score-test-11"
+      ]
+    },
+    {
+      "file": "backend/samples/assessment-grounding-v1/results/live-current.json",
+      "sha256": "c7e3610d84d7238557388ca528eae09c3cd94d494edb7f25b71a3cadb17afeb3",
+      "mode": "live",
+      "dataset_hash": "553b34241446bedbb42761da8dd7d0a20965a32d3ced738740f6f981b374b14c",
+      "final_dataset_match": false,
+      "acceptance": "incomplete",
+      "duration_ms": 47104,
+      "formal": {
+        "counts": {
+          "unconfirmed": 20
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "published_claim_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          },
+          "reference_validation": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null,
+            "unavailable_reason": "no_applicable_samples"
+          }
+        }
+      },
+      "provisional": {
+        "counts": {
+          "requested": 20,
+          "completed": 20,
+          "references_submitted": 72,
+          "references_valid": 68,
+          "published": 24,
+          "illegal_reference_published": 0,
+          "published_supported": 24,
+          "supported": 32,
+          "false_blocks": 8,
+          "unsupported": 32,
+          "unsafe_blocks": 32,
+          "review_errors": 14,
+          "dimensions": 4,
+          "dimensions_correct": 3
+        },
+        "complete": false,
+        "metrics": {
+          "score_eligibility_agreement": {
+            "numerator": 3,
+            "denominator": 4,
+            "value": 0.75,
+            "unavailable_reason": null
+          },
+          "published_claim_support": {
+            "numerator": 24,
+            "denominator": 24,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "unsupported_claim_blocking": {
+            "numerator": 32,
+            "denominator": 32,
+            "value": 1.0,
+            "unavailable_reason": null
+          },
+          "supported_claim_false_blocking": {
+            "numerator": 8,
+            "denominator": 32,
+            "value": 0.25,
+            "unavailable_reason": null
+          },
+          "reference_validation": {
+            "numerator": 68,
+            "denominator": 72,
+            "value": 0.9444444444444444,
+            "unavailable_reason": null
+          }
+        }
+      },
+      "compatible_with_final": [
+        "fictional-test-33",
+        "fictional-test-34",
+        "fictional-test-35",
+        "fictional-test-36",
+        "fictional-test-37",
+        "fictional-test-38",
+        "fictional-test-39",
+        "fictional-test-40",
+        "fictional-test-41",
+        "fictional-test-42",
+        "fictional-test-43",
+        "fictional-test-44",
+        "fictional-test-45",
+        "fictional-test-46",
+        "fictional-test-47",
+        "fictional-test-48",
+        "fictional-score-test-09",
+        "fictional-score-test-10",
+        "fictional-score-test-12"
+      ],
+      "incompatible_with_final": [
+        "fictional-score-test-11"
+      ]
+    }
+  ]
+}

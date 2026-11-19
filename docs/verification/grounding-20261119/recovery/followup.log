@@ -1,0 +1,20 @@
+{"run": "followup", "sequence": 1, "type": "run.started", "data": {}}
+{"run": "followup", "sequence": 2, "type": "step.started", "data": {"step_id": "understand_request"}}
+{"run": "followup", "sequence": 3, "type": "conversation.updated", "data": {}}
+{"run": "followup", "sequence": 4, "type": "requirement.revised", "data": {"summary": "强化评估偏好：将‘量化检索评测结果’和‘独立主导上线的经验’加入 evaluation_preferences，替代原‘个人贡献、量化成果、证据不足项’；硬条件与语义要求保持不变。"}}
+{"run": "followup", "sequence": 5, "type": "step.completed", "data": {"step_id": "understand_request", "summary": "plan_ready"}}
+{"run": "followup", "sequence": 6, "type": "step.started", "data": {"step_id": "filter_candidates"}}
+{"run": "followup", "sequence": 7, "type": "step.completed", "data": {"step_id": "filter_candidates", "summary": "candidates_ready"}}
+{"run": "followup", "sequence": 8, "type": "step.started", "data": {"step_id": "build_dimensions"}}
+{"run": "followup", "sequence": 10, "type": "step.completed", "data": {"step_id": "build_dimensions", "summary": "dimensions_valid"}}
+{"run": "followup", "sequence": 11, "type": "step.started", "data": {"step_id": "parallel_assessment"}}
+{"run": "followup", "sequence": 21, "type": "step.completed", "data": {"step_id": "parallel_assessment", "summary": "8 个评估分支完成，取证失败=0，succeeded=8"}}
+{"run": "followup", "sequence": 22, "type": "step.started", "data": {"step_id": "score_candidates"}}
+{"run": "followup", "sequence": 24, "type": "step.completed", "data": {"step_id": "score_candidates", "summary": "candidates_ranked"}}
+{"run": "followup", "sequence": 25, "type": "step.started", "data": {"step_id": "compose_report"}}
+{"run": "followup", "sequence": 28, "type": "step.completed", "data": {"step_id": "compose_report", "summary": "completed"}}
+{"run": "followup", "sequence": 29, "type": "report.completed", "data": {}}
+{"run": "followup", "sequence": 30, "type": "run.completed", "data": {}}
+{"check": "followup", "detail": {"run_id": "0307474c-d187-4152-8afe-64eaa10f29a4", "conversation_id": "0bf1e75c-ab7f-4e32-9e07-504da55c163a", "turn_no": 2, "events": 30, "report_chars": 4766, "citations": 28, "cases": 42, "case_statuses": ["failed", "succeeded"]}}
+{"check": "citation", "detail": {"chunk_id": "dd828275-e528-4603-a6eb-474e98d139b1", "page": 1, "locators": 1, "tenant_and_scope_denied": true, "bad_quote_denied": true}}
+VERIFICATION PASSED: followup

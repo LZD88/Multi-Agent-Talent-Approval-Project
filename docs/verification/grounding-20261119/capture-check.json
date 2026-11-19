@@ -1,0 +1,98 @@
+[
+  {
+    "case_id": "8448edfa-b4f9-469c-a4dc-2e7eca4d7605",
+    "module_key": "report_grounding",
+    "run_id": "41a83f8d-3e86-4fe7-bf70-1a0322109fc4",
+    "status": "succeeded",
+    "duration_ms": 22299,
+    "input_frozen": true
+  },
+  {
+    "case_id": "84eb451a-7d95-443a-bf15-69d8db5d8bc1",
+    "module_key": "report_grounding",
+    "run_id": "41a83f8d-3e86-4fe7-bf70-1a0322109fc4",
+    "status": "failed",
+    "duration_ms": 29942,
+    "input_frozen": true
+  },
+  {
+    "case_id": "1f9b3767-fcf6-47db-be88-06d400da69aa",
+    "module_key": "report_grounding",
+    "run_id": "41a83f8d-3e86-4fe7-bf70-1a0322109fc4",
+    "status": "failed",
+    "duration_ms": 30003,
+    "input_frozen": true
+  },
+  {
+    "case_id": "1235facc-4ad7-4c48-9231-539513e8178e",
+    "module_key": "report_grounding",
+    "run_id": "41a83f8d-3e86-4fe7-bf70-1a0322109fc4",
+    "status": "succeeded",
+    "duration_ms": 27827,
+    "input_frozen": true
+  },
+  {
+    "case_id": "0a14c865-f4e5-43ba-987f-d7374029ec21",
+    "module_key": "dimension_scoring",
+    "run_id": "41a83f8d-3e86-4fe7-bf70-1a0322109fc4",
+    "status": "failed",
+    "duration_ms": 19691,
+    "input_frozen": true
+  },
+  {
+    "case_id": "97f9ffb7-c078-4212-9173-de39d778fa62",
+    "module_key": "dimension_scoring",
+    "run_id": "41a83f8d-3e86-4fe7-bf70-1a0322109fc4",
+    "status": "succeeded",
+    "duration_ms": 18427,
+    "input_frozen": true
+  },
+  {
+    "case_id": "dd357088-9f00-4478-948a-a48a81a99802",
+    "module_key": "dimension_scoring",
+    "run_id": "41a83f8d-3e86-4fe7-bf70-1a0322109fc4",
+    "status": "failed",
+    "duration_ms": 16396,
+    "input_frozen": true
+  },
+  {
+    "case_id": "e50359d3-7e3b-4c4f-a89e-d416c00401d9",
+    "module_key": "dimension_scoring",
+    "run_id": "41a83f8d-3e86-4fe7-bf70-1a0322109fc4",
+    "status": "succeeded",
+    "duration_ms": 11269,
+    "input_frozen": true
+  },
+  {
+    "case_id": "e02a9914-f85b-400b-9f8e-dc24e35edfba",
+    "module_key": "dimension_scoring",
+    "run_id": "41a83f8d-3e86-4fe7-bf70-1a0322109fc4",
+    "status": "succeeded",
+    "duration_ms": 10405,
+    "input_frozen": true
+  },
+  {
+    "case_id": "8aeecf14-d2a9-4e5d-94ba-975d6aa448bf",
+    "module_key": "dimension_scoring",
+    "run_id": "41a83f8d-3e86-4fe7-bf70-1a0322109fc4",
+    "status": "succeeded",
+    "duration_ms": 9645,
+    "input_frozen": true
+  },
+  {
+    "case_id": "0a2ec4b6-7c79-44b0-84dd-8febbef7df7b",
+    "module_key": "dimension_scoring",
+    "run_id": "41a83f8d-3e86-4fe7-bf70-1a0322109fc4",
+    "status": "succeeded",
+    "duration_ms": 8343,
+    "input_frozen": true
+  },
+  {
+    "case_id": "c498bb52-d634-425f-9134-6684556ec096",
+    "module_key": "dimension_scoring",
+    "run_id": "41a83f8d-3e86-4fe7-bf70-1a0322109fc4",
+    "status": "succeeded",
+    "duration_ms": 7595,
+    "input_frozen": true
+  }
+]

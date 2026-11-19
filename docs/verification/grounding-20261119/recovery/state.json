@@ -1,0 +1,115 @@
+{
+  "tag": "20261119",
+  "department": "E2E验收组20261119",
+  "knowledge_base": {
+    "id": "5d319df0-f80e-4569-8b1a-251ab432abd3",
+    "name": "完整链路验收（虚构数据）20261119",
+    "description": "自动验收使用的虚构简历，覆盖 PDF、MinerU、切分、索引、检索及评估报告。",
+    "permission_scope": "hr_private",
+    "file_count": 0
+  },
+  "employees": {
+    "A": {
+      "id": "8881a2b1-a901-44fc-8c1d-665d61f44495",
+      "employee_no": "E2E20261119A",
+      "name": "链路验收A（虚构）",
+      "gender": null,
+      "birth_date": null,
+      "age": null,
+      "region": "上海",
+      "current_position": "AI应用工程师",
+      "job_level": "L5",
+      "years_of_experience": 7.0,
+      "department": "E2E验收组20261119",
+      "employment_status": "active",
+      "material_count": 0
+    },
+    "B": {
+      "id": "e61a4832-75ee-4c93-9632-dd4da4cf9974",
+      "employee_no": "E2E20261119B",
+      "name": "链路验收B（虚构）",
+      "gender": null,
+      "birth_date": null,
+      "age": null,
+      "region": "上海",
+      "current_position": "AI应用工程师",
+      "job_level": "L5",
+      "years_of_experience": 5.0,
+      "department": "E2E验收组20261119",
+      "employment_status": "active",
+      "material_count": 0
+    }
+  },
+  "documents": {
+    "A": {
+      "id": "d1c5e328-a3dd-4ef0-a2b2-25e4951936a4",
+      "material_no": "MAT-D1C5E328",
+      "candidate_id": "E2E20261119A",
+      "title": "链路验收A简历（虚构 PDF）",
+      "pipeline_status": "parsing",
+      "parse_job_id": "50430861-45aa-46cc-863d-cf220797ea03"
+    },
+    "B": {
+      "id": "46b69346-4742-4008-9c9a-c0bc95f9edec",
+      "material_no": "MAT-46B69346",
+      "candidate_id": "E2E20261119B",
+      "title": "链路验收B简历（虚构 PDF）",
+      "pipeline_status": "parsing",
+      "parse_job_id": "16e46cb7-66af-4ea2-ae76-b93481f54538"
+    }
+  },
+  "run": {
+    "run_id": "74b965d2-126c-4804-bed1-ba0dc4e876c5",
+    "conversation_id": "0bf1e75c-ab7f-4e32-9e07-504da55c163a",
+    "turn_no": 1,
+    "status": "running",
+    "events_url": "/api/runs/74b965d2-126c-4804-bed1-ba0dc4e876c5/events"
+  },
+  "checks": {
+    "evaluation": {
+      "run_id": "74b965d2-126c-4804-bed1-ba0dc4e876c5",
+      "conversation_id": "0bf1e75c-ab7f-4e32-9e07-504da55c163a",
+      "turn_no": 1,
+      "events": 29,
+      "report_chars": 3428,
+      "citations": 40,
+      "cases": 43,
+      "case_statuses": [
+        "failed",
+        "succeeded"
+      ]
+    },
+    "citation": {
+      "chunk_id": "dd828275-e528-4603-a6eb-474e98d139b1",
+      "page": 1,
+      "locators": 1,
+      "tenant_and_scope_denied": true,
+      "bad_quote_denied": true
+    },
+    "followup": {
+      "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+      "conversation_id": "0bf1e75c-ab7f-4e32-9e07-504da55c163a",
+      "turn_no": 2,
+      "events": 30,
+      "report_chars": 4766,
+      "citations": 28,
+      "cases": 42,
+      "case_statuses": [
+        "failed",
+        "succeeded"
+      ]
+    },
+    "cancellation": {
+      "run_id": "553701ba-e3dc-4854-a0ef-4dbc98a8c6d7",
+      "status": "cancelled",
+      "idempotent": true
+    }
+  },
+  "followup": {
+    "run_id": "0307474c-d187-4152-8afe-64eaa10f29a4",
+    "conversation_id": "0bf1e75c-ab7f-4e32-9e07-504da55c163a",
+    "turn_no": 2,
+    "status": "running",
+    "events_url": "/api/runs/0307474c-d187-4152-8afe-64eaa10f29a4/events"
+  }
+}
