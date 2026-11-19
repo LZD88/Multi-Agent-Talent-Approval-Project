@@ -9,9 +9,9 @@ from typing import Any, Literal
 from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field, ValidationError
 from typing_extensions import TypedDict
-from app.assessment_grounding import source_ref
 from langgraph.runtime import Runtime
 from app.talent_decision_graph import DecisionContext
+from app.assessment_grounding import source_ref
 from app.evaluation_case import capture_call, EvaluationModule
 
 from app.talent_evaluation_dispatch import BranchEvidenceDraft, EvaluationDimension
@@ -47,11 +47,9 @@ class DimensionAssessment(BaseModel):
     fact_claims: list[dict[str, Any]] = Field(default_factory=list)
 
 
-
 class ScoringFact(BaseModel):
     text: str = Field(min_length=1, max_length=500, description="限定于具体项目和时期的单个评分事实")
     evidence_refs: list[str] = Field(min_length=1, max_length=8, description="直接支持本事实的输入证据编号")
-
 
 
 class DimensionJudgement(BaseModel):
@@ -88,7 +86,6 @@ class DimensionJudgement(BaseModel):
         max_length=1000,
         description="结合评分锚点与证据事实说明评分或不可评分原因",
     )
-
 
 
 class ConsistencyIssue(BaseModel):
@@ -146,7 +143,6 @@ class EvidenceItem(BaseModel):
     citation_url: str = Field(min_length=1)
 
 
-
 class ReportPoint(BaseModel):
     text: str = Field(
         min_length=1,
@@ -161,6 +157,7 @@ class ReportPoint(BaseModel):
 
 
 class CandidateReportDraft(BaseModel):
+    risk_points: list[ReportPoint] = Field(default_factory=list, max_length=8, description="有直接原文支持的事实风险，不含材料缺失或技术错误")
     candidate_id: str = Field(description="候选人编号，顺序必须与输入排名一致")
     summary: str = Field(
         min_length=1,
@@ -217,7 +214,6 @@ class TalentEvaluationReportState(TypedDict, total=False):
     errors: list[str]
 
 
-
 DimensionScorer = Callable[
     [EvaluationDimension, BranchEvidenceDraft, list[EvidenceItem]],
     DimensionJudgement,
@@ -239,7 +235,6 @@ def branch_evidence_refs(branch: BranchEvidenceDraft) -> list[str]:
             for source in fact.sources
         )
     )
-
 
 
 def branch_missing_information(branch: BranchEvidenceDraft) -> list[str]:
@@ -279,7 +274,6 @@ def evidence_items_from_branches(
                             ),
                         )
     return list(items.values())
-
 
 
 def _evidence_reference_maps(
@@ -359,7 +353,6 @@ def _branch_model_payload(
     }
 
 
-
 DIMENSION_SCORER_PROMPT = """你负责依据单个评估维度的定义、证据要求和 0/3/5 分锚点完成评分。
 输入中的证据使用 E1、E2 这类短编号。evidence_refs 只能逐字复制这些短编号，不得缩写、改写或生成编号。
 有完整可评分证据时使用 sufficient，存在可评分事实但仍有缺失时使用 partial。
@@ -372,7 +365,6 @@ rationale 使用简洁中文，不超过 1000 字符。
 fact_claims 列出评分所依赖的事实命题，每条用 text 与 evidence_refs 表示，最多四条，不得遗漏关键评分依据。
 missing_items 只记录影响当前判断的缺失信息，conflicts 只记录已由证据证明的互斥事实。
 """.strip()
-
 
 
 def build_structured_dimension_scorer(
@@ -419,12 +411,13 @@ def build_structured_dimension_scorer(
     return score
 
 
-
 REPORT_WRITER_PROMPT = """你负责将已排序的候选人评估结果组织为结构化报告草稿。
 保持输入中的候选人顺序，不得修改分数、排名、证据状态或风险结论。
 输入中的证据使用 E1、E2 这类短编号。ReportPoint.evidence_refs 只能逐字复制当前候选人已评分结果中的短编号。
 title 是整份报告标题，overview 按当前排名概括总体差异，candidates 必须与输入候选人数量和顺序一致。
-CandidateReportDraft.summary 概括当前候选人的得分、覆盖率与置信度，highlights 只整理有证据的主要依据。
+title、overview、summary 仅填写中立占位文字，正式标题、数字和摘要由程序生成。
+highlights 仅整理有直接原文支持的原子事实；risk_points 用于有直接原文支持的事实风险。
+risks 返回空列表，材料缺失、冲突及技术错误由程序单独显示，不能把未提及写成否定事实。
 每名候选人最多 8 条 highlights、8 条 risks，每条 highlight 最多引用 8 个 evidence_refs，选择直接支撑该判断的证据。
 risks 只整理输入中已有的缺失、冲突、执行失败和置信度风险，不得推测新风险。
 报告草稿只负责概述、主要依据和风险表达，Markdown 与可点击链接由程序渲染。
@@ -491,13 +484,11 @@ def build_structured_report_writer(
                     point.evidence_refs,
                     model_to_chunk,
                 )
-                if restored_refs and all(ref_id in allowed_refs for ref_id in restored_refs):
-                    restored_highlights.append(
-                        point.model_copy(update={"evidence_refs": restored_refs})
-                    )
+                restored_highlights.append(point.model_copy(update={"evidence_refs": restored_refs}))
             restored_candidates.append(
                 candidate.model_copy(
-                    update={"highlights": restored_highlights}
+                    update={"highlights": restored_highlights, "risk_points": [point.model_copy(update={
+                        "evidence_refs": _restore_evidence_refs(point.evidence_refs, model_to_chunk)}) for point in candidate.risk_points]}
                 )
             )
         return draft.model_copy(update={"candidates": restored_candidates})
@@ -566,7 +557,6 @@ def build_structured_consistency_reviewer(
     return review
 
 
-
 def validate_dimension_judgement(
     branch: BranchEvidenceDraft,
     judgement: DimensionJudgement,
@@ -588,7 +578,6 @@ def validate_dimension_judgement(
         raise ValueError("missing 状态必须说明缺失信息")
     if judgement.evidence_status == "conflicting" and not judgement.conflicts:
         raise ValueError("conflicting 状态必须说明冲突内容")
-
 
 
 def aggregate_candidate_assessments(
@@ -885,7 +874,6 @@ def _score_dimensions(
     return score_dimensions
 
 
-
 def validate_consistency_review(
     review: ConsistencyReview,
     assessments: list[DimensionAssessment],
@@ -1014,7 +1002,6 @@ def _review_consistency(
     return review_consistency
 
 
-
 def _aggregate_candidates(state: TalentEvaluationReportState) -> dict[str, Any]:
     dimensions = [EvaluationDimension.model_validate(item) for item in state["dimensions"]]
     assessments = [
@@ -1081,7 +1068,14 @@ def _compose_report(report_writer: ReportWriter):
                 "evidence_items": [item.ref_id for item in evidence_items],
             },
         )
-        draft = report_writer(candidates, evidence_items)
+        report_error = ""
+        try:
+            draft = report_writer(candidates, evidence_items)
+        except Exception as exc:
+            report_error = type(exc).__name__
+            logger.warning("event=report_writer_unavailable error_type=%s", report_error)
+            draft = ReportDraft(title="人才材料评估", overview="报告叙述暂未完成", candidates=[
+                CandidateReportDraft(candidate_id=row.candidate_id, summary="待核实") for row in candidates])
         _log_node(
             "compose_report",
             "output",
@@ -1093,6 +1087,7 @@ def _compose_report(report_writer: ReportWriter):
         )
         return {
             "report_draft": ReportDraft.model_validate(draft).model_dump(mode="json"),
+            "report_error": report_error,
             "status": "report_drafted",
         }
 
@@ -1212,8 +1207,8 @@ def build_talent_evaluation_report_graph(
     reviewer = consistency_reviewer or (
         lambda assessments, evidence_items: ConsistencyReview()
     )
-    from app.assessment_graph_nodes import make_grounding_nodes
-    ground_dimensions = make_grounding_nodes(claim_reviewer)
+    from app.assessment_graph_nodes import make_grounding_nodes, render_grounded_report, verification_node
+    ground_dimensions, ground_report = make_grounding_nodes(claim_reviewer)
     builder = StateGraph(TalentEvaluationReportState, context_schema=DecisionContext)
     builder.add_node("receive_input", _receive_input)
     builder.add_node(
@@ -1233,14 +1228,17 @@ def build_talent_evaluation_report_graph(
     builder.add_node("aggregate_candidates", _aggregate_candidates)
     builder.add_node("compose_report", _compose_report(report_writer))
     builder.add_node("ground_dimension_assessments", ground_dimensions)
-    builder.add_node("validate_report", _validate_and_render_report)
+    builder.add_node("ground_report_claims", ground_report)
+    builder.add_node("build_verification_checklist", verification_node)
+    builder.add_node("validate_report", render_grounded_report)
     builder.add_edge(START, "receive_input")
     builder.add_edge("receive_input", "score_dimensions")
     builder.add_edge("score_dimensions", "ground_dimension_assessments")
     builder.add_edge("ground_dimension_assessments", "review_consistency")
     builder.add_edge("review_consistency", "aggregate_candidates")
     builder.add_edge("aggregate_candidates", "compose_report")
-    builder.add_edge("compose_report", "validate_report")
+    builder.add_edge("compose_report", "ground_report_claims")
+    builder.add_edge("ground_report_claims", "build_verification_checklist")
+    builder.add_edge("build_verification_checklist", "validate_report")
     builder.add_edge("validate_report", END)
     return builder.compile()
-

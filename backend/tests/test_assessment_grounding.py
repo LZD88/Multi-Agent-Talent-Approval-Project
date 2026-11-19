@@ -28,21 +28,6 @@ def supported(claims, anchors):
         reason_code="direct", reason="原文支持限定命题", anchor_ids=row.anchor_ids) for row in claims])
 
 
-class FakeModel:
-    def __init__(self, responder):
-        self.responder = responder
-        self.calls = []
-
-    def with_structured_output(self, *args, **kwargs):
-        return self
-
-    async def ainvoke(self, messages):
-        import json
-        payload = json.loads(messages[1][1])
-        self.calls.append(payload)
-        return await self.responder(payload)
-
-
 def test_anchor_keeps_two_spans_and_rejects_forged_version_or_span():
     a, b = anchor(), anchor(start=25, quote="承担接口开发")
     assert a.evidence_id != b.evidence_id
@@ -64,6 +49,21 @@ def test_review_allows_supported_negative_and_requires_exact_ids():
 def test_unknown_snapshot_version_rejected():
     with pytest.raises(ValidationError):
         AssessmentGroundingSnapshot.model_validate({"schema_version": "2.0"})
+
+
+class FakeModel:
+    def __init__(self, responder):
+        self.responder = responder
+        self.calls = []
+
+    def with_structured_output(self, *args, **kwargs):
+        return self
+
+    async def ainvoke(self, messages):
+        import json
+        payload = json.loads(messages[1][1])
+        self.calls.append(payload)
+        return await self.responder(payload)
 
 
 def test_reviewer_bounded_retry_fail_closed_and_source_owner_validation():
@@ -121,6 +121,61 @@ def test_batch_isolation_and_concurrency_limit():
     assert peak == 2 and len(result.reviews) == 6
 
 
+def dimension():
+    return {"name": "项目交付", "definition": "明确职责与结果", "weight_percent": 100,
+            "evidence_requirements": ["交付事实"], "score_anchors": [
+                {"score": 0, "description": "明确未满足"}, {"score": 3, "description": "参与原型"},
+                {"score": 5, "description": "主导生产"}], "retrieval_hints": ["项目"], "source_requirement_ids": ["S1"]}
+
+
+def branch():
+    a = anchor()
+    source = a.model_dump(include={"document_id", "document_version_id", "chunk_id", "quote", "quote_start", "quote_end"})
+    source.update(citation_id="chunk", source_label="虚构简历")
+    return {"task_id": "C1:1", "candidate_id": "C1", "dimension_number": 1,
+        "execution_status": "succeeded", "requirements": [{"requirement_id": "S1", "query": "项目",
+        "status": "sufficient", "reason": "found", "extraction_status": "succeeded",
+        "facts": [{"event": "虚构项目", "period": "2025", "claim": "参与原型", "answer": "yes", "sources": [source]}]}]}
+
+
+def graph(reviewer, score=3):
+    from app.talent_evaluation_report import DimensionJudgement, ReportDraft, CandidateReportDraft, ReportPoint, build_talent_evaluation_report_graph
+    return build_talent_evaluation_report_graph(claim_reviewer=reviewer,
+        dimension_scorer=lambda dimension, branch, items: DimensionJudgement(evidence_status="sufficient",
+            score=score, confidence="high", evidence_refs=[items[0].ref_id], rationale="参与原型"),
+        report_writer=lambda candidates, items: ReportDraft(title="错误的任命结论", overview="未评分就是零分",
+            candidates=[CandidateReportDraft(candidate_id="C1", summary="没有管理能力", risks=["能力不行"],
+                highlights=[ReportPoint(text="参与原型", evidence_refs=[items[0].ref_id])])]))
+
+
+def test_graph_suppresses_unchecked_prose_keeps_actual_zero_and_exact_anchor():
+    result = graph(supported, score=0).invoke({"dimensions": [dimension()], "branch_results": [branch()]})
+    assert result["candidate_assessments"][0]["confirmed_score"] == 0
+    assert result["candidate_assessments"][0]["evidence_coverage_percent"] == 100
+    assert "0 分" in result["report"]
+    assert "没有管理能力" not in result["report"] and "未评分就是零分" not in result["report"]
+    assert result["assessment_grounding"]["anchors"][0]["document_version_id"] == "version"
+
+
+def test_graph_semantic_rejection_clears_score_before_aggregation_and_has_checklist():
+    def reject(claims, anchors):
+        return GroundingReview(reviews=[ClaimReview(claim_id=row.claim_id, verdict="insufficient",
+            reason_code="prototype_not_delivery", reason="原型不足以证明生产上线", anchor_ids=row.anchor_ids) for row in claims])
+    result = graph(reject).invoke({"dimensions": [dimension()], "branch_results": [branch()]})
+    assert result["candidate_assessments"][0]["evidence_coverage_percent"] == 0
+    assert result["dimension_assessments"][0]["score"] is None
+    checklist = result["verification"]["candidates"]["C1"]
+    assert checklist["items"] and not checklist["technical_actions"]
+    assert "未评分" in result["report"]
+
+
+def test_graph_unconfigured_review_fails_closed_and_async_matches_sync():
+    result = asyncio.run(graph(None).ainvoke({"dimensions": [dimension()], "branch_results": [branch()]}))
+    assert result["assessment_grounding"]["status"] == "degraded"
+    assert result["dimension_assessments"][0]["score"] is None
+    assert result["verification"]["candidates"]["C1"]["technical_actions"]
+
+
 def test_review_recorder_failure_does_not_change_successful_business_result():
     async def respond(payload):
         return supported([AssessmentClaim.model_validate(row) for row in payload["claims"]], []).model_dump()
@@ -172,22 +227,15 @@ def test_bad_report_reference_never_reaches_reviewer_and_is_not_technical_outage
     assert result.reviews[0].verdict == "insufficient"
 
 
-
-def dimension():
-    return {"name": "项目交付", "definition": "明确职责与结果", "weight_percent": 100,
-            "evidence_requirements": ["交付事实"], "score_anchors": [
-                {"score": 0, "description": "明确未满足"}, {"score": 3, "description": "参与原型"},
-                {"score": 5, "description": "主导生产"}], "retrieval_hints": ["项目"], "source_requirement_ids": ["S1"]}
-
-
-def branch():
-    a = anchor()
-    source = a.model_dump(include={"document_id", "document_version_id", "chunk_id", "quote", "quote_start", "quote_end"})
-    source.update(citation_id="chunk", source_label="虚构简历")
-    return {"task_id": "C1:1", "candidate_id": "C1", "dimension_number": 1,
-        "execution_status": "succeeded", "requirements": [{"requirement_id": "S1", "query": "项目",
-        "status": "sufficient", "reason": "found", "extraction_status": "succeeded",
-        "facts": [{"event": "虚构项目", "period": "2025", "claim": "参与原型", "answer": "yes", "sources": [source]}]}]}
+def test_report_reviewer_exception_is_degraded_without_leaking_draft():
+    def review(claims, anchors):
+        if any(":highlights:" in row.claim_id for row in claims):
+            raise RuntimeError("outage")
+        return supported(claims, anchors)
+    result = graph(review).invoke({"dimensions": [dimension()], "branch_results": [branch()]})
+    assert result["candidate_assessments"][0]["evidence_coverage_percent"] == 100
+    assert result["assessment_grounding"]["status"] == "degraded"
+    assert result["verification"]["candidates"]["C1"]["technical_actions"]
 
 
 def test_same_chunk_two_quotes_survive_report_mapping_and_model_aliases():
@@ -205,3 +253,23 @@ def test_same_chunk_two_quotes_survive_report_mapping_and_model_aliases():
     assert len(set(r.citation_url for r in items)) == 2
     assert set(from_model.values()) == {r.ref_id for r in items}
 
+
+@pytest.mark.parametrize('text', ['同一个项目算两个独立项目', '2022年主导2025年的上线', '管理能力弱于没有材料的C2'])
+def test_report_claims_and_fact_risks_are_filtered_after_scoring(text):
+    from app.talent_evaluation_report import DimensionJudgement, ReportDraft, CandidateReportDraft, ReportPoint, build_talent_evaluation_report_graph
+    def review(claims, anchors):
+        return GroundingReview(reviews=[ClaimReview(claim_id=row.claim_id,
+            verdict='insufficient' if ':risk_points:' in row.claim_id or ':highlights:' in row.claim_id else 'supported',
+            reason_code='scope_not_supported', reason='限定与当前材料不符', anchor_ids=row.anchor_ids) for row in claims])
+    result = build_talent_evaluation_report_graph(claim_reviewer=review,
+        dimension_scorer=lambda dim, branch, items: DimensionJudgement(evidence_status='sufficient', score=3,
+            confidence='high', evidence_refs=[items[0].ref_id], rationale='参与原型'),
+        report_writer=lambda candidates, items: ReportDraft(title='虚构报告', overview='不可绕过门禁', candidates=[
+            CandidateReportDraft(candidate_id='C1', summary='不可绕过门禁', highlights=[ReportPoint(text=text, evidence_refs=[items[0].ref_id])],
+                risk_points=[ReportPoint(text='没有任何管理能力', evidence_refs=[items[0].ref_id])])])).invoke(
+                    {'dimensions': [dimension()], 'branch_results': [branch()]})
+    assert result['dimension_assessments'][0]['score'] == 3
+    # Rejected text may be preserved only inside explicitly labelled pending records.
+    main = result['report'].split('### 待核实事项')[0]
+    assert text not in main and '没有任何管理能力' not in main
+    assert result['assessment_grounding']['summary']['blocked'] == 2
