@@ -125,6 +125,11 @@ export function EvaluationCenter({apiBase, onDashboard, onChat, onRecords, sideb
     setOffset(0);
     setGroupByRun(checked);
   }
+  function openSyntheticSplit(split: 'dev' | 'test') {
+    setRun(`synthetic-assessment-v1-${split}`);
+    setQuality(''); setStatus(''); setModule(''); setSignal(false); setAfter(''); setBefore('');
+    changeRunGrouping(false);
+  }
   return <div className={`app evaluationApp${sidebarCollapsed?' sidebarCollapsed':''}`}>
     <aside className="side"><div className="brand"><img src="/talentos-favicon.png" alt="TalentOS"/><div><b>智鉴 TalentOS</b><small>多 AGENT 人才决策平台</small></div></div><nav>
       <button onClick={onDashboard}><LayoutGrid/><span>工作台</span></button><button onClick={onRecords}><UserSquare2/><span>人才档案</span></button><button onClick={onChat}><Sparkles/><span>评估与推荐</span></button><button className="active"><FlaskConical/><span>评测中心</span></button>
@@ -132,6 +137,11 @@ export function EvaluationCenter({apiBase, onDashboard, onChat, onRecords, sideb
     <main className="evaluationMain"><header><div><span>评测中心</span><ChevronRight/><b>{tab==='cases'?'评测样例':'数据集'}</b></div><div className="currentUser"><b>Will</b><span>W</span></div></header>
       <div className="evaluationContent"><div className="moduleTabs" role="tablist" aria-label="评测中心功能"><button role="tab" aria-selected={tab==='cases'} className={tab==='cases'?'active':''} onClick={()=>setTab('cases')}>评测样例</button><button role="tab" aria-selected={tab==='dataset'} className={tab==='dataset'?'active':''} onClick={()=>setTab('dataset')}>数据集</button></div>
       <div hidden={tab!=='cases'} role="tabpanel" aria-label="评测样例">
+        <div className="evaluationActions goldenShortcuts">
+          <span>人工基准审核</span>
+          <div><button disabled={busy} onClick={()=>openSyntheticSplit('dev')}>虚构开发集</button>
+            <button disabled={busy} onClick={()=>openSyntheticSplit('test')}>虚构测试集</button></div>
+        </div>
         <div className="evaluationToolbar">
           <fieldset disabled={busy} className="evaluationFilterFields"><label className="evaluationCheckLabel evaluationGroupCheck"><input type="checkbox" checked={groupByRun} onChange={e=>changeRunGrouping(e.target.checked)}/>按 Run 分组查看</label><label>模块<select value={module} onChange={e=>{setModule(e.target.value);setOffset(0);}}><option value="">全部模块</option>{Object.entries(moduleLabels).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label><label>调用状态<select value={status} onChange={e=>{setStatus(e.target.value);setOffset(0);}}><option value="">全部状态</option><option value="succeeded">调用成功</option><option value="failed">调用失败</option></select></label><label className="evaluationCheckLabel"><input type="checkbox" checked={quality==='low'} onChange={e=>{setQuality(e.target.checked?'low':'');setOffset(0);}}/>仅低分 Case（0—2 分）</label><label className="evaluationCheckLabel"><input type="checkbox" checked={quality==='unannotated'} onChange={e=>{setQuality(e.target.checked?'unannotated':'');setOffset(0);}}/>仅未标注</label><label>Run ID<input placeholder="输入完整 Run ID" value={run} onChange={e=>{setRun(e.target.value);setOffset(0);}}/></label><label>采集开始时间<input type="datetime-local" value={after} onChange={e=>{setAfter(e.target.value);setOffset(0);}}/></label><label>采集结束时间<input type="datetime-local" value={before} onChange={e=>{setBefore(e.target.value);setOffset(0);}}/></label><label className="evaluationCheckLabel"><input type="checkbox" checked={signal} onChange={e=>{setSignal(e.target.checked);setOffset(0);}}/>仅用户反馈 Case</label></fieldset>
           <div className="evaluationActions"><span>已选 {selected.length} 条 · 每批最多 20 条</span><div><button disabled={busy||loading} onClick={()=>setRefresh(x=>x+1)}><RefreshCw size={15}/>刷新</button><button className="evaluationPrimary" disabled={busy||!selected.length} onClick={judgeSelected}>{busy?'Judge 执行中…':'批量 Judge'}</button></div></div>

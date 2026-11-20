@@ -311,6 +311,32 @@ def test_new_module_quality_replay_without_judge_keeps_confirmed_labels(client, 
     assert result['items'][0]['version_snapshot']['dataset_hash']
 
 
+def test_synthetic_golden_cannot_move_between_splits_or_confirm_a_technical_error(client):
+    from uuid import UUID
+    from app import evaluation_api as api
+    from app.models import EvaluationCaseRecord
+    from test_assessment_grounding import anchor, claim, supported
+
+    http, case_id = client
+    evidence = anchor()
+    statement = claim(evidence)
+    with api.SessionLocal() as db:
+        case = db.get(EvaluationCaseRecord, UUID(case_id))
+        case.module_key = 'report_grounding'
+        case.input_payload = {'schema_version': '1.0', 'claims': [statement.model_dump()],
+                              'anchors': [evidence.model_dump()]}
+        case.replay_context = {'synthetic': True, 'split': 'dev'}
+        db.commit()
+
+    endpoint = f'/api/evaluation/cases/{case_id}/confirm'
+    valid = supported([statement], [evidence]).model_dump()
+    failed = {'reviews': [{**valid['reviews'][0], 'verdict': 'error'}]}
+    assert http.post(endpoint, json={'golden_output': valid, 'dataset_split': 'test'}).status_code == 422
+    assert http.post(endpoint, json={'golden_output': failed, 'dataset_split': 'dev'}).status_code == 422
+    assert not http.get('/api/evaluation/dataset').json()['items']
+    assert http.post(endpoint, json={'golden_output': valid, 'dataset_split': 'dev'}).status_code == 200
+
+
 def test_replay_judge_failure_does_not_become_zero_score(client, monkeypatch):
     from app import evaluation_api as api
     c, cid = client

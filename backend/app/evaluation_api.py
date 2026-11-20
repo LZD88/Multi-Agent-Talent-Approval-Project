@@ -173,9 +173,14 @@ def confirm_golden(case_id: UUID, payload: ConfirmGolden):
             raise HTTPException(404, 'Case 不存在')
         if db.scalar(select(DatasetItem).where(DatasetItem.source_case_id == case_id)):
             raise HTTPException(409, '已确认的数据集条目不可覆盖')
+        context = case.replay_context or {}
+        if context.get('synthetic') and payload.dataset_split != context.get('split'):
+            raise HTTPException(422, '虚构基准样本须保留原来的开发集或测试集划分')
         try:
             golden = output_schema(case.module_key).model_validate(payload.golden_output).model_dump(mode='json')
             validate_golden_input(case.module_key, case.input_payload, golden)
+            if context.get('synthetic') and any(row['verdict'] == 'error' for row in golden.get('reviews', [])):
+                raise ValueError('技术故障不能作为人工参考标签')
         except (ValueError, KeyError):
             raise HTTPException(422, 'Golden 不符合模块输出 Schema')
         annotation = db.get(Annotation, case_id)

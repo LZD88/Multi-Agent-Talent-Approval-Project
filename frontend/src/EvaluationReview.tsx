@@ -6,12 +6,64 @@ export async function evaluationPost(url: string, payload: unknown) {
   if (!r.ok) throw new Error(typeof body.detail === 'string' ? body.detail : '请求失败');
   return body;
 }
+
+const verdictNames: Record<string, string> = {
+  supported:'原文支持', contradicted:'原文反驳', insufficient:'原文不足', conflicting:'材料冲突',
+};
+
+type FrozenClaim = {claim_id: string; text: string; anchor_ids: string[]; candidate_ids: string[]};
+type FrozenQuote = {evidence_id: string; quote: string; candidate_id: string};
+type GoldenOutput = {reviews?: {claim_id: string; verdict: string; anchor_ids: string[]; reason: string; reason_code: string}[]};
+
+function GroundingLabels({input, golden, disabled, onEdit}: {
+  input:{claims: FrozenClaim[]; anchors: FrozenQuote[]}; golden:string; disabled:boolean; onEdit:(value:string)=>void;
+}) {
+  let output: GoldenOutput;
+  try { output = JSON.parse(golden); } catch { return null; }
+  if (!Array.isArray(output?.reviews)) return null;
+  const anchors = new Map(input.anchors.map(anchor => [anchor.evidence_id, anchor]));
+  return <div className="goldenEvidenceList">
+    {input.claims.map(claim => {
+      const current = output.reviews?.find(row => row.claim_id === claim.claim_id);
+      if (!current) return null;
+      const owners = new Set(claim.anchor_ids.map(id => anchors.get(id)?.candidate_id));
+      const canSupport = claim.anchor_ids.length > 0 && new Set(claim.anchor_ids).size === claim.anchor_ids.length
+        && owners.size === claim.candidate_ids.length && claim.candidate_ids.every(id => owners.has(id));
+      return <article key={claim.claim_id}>
+        <b>{claim.text}</b>
+        {claim.anchor_ids.length ? claim.anchor_ids.map((id, index) => <blockquote key={index}>
+          {anchors.get(id)?.quote ?? '该引用在冻结材料中不存在'}
+          {anchors.has(id) && <small> · 原文所属候选人 {anchors.get(id)?.candidate_id}</small>}
+        </blockquote>)
+          : <p>此命题没有提供引用。</p>}
+        <label>参考标签 <select aria-label={`命题标签 ${claim.text}`} value={current.verdict} disabled={disabled}
+          onChange={event => {
+            const verdict = event.target.value;
+            const anchorIds = claim.anchor_ids.filter(id => anchors.has(id));
+            const reviews = output.reviews?.map(row => row.claim_id === claim.claim_id
+              ? {...row, verdict, anchor_ids: anchorIds, reason_code:'human_reviewed', reason:'人工核对标注'} : row);
+            onEdit(JSON.stringify({...output, reviews}, null, 2));
+          }}>
+          {Object.entries(verdictNames).map(([key, label]) => <option key={key} value={key}
+            disabled={key==='supported' && !canSupport}>{label}</option>)}
+        </select></label>
+        <p>{current.reason}</p>
+      </article>;
+    })}
+  </div>;
+}
+
 export function GoldenReview({apiBase, detail, onSaved}: {apiBase:string; detail:any; onSaved:()=>void}) {
   const [golden, setGolden] = useState(JSON.stringify(detail.dataset_item?.golden_output ?? detail.annotation?.golden_candidate ?? detail.output_payload, null, 2));
   const [split, setSplit] = useState(detail.replay_context?.split==='dev'?'dev':'test');
   const [note, setNote] = useState('');
   const [busy, setBusy] = useState(false);
+  const [reviewed, setReviewed] = useState(false);
   const confirmed = detail.annotation?.review_status === 'confirmed';
+  const synthetic = detail.replay_context?.synthetic === true;
+  const input = detail.input_payload;
+  const frozenClaims = synthetic && Array.isArray(input?.claims) && Array.isArray(input?.anchors);
+  const editor = <textarea aria-label="Golden JSON" className="goldenEditor" disabled={confirmed || busy} value={golden} onChange={e=>setGolden(e.target.value)}/>;
   async function confirm() {
     setBusy(true); setNote('');
     try {
@@ -19,12 +71,22 @@ export function GoldenReview({apiBase, detail, onSaved}: {apiBase:string; detail
       setNote('已确认并保存固定数据集条目'); onSaved();
     } catch(e) {setNote(String(e));} finally {setBusy(false);}
   }
-  return <section><h3>质量标注与 Golden 审核</h3>{detail.annotation ? <pre>{JSON.stringify(detail.annotation, null, 2)}</pre> : <p>尚未标注，可人工编写参考答案</p>}
+  return <section><h3>质量标注与 Golden 审核</h3>{!synthetic && (detail.annotation ? <pre>{JSON.stringify(detail.annotation, null, 2)}</pre> : <p>尚未标注，可人工编写参考答案</p>)}
     <p>对照原始输入核验条件、字段与事实；无候选答案时编辑区使用实际输出，需人工修正后确认</p>
-    {detail.replay_context?.synthetic&&<p>虚构回归样本 · 候选标签未经人工确认。请按当前 {detail.replay_context.split} 划分审核。</p>}
-    <textarea aria-label="Golden JSON" className="goldenEditor" disabled={confirmed || busy} value={golden} onChange={e=>setGolden(e.target.value)}/>
-    <select aria-label="数据集划分" disabled={confirmed || busy} value={split} onChange={e=>setSplit(e.target.value)}><option value="test">测试集</option><option value="dev">开发集</option></select>
-    <button disabled={busy || confirmed} onClick={confirm}>{confirmed ? '已确认入集' : busy ? '保存中' : '确认 Golden 并入集'}</button><p role="status">{note}</p>
+    {synthetic && <p>虚构回归样本 · {split==='test' ? '测试集' : '开发集'} · {confirmed ? '已人工确认' : '待人工确认'}</p>}
+    {frozenClaims && <GroundingLabels input={input} golden={golden} disabled={confirmed || busy} onEdit={setGolden}/>}
+    {synthetic && detail.module_key === 'dimension_scoring' && <article className="goldenEvidenceList">
+      <b>{input.dimension?.name} · 评分依据</b>
+      <p>{input.dimension?.definition}</p>
+      <ul>{input.dimension?.score_anchors?.map((anchor:{score:number;description:string}) =>
+        <li key={anchor.score}>{anchor.score} 分 · {anchor.description}</li>)}</ul>
+      {input.evidence_items?.map((row:{ref_id:string;quote:string}) => <blockquote key={row.ref_id}>{row.quote}</blockquote>)}
+    </article>}
+    {frozenClaims ? <details><summary>编辑参考答案 JSON</summary>{editor}</details> : editor}
+    {!synthetic && <select aria-label="数据集划分" disabled={confirmed || busy} value={split} onChange={e=>setSplit(e.target.value)}><option value="test">测试集</option><option value="dev">开发集</option></select>}
+    {synthetic && !confirmed && <p><label><input type="checkbox" checked={reviewed} disabled={busy}
+      onChange={event=>setReviewed(event.target.checked)}/> 我已对照原文核对这一例的参考答案</label></p>}
+    <button disabled={busy || confirmed || (synthetic && !reviewed)} onClick={confirm}>{confirmed ? '已确认入集' : busy ? '保存中' : '确认 Golden 并入集'}</button><p role="status">{note}</p>
   </section>;
 }
 export function DatasetReplay({apiBase, refresh, moduleLabels}: {apiBase:string; refresh:number; moduleLabels:Record<string,string>}) {

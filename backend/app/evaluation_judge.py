@@ -184,9 +184,16 @@ def replay_report_grounding(item):
 def validate_golden_input(module_key, data, golden):
     """A human confirmation must cover exactly the frozen invocation."""
     if module_key == 'report_grounding':
-        from app.assessment_grounding import validate_review
-        validate_review(GroundingReview.model_validate(golden),
-                        [AssessmentClaim.model_validate(row) for row in data['claims']])
+        from app.assessment_grounding import check_claim, validate_review
+        review = GroundingReview.model_validate(golden)
+        claims = [AssessmentClaim.model_validate(row) for row in data['claims']]
+        validate_review(review, claims)
+        if 'anchors' in data:
+            anchors = {anchor.evidence_id: anchor for row in data['anchors']
+                       if (anchor := EvidenceAnchor.model_validate(row))}
+            supported = {row.claim_id for row in review.reviews if row.verdict == 'supported'}
+            if any(claim.claim_id in supported and check_claim(claim, anchors) for claim in claims):
+                raise ValueError('golden_supported_requires_valid_source')
     elif module_key == 'dimension_scoring':
         from app.talent_evaluation_report import validate_dimension_judgement
         from app.talent_evaluation_dispatch import BranchEvidenceDraft
