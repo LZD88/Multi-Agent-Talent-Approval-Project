@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 
 import {
+  applyAssessmentRetry,
   defaultExpandedRunIds,
   formatDuration,
   getComposerPolicy,
@@ -237,6 +238,16 @@ export function TalentChatPage({ apiBase, sidebarCollapsed, onToggleSidebar, onO
     await requestJson(`${apiBase}/runs/${view.runId}`, { method: "DELETE" });
   }
 
+  async function retryAssessment(runId: string, itemId: string, retryRevision: number) {
+    const result = await requestJson(`${apiBase}/runs/${runId}/assessment-retry`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({item_id: itemId, revision: retryRevision}),
+    });
+    setView(current => applyAssessmentRetry(current, runId, result.report, result.assessment_grounding));
+    return !result.assessment_grounding.retry_items.some((item: {item_id: string}) => item.item_id === itemId);
+  }
+
   function reset() {
     sourceRef.current?.close();
     setView(initialRunView);
@@ -332,7 +343,7 @@ export function TalentChatPage({ apiBase, sidebarCollapsed, onToggleSidebar, onO
                       {revisionSummary && <section className="resolvedRequest"><div><b>要求修订已识别</b><span>{revisionAction === "add" ? "增加要求" : revisionAction === "update" ? "修改要求" : "删除要求"}</span></div><p>{revisionSummary}</p></section>}
                       {steps.length > 0 && <section className="runTimeline"><div className="timelineHead"><div><Sparkles /><b>{status === "completed" ? "人才评估执行完成" : status === "cancelled" ? "人才评估已取消" : status === "waiting_input" ? "人才评估等待确认" : "正在执行人才评估"}</b></div><code>{turn.runId.slice(0, 8)}</code></div>{steps.map((step) => <button type="button" className={`timelineStep ${step.status}${activeStep === step ? " selected" : ""}`} key={step.stepId} onClick={() => {setActiveStep(step);setActiveStepRun(turn.runId);}}><span><StepStatusIcon step={step} /></span><div><b>{step.title}</b>{step.summary && <p>{step.summary}</p>}{step.total !== undefined && <div className="progressTrack"><i style={{ width: `${step.total ? ((step.completed || 0) / step.total) * 100 : 0}%` }} /></div>}</div><small><em>{stepStatusLabel(step)}</em><time>{formatDuration(step.durationMs)}</time></small></button>)}</section>}
                       {isCurrent && view.interrupt && <section className="hitlCard"><div className="hitlIcon"><Clock3 /></div><div><h3>{view.interrupt.title}</h3><p>{view.interrupt.description}</p>{view.interrupt.input_kind === "text" ? <div className="hitlRevision"><textarea value={revision} onChange={(event) => setRevision(event.target.value)} /><button disabled={!revision.trim()} onClick={() => void resume(revision)}>提交修订并继续</button></div> : <div className="hitlOptions">{view.interrupt.options.map((option) => <button key={option.value} onClick={() => void resume(option.value)}>{option.label}</button>)}</div>}</div></section>}
-                      {report && <section className="reportCard"><div className="reportHead"><div><Check /><span><b>评估完成</b><small>{groundingLabel(grounding)}</small></span></div><button className="traceButton">Run · {traceId.slice(0, 8)}</button></div><AssessmentGroundingPanel snapshot={grounding} onCitation={setActiveCitation} /><MarkdownReport text={report} onCitation={(ref) => setActiveCitation(citations.find((item) => item.ref === ref) || null)} /><FeedbackButton apiBase={apiBase} runId={turn.runId} /></section>}
+                      {report && <section className="reportCard"><div className="reportHead"><div><Check /><span><b>评估完成</b><small>{groundingLabel(grounding)}</small></span></div><button className="traceButton">Run · {traceId.slice(0, 8)}</button></div><AssessmentGroundingPanel snapshot={grounding} onCitation={setActiveCitation} onRetry={status === "completed" ? (itemId, revision) => retryAssessment(turn.runId, itemId, revision) : undefined} /><MarkdownReport text={report} onCitation={(ref) => setActiveCitation(citations.find((item) => item.ref === ref) || null)} /><FeedbackButton apiBase={apiBase} runId={turn.runId} /></section>}
                       {status === "cancelled" && <div className="runNotice">运行已取消，已产生的事件保留在当前页面</div>}
                       {error && <div className="runNotice error">{error}</div>}
                     </div>}

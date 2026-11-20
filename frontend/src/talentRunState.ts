@@ -129,6 +129,20 @@ export const initialRunView: RunView = {
   conversationTurns: [],
 };
 
+export function applyAssessmentRetry(
+  view: RunView, runId: string, report: string, assessmentGrounding: Record<string, unknown>,
+): RunView {
+  const newer = (previous?: Record<string, unknown> | null) =>
+    Number(assessmentGrounding.retry_revision ?? 0) > Number(previous?.retry_revision ?? 0);
+  const fields = {report, assessmentGrounding};
+  return {
+    ...view,
+    ...(view.runId === runId && newer(view.assessmentGrounding) ? fields : {}),
+    conversationTurns: view.conversationTurns.map(turn =>
+      turn.runId === runId && newer(turn.assessmentGrounding) ? {...turn, ...fields} : turn),
+  };
+}
+
 function restoreSteps(steps: RunHistoryDetail["steps"]): RunStep[] {
   return [...steps]
     .sort((left, right) => left.position - right.position)

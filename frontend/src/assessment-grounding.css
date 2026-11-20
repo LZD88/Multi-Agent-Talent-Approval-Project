@@ -2,3 +2,6 @@
 .groundingPanel.degraded{border-color:#e5c78b;background:#fffaf0}.groundingSummary{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}.groundingSummary span{color:#526a60}
 .groundingPanel details{margin-top:12px;border-top:1px solid #dbe6df;padding-top:12px}.groundingPanel summary{cursor:pointer;font-weight:600}.groundingPanel article{margin:12px 0;padding:12px;background:white;border-radius:8px;overflow-wrap:anywhere}.groundingPanel p{margin:7px 0}.groundingPanel small{color:#526a60}
 .groundingSource{margin:8px 8px 0 0;padding:5px 10px;border:1px solid #b8cfc1;border-radius:6px;color:#22634a;background:white;cursor:pointer}.groundingNotice{font-size:13px;color:#80602d;padding:8px 0}
+.groundingRetries{margin-top:12px;border-top:1px solid #e5dac5;padding-top:12px}
+.groundingRetry{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.groundingRetry .groundingSource{margin:0}.groundingRetry .groundingSource:disabled{opacity:.6;cursor:default}
