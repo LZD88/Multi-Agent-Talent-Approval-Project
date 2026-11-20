@@ -143,33 +143,34 @@ def build_runtime_graph():
     return runtime_graph
 
 
-def build_report_runtime_graph():
-    logger.info(
-        "event=report_runtime_graph_build_started "
-        "function=build_report_runtime_graph"
-    )
-    model = get_chat_model(temperature=0)
-    if model is None:
-        raise RuntimeError("模型未配置，请先设置 CHAT_API_KEY、CHAT_BASE_URL 和 CHAT_MODEL")
+def report_model_components(*, retrying=False):
     from app.assessment_grounding import ClaimReviewer
     from app.config import get_settings
     from app.model_provider import get_grounding_model
     settings = get_settings()
-    runtime_graph = build_talent_evaluation_report_graph(
+    options = {"timeout": settings.grounding_request_timeout, "max_retries": 0} if retrying else {}
+    model = get_chat_model(temperature=0, **options)
+    if model is None:
+        raise RuntimeError("模型未配置，请先设置 CHAT_API_KEY、CHAT_BASE_URL 和 CHAT_MODEL")
+    return dict(
         claim_reviewer=ClaimReviewer(get_grounding_model, attempts=settings.grounding_max_attempts,
             request_timeout=settings.grounding_request_timeout, batch_timeout=settings.grounding_batch_timeout,
             concurrency=settings.grounding_concurrency),
         dimension_scorer=build_structured_dimension_scorer(lambda: model),
         consistency_reviewer=build_structured_consistency_reviewer(lambda: model),
         report_writer=build_structured_report_writer(lambda: model),
-        max_scoring_concurrency=12,
-        max_consistency_concurrency=12,
     )
-    logger.info(
-        "event=report_runtime_graph_build_completed "
-        "function=build_report_runtime_graph"
+
+
+def build_report_runtime_graph():
+    return build_talent_evaluation_report_graph(
+        **report_model_components(), max_scoring_concurrency=12, max_consistency_concurrency=12,
     )
-    return runtime_graph
+
+
+def build_report_retry_runner():
+    from app.assessment_retry import AssessmentRetryRunner
+    return AssessmentRetryRunner(**report_model_components(retrying=True))
 
 
 # Agent Server loads this compiled graph through langgraph.json.

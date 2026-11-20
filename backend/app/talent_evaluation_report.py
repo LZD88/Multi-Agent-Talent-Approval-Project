@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field, ValidationError
 from typing_extensions import TypedDict
 from langgraph.runtime import Runtime
 from app.talent_decision_graph import DecisionContext
-from app.assessment_grounding import source_ref
+from app.assessment_grounding import model_error_code, source_ref
 from app.evaluation_case import capture_call, EvaluationModule
 
 from app.talent_evaluation_dispatch import BranchEvidenceDraft, EvaluationDimension
@@ -194,6 +194,8 @@ class ReportDraft(BaseModel):
 
 
 class TalentEvaluationReportState(TypedDict, total=False):
+    assessment_retry: dict[str, Any] | None
+    retry_revision: int
     report_error: str
     assessment_grounding: dict[str, Any]
     grounding_claims: list[dict[str, Any]]
@@ -224,6 +226,16 @@ ConsistencyReviewer = Callable[
     ConsistencyReview,
 ]
 ModelProvider = Callable[[], Any]
+
+
+class ScoringValidationError(ValueError):
+    def __init__(self, code: str, instruction: str):
+        super().__init__(instruction)
+        self.code = code
+
+
+def scoring_error_code(exc: Exception) -> str:
+    return exc.code if isinstance(exc, ScoringValidationError) else model_error_code(exc)
 
 
 def branch_evidence_refs(branch: BranchEvidenceDraft) -> list[str]:
@@ -297,7 +309,7 @@ def _restore_evidence_refs(
 ) -> list[str]:
     unknown = [ref_id for ref_id in evidence_refs if ref_id not in model_to_chunk]
     if unknown:
-        raise ValueError(f"模型返回了未知证据编号: {', '.join(unknown)}")
+        raise ScoringValidationError("unknown_evidence", "只能使用输入中的证据编号")
     return [model_to_chunk[ref_id] for ref_id in evidence_refs]
 
 
@@ -565,19 +577,19 @@ def validate_dimension_judgement(
         set(judgement.evidence_refs) - set(branch_evidence_refs(branch))
     )
     if unavailable_refs:
-        raise ValueError(f"评分结果引用了未提供的证据: {', '.join(unavailable_refs)}")
+        raise ScoringValidationError("unknown_evidence", f"评分结果引用了未提供的证据: {', '.join(unavailable_refs)}")
     if any(not set(fact.evidence_refs).issubset(judgement.evidence_refs) for fact in judgement.fact_claims):
-        raise ValueError("评分事实引用不属于该评分已使用的证据")
+        raise ScoringValidationError("fact_reference_mismatch", "评分事实引用必须属于该评分已使用的证据")
     if judgement.evidence_status in {"missing", "conflicting"} and judgement.score is not None:
-        raise ValueError(f"{judgement.evidence_status} 状态不允许设置分数")
+        raise ScoringValidationError("score_not_allowed", f"{judgement.evidence_status} 状态不允许设置分数")
     if judgement.evidence_status in {"sufficient", "partial"} and judgement.score is None:
-        raise ValueError(f"{judgement.evidence_status} 状态必须设置分数")
+        raise ScoringValidationError("score_required", f"{judgement.evidence_status} 状态必须设置分数")
     if judgement.evidence_status in {"sufficient", "partial", "conflicting"} and not judgement.evidence_refs:
-        raise ValueError(f"{judgement.evidence_status} 状态必须保留证据引用")
+        raise ScoringValidationError("evidence_required", f"{judgement.evidence_status} 状态必须保留证据引用")
     if judgement.evidence_status == "missing" and not judgement.missing_items:
-        raise ValueError("missing 状态必须说明缺失信息")
+        raise ScoringValidationError("missing_detail_required", "missing 状态必须说明缺失信息")
     if judgement.evidence_status == "conflicting" and not judgement.conflicts:
-        raise ValueError("conflicting 状态必须说明冲突内容")
+        raise ScoringValidationError("conflict_detail_required", "conflicting 状态必须说明冲突内容")
 
 
 def aggregate_candidate_assessments(
@@ -769,6 +781,7 @@ def _score_dimensions(
                     missing_items=[branch.error_message or "评估分支执行失败"],
                     conflicts=[],
                     rationale=branch.error_message or "评估分支执行失败",
+                    reason_code="extraction_failed",
                 )
             evidence_refs = branch_evidence_refs(branch)
             missing_information = branch_missing_information(branch)
@@ -788,20 +801,25 @@ def _score_dimensions(
                 )
 
             branch_evidence = [evidence_by_id[ref_id] for ref_id in evidence_refs]
+            def score_and_validate():
+                judgement = dimension_scorer(dimensions[branch.dimension_number], branch, branch_evidence)
+                validate_dimension_judgement(branch, judgement)
+                return judgement
+
             try:
-                judgement = capture_call(lambda: dimension_scorer(dimensions[branch.dimension_number], branch, branch_evidence),
+                judgement = capture_call(score_and_validate,
                     context=context, module_key=EvaluationModule.DIMENSION_SCORING,
                     input_payload={"schema_version": "1.0", "attempt": 1, "candidate_id": branch.candidate_id, "dimension_number": branch.dimension_number,
                         "dimension": dimensions[branch.dimension_number].model_dump(mode="json"),
                         "branch": branch.model_dump(mode="json"),
                         "evidence_items": [item.model_dump(mode="json") for item in branch_evidence]},
-                    version_snapshot={"prompt": "dimension-scorer-grounded-v1"})
-                validate_dimension_judgement(branch, judgement)
+                    version_snapshot={"prompt": "dimension-scorer-grounded-v1"}, classify_error=scoring_error_code)
             except Exception as exc:
+                reason_code = scoring_error_code(exc)
                 logger.warning(
-                    "dimension_scoring_rejected task_id=%s error_type=%s",
+                    "dimension_scoring_rejected task_id=%s error_code=%s",
                     branch.task_id,
-                    type(exc).__name__,
+                    reason_code,
                 )
                 return DimensionAssessment(
                     task_id=branch.task_id,
@@ -813,7 +831,8 @@ def _score_dimensions(
                     evidence_refs=evidence_refs,
                     missing_items=[],
                     conflicts=[],
-                    rationale="模型评分结果未通过证据校验，当前维度不纳入评分。",
+                    rationale="评分执行或证据校验暂未完成，当前维度不纳入评分。",
+                    reason_code=reason_code,
                 )
             _log_node(
                 "score_dimensions",
@@ -1070,7 +1089,9 @@ def _compose_report(report_writer: ReportWriter):
         )
         report_error = ""
         try:
-            draft = report_writer(candidates, evidence_items)
+            draft = ReportDraft.model_validate(report_writer(candidates, evidence_items))
+            if [row.candidate_id for row in draft.candidates] != [row.candidate_id for row in candidates]:
+                raise ValueError("report_candidates_mismatch")
         except Exception as exc:
             report_error = type(exc).__name__
             logger.warning("event=report_writer_unavailable error_type=%s", report_error)

@@ -11,6 +11,7 @@ from app.assessment_grounding import (
     review_with, rejected_review,
 )
 from app.assessment_verification import build_verification
+from app.assessment_retry import freeze_retry_state, retry_items
 from app.talent_decision_graph import DecisionContext
 
 
@@ -25,6 +26,26 @@ def anchors_from_state(state):
 def context_from_state(state):
     data = state.get("assessment_context")
     return DecisionContext(**data) if data else None
+
+
+async def review_with_reuse(reviewer, claims, state, *, phase):
+    saved = state.get("reusable_reviews", {})
+    retained, pending = {}, []
+    for claim in claims:
+        match = saved.get(claim.claim_id)
+        # The list of related dimensions is display metadata for report facts.
+        # Recheck current anchor eligibility in the caller before reusing their semantic verdict.
+        comparable = claim.model_dump(mode="json")
+        if match and phase == "report":
+            comparable["dimension_numbers"] = match[0]["dimension_numbers"]
+        if match and match[0] == comparable:
+            retained[claim.claim_id] = match[1]
+        else:
+            pending.append(claim)
+    result = await review_with(reviewer, pending, anchors_from_state(state), phase=phase,
+                               context=context_from_state(state))
+    retained.update({row.claim_id: row.model_dump(mode="json") for row in result.reviews})
+    return [retained[claim.claim_id] for claim in claims]
 
 
 def make_grounding_nodes(reviewer):
@@ -47,17 +68,17 @@ def make_grounding_nodes(reviewer):
                       f"评分锚点：{dimension['score_anchors']}；拟评{row['score']}分；依据：{row['rationale']}"))
             claims.append(claim)
             by_task[row["task_id"]] = [item.claim_id for item in claims if item.claim_id.startswith(row["task_id"]+":")]
-        result = await review_with(reviewer, claims, anchors_from_state(state), phase="dimension", context=context_from_state(state))
-        by_id = {row.claim_id: row for row in result.reviews}
+        reviews = await review_with_reuse(reviewer, claims, state, phase="dimension")
+        by_id = {row["claim_id"]: row for row in reviews}
         for row in assessments:
             related = [by_id[key] for key in by_task.get(row["task_id"], [])]
-            if any(item.verdict != "supported" for item in related):
+            if any(item["verdict"] != "supported" for item in related):
                 row.update(evidence_status="failed", score=None, confidence="unavailable",
-                    reason_code="grounding_unavailable" if any(item.verdict == "error" for item in related) else "score_grounding_rejected",
+                    reason_code="grounding_unavailable" if any(item["verdict"] == "error" for item in related) else "score_grounding_rejected",
                     rationale="评分依据尚未通过审查，本维度暂未评分。")
         return {"dimension_assessments": assessments, "original_assessments": state["dimension_assessments"],
                 "grounding_claims": [row.model_dump(mode="json") for row in claims],
-                "grounding_reviews": [row.model_dump(mode="json") for row in result.reviews], "status": "dimensions_grounded"}
+                "grounding_reviews": reviews, "status": "dimensions_grounded"}
 
     async def report(state):
         claims = []
@@ -82,10 +103,10 @@ def make_grounding_nodes(reviewer):
                 rejected.append(rejected_review(claim, "unscored_or_unknown_anchor"))
             else:
                 pending.append(claim)
-        result = await review_with(reviewer, pending, anchors_from_state(state), phase="report", context=context_from_state(state))
-        result.reviews.extend(rejected)
+        reviews = await review_with_reuse(reviewer, pending, state, phase="report")
+        reviews.extend(row.model_dump(mode="json") for row in rejected)
         return {"grounding_claims": state.get("grounding_claims", [])+[row.model_dump(mode="json") for row in claims],
-                "grounding_reviews": state.get("grounding_reviews", [])+[row.model_dump(mode="json") for row in result.reviews],
+                "grounding_reviews": state.get("grounding_reviews", [])+reviews,
                 "status": "report_grounded"}
 
     return (RunnableLambda(lambda state: asyncio.run(dimensions(state)), afunc=dimensions),
@@ -95,8 +116,8 @@ def make_grounding_nodes(reviewer):
 def verification_node(state):
     checklist = build_verification(state["dimensions"], state["dimension_assessments"],
                 state["grounding_claims"], state["grounding_reviews"])
-    if state.get("report_error"):
-        for group in checklist["candidates"].values():
+    for candidate, group in checklist["candidates"].items():
+        if state.get("report_error") or candidate in state.get("candidate_report_errors", {}):
             group["technical_actions"].append({"item_id": "report-writer", "reason_type": "technical",
                 "reason_code": "report_writer_unavailable", "question": "报告文字生成暂未完成，需要重试。"})
     return {"verification": checklist, "status": "verification_ready"}
@@ -108,7 +129,13 @@ def render_grounded_report(state):
     counts = Counter(row["verdict"] for row in reviews)
     technical_failure = any(row["evidence_status"] == "failed" and row.get("reason_code") != "score_grounding_rejected"
                             for row in state["dimension_assessments"])
-    status = "degraded" if counts["error"] or state.get("report_error") or technical_failure else "partial" if any(row["score"] is None for row in state["dimension_assessments"]) or counts["supported"] != len(reviews) else "complete"
+    report_error = bool(state.get("report_error") or state.get("candidate_report_errors"))
+    if counts["error"] or report_error or technical_failure:
+        status = "degraded"
+    elif any(row["score"] is None for row in state["dimension_assessments"]) or counts["supported"] != len(reviews):
+        status = "partial"
+    else:
+        status = "complete"
     by_claim = {row["claim_id"]: row for row in state["grounding_claims"]}
     evidence = {row["ref_id"]: row for row in state["evidence_items"]}
     def citations(refs):
@@ -154,10 +181,14 @@ def render_grounded_report(state):
             lines.append(f"另有 {checklist['omitted_count']} 项，按优先级显示前八项。")
         if checklist.get("technical_actions"):
             lines.extend(["", "### 技术重试事项", ""]+[f"- {row['question']}" for row in checklist["technical_actions"]])
+    options = retry_items(state)
+    revision = state.get("retry_revision", 0)
     snapshot = AssessmentGroundingSnapshot(status=status, model=get_settings().grounding_model or get_settings().chat_model,
         claims=state["grounding_claims"], reviews=reviews, anchors=anchors_from_state(state),
         original_assessments=state["original_assessments"], candidates=state["candidate_assessments"],
-        verification=state["verification"], summary={"submitted": len(reviews), "supported": counts["supported"],
+        verification=state["verification"], retry_items=options, retry_revision=revision,
+        summary={"submitted": len(reviews), "supported": counts["supported"],
             "blocked": sum(counts.values())-counts["supported"]-counts["error"], "errors": counts["error"],
-            "report_error": bool(state.get("report_error"))})
-    return {"report": "\n".join(lines).strip(), "assessment_grounding": snapshot.model_dump(mode="json"), "status": "completed"}
+            "report_error": report_error})
+    return {"report": "\n".join(lines).strip(), "assessment_grounding": snapshot.model_dump(mode="json"),
+            "assessment_retry": freeze_retry_state(state) if options else None, "status": "completed"}

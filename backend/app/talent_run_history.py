@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import sessionmaker
 
+from app.assessment_retry import RetryUnavailable
 from app.models import TalentConversationRecord, TalentRunRecord, TalentRunStepRecord
 from app.talent_run_stream import public_run_error
 
@@ -32,7 +33,7 @@ class SqlTalentRunHistoryStore:
     def __init__(self, session_factory: sessionmaker) -> None:
         self._session_factory = session_factory
 
-    def record(self, event: Any) -> None:
+    def record(self, event: Any, *, retry_state: dict[str, Any] | None = None) -> None:
         occurred_at = _timestamp(event.timestamp)
         with self._session_factory() as session:
             run = session.get(TalentRunRecord, event.run_id)
@@ -92,6 +93,7 @@ class SqlTalentRunHistoryStore:
             elif event.type == "report.completed":
                 run.report = str(event.data.get("markdown", ""))
                 run.assessment_grounding = event.data.get("assessment_grounding")
+                run.assessment_retry = retry_state
                 run.citations = list(event.data.get("citations", []))
                 run.trace_id = str(event.data.get("trace_id", "")) or None
             elif event.type in {"run.completed", "run.cancelled", "run.failed"}:
@@ -111,6 +113,33 @@ class SqlTalentRunHistoryStore:
             if conversation is not None:
                 conversation.status = run.status
                 conversation.updated_at = occurred_at
+            session.commit()
+
+    def get_retry_state(self, run_id: str, revision: int) -> dict[str, Any]:
+        with self._session_factory() as session:
+            return self._check_retry(session.get(TalentRunRecord, run_id), revision)
+
+    @staticmethod
+    def _check_retry(run, revision):
+        if run is None:
+            raise KeyError("运行记录不存在")
+        if run.status != "completed":
+            raise RetryUnavailable("评估完成后才能局部重试")
+        if (run.assessment_grounding or {}).get("retry_revision", 0) != revision:
+            raise RetryUnavailable("报告已更新，请刷新后再试")
+        if run.assessment_retry is None:
+            raise RetryUnavailable("此报告没有可局部重试的事项")
+        return run.assessment_retry
+
+    def save_retry_result(self, run_id: str, revision: int, result: dict[str, Any]) -> None:
+        with self._session_factory() as session:
+            run = session.scalar(select(TalentRunRecord).where(
+                TalentRunRecord.run_id == run_id).with_for_update())
+            self._check_retry(run, revision)
+            run.report = result["report"]
+            run.assessment_grounding = result["assessment_grounding"]
+            run.assessment_retry = result["assessment_retry"]
+            run.updated_at = datetime.now(UTC)
             session.commit()
 
     def _record_step(

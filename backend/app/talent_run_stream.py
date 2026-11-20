@@ -10,6 +10,7 @@ from uuid import uuid4
 from langchain.messages import HumanMessage
 from langgraph.types import Command
 
+from app.assessment_retry import RetryUnavailable
 from app.config import get_settings
 from app.talent_checkpoint import PostgresCheckpointRuntime
 from app.talent_decision_graph import DecisionContext
@@ -18,7 +19,6 @@ from app.talent_event_projection import (
     project_graph_update,
     step_for_start,
 )
-
 
 class RunStatus(StrEnum):
     RUNNING = "running"
@@ -87,6 +87,7 @@ class TalentRun:
     graph_errors: list[str] = field(default_factory=list)
     report_emitted: bool = False
     assessment_grounding: dict[str, Any] | None = None
+    assessment_retry: dict[str, Any] | None = None
 
 
 class TalentRunManager:
@@ -99,6 +100,7 @@ class TalentRunManager:
         context: DecisionContext | None = None,
         max_concurrency: int = 6,
         record_store: Any | None = None,
+        retry_runner: Any | None = None,
     ) -> None:
         self._graph = graph
         self._checkpoint_runtime: PostgresCheckpointRuntime | None = None
@@ -108,6 +110,9 @@ class TalentRunManager:
         )
         self._max_concurrency = max_concurrency
         self._record_store = record_store
+        self._retry_runner = retry_runner
+        self._retrying: set[str] = set()
+        self._retry_slots = asyncio.Semaphore(3)
         self._runs: dict[str, TalentRun] = {}
         self._conversation_runs: dict[str, list[str]] = {}
         self._conditions: dict[str, asyncio.Condition] = {}
@@ -209,6 +214,7 @@ class TalentRunManager:
         run.evidence_items.clear()
         run.report_emitted = False
         run.assessment_grounding = None
+        run.assessment_retry = None
         self._append(run, "hitl.resolved", resolved)
         run.task = asyncio.create_task(self._execute(run, Command(resume=decision)))
         await self._notify(run.run_id)
@@ -254,8 +260,44 @@ class TalentRunManager:
         )
         run.events.append(event)
         if self._record_store is not None:
-            self._record_store.record(event)
+            if event_type == "report.completed" and run.assessment_retry is not None:
+                self._record_store.record(event, retry_state=run.assessment_retry)
+            else:
+                self._record_store.record(event)
         return event
+
+    async def retry_assessment(self, run_id: str, item_id: str, revision: int) -> dict[str, Any]:
+        if self._record_store is None:
+            raise RetryUnavailable("此服务没有可重试的历史报告")
+        if run_id in self._retrying:
+            raise RetryUnavailable("本轮评估正在补跑，请稍候")
+        frozen = self._record_store.get_retry_state(run_id, revision)
+        context = frozen.get("state", {}).get("assessment_context") or {}
+        if context and (context["tenant_id"] != self._context.tenant_id
+                        or not set(context["permission_scopes"]).issubset(self._context.permission_scopes)):
+            raise KeyError("运行记录不存在")
+        self._retrying.add(run_id)
+        try:
+            async with asyncio.timeout(120):
+                async with self._retry_slots:
+                    if self._retry_runner is None:
+                        from app.talent_evaluation_runtime import build_report_retry_runner
+                        self._retry_runner = build_report_retry_runner()
+                    result = await self._retry_runner.retry(frozen, item_id, revision)
+            self._record_store.save_retry_result(run_id, revision, result)
+        finally:
+            self._retrying.discard(run_id)
+        self._update_live_report(run_id, result)
+        return {key: result[key] for key in ("report", "assessment_grounding")}
+
+    def _update_live_report(self, run_id, result):
+        run = self._runs.get(run_id)
+        if run is None:
+            return
+        run.assessment_grounding = result["assessment_grounding"]
+        for event in run.events:
+            if event.type == "report.completed":
+                event.data.update(markdown=result["report"], assessment_grounding=run.assessment_grounding)
 
     def list_history(self, *, limit: int = 20) -> list[dict[str, Any]]:
         if self._record_store is None:
@@ -428,6 +470,8 @@ class TalentRunManager:
             self._collect_evidence(run, update)
             if isinstance(update.get("assessment_grounding"), dict):
                 run.assessment_grounding = update["assessment_grounding"]
+            if "assessment_retry" in update:
+                run.assessment_retry = update["assessment_retry"]
             await self._project_progress(run, node, update)
             for event in project_graph_update(
                 namespace=namespace,
@@ -565,6 +609,7 @@ class TalentRunManager:
                 "trace_id": run.run_id,
             },
         )
+        run.assessment_retry = None
 
     @staticmethod
     def _resume_value(

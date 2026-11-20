@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import asdict
 from typing import AsyncIterator
 
@@ -8,11 +9,13 @@ from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
+from app.assessment_retry import RetryUnavailable
 from app.talent_run_stream import RunEvent, TalentRunManager
 
 
 router = APIRouter(prefix="/api/runs", tags=["talent-runs"])
 conversation_router = APIRouter(prefix="/api/conversations", tags=["talent-conversations"])
+logger = logging.getLogger(__name__)
 
 
 class CreateRunInput(BaseModel):
@@ -22,6 +25,11 @@ class CreateRunInput(BaseModel):
 
 class ResumeRunInput(BaseModel):
     value: str = Field(min_length=1, max_length=200)
+
+
+class RetryAssessmentInput(BaseModel):
+    item_id: str = Field(pattern=r"^[0-9a-f]{32}$")
+    revision: int = Field(ge=0)
 
 
 def encode_sse(event: RunEvent) -> str:
@@ -133,3 +141,16 @@ async def cancel_run(run_id: str, request: Request):
     except KeyError as exc:
         raise HTTPException(404, str(exc)) from exc
     return {"run_id": run.run_id, "status": run.status}
+
+
+@router.post("/{run_id}/assessment-retry")
+async def retry_assessment(run_id: str, payload: RetryAssessmentInput, request: Request):
+    try:
+        return await _manager(request).retry_assessment(run_id, payload.item_id, payload.revision)
+    except KeyError as exc:
+        raise HTTPException(404, "运行记录不存在") from exc
+    except RetryUnavailable as exc:
+        raise HTTPException(409, str(exc)) from exc
+    except Exception as exc:
+        logger.warning("assessment_retry_failed run_id=%s error_type=%s", run_id, type(exc).__name__)
+        raise HTTPException(503, "补跑暂未完成，请稍后重试。原报告仍可查看。") from exc

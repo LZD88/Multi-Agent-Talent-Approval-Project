@@ -166,7 +166,7 @@ def safe_record(recorder, draft):
 
 
 def capture_call(call, *, context, module_key, input_payload, recorder=None,
-                 version_snapshot=None, replay_extra=None):
+                 version_snapshot=None, replay_extra=None, classify_error=None):
     if context is None or not context.run_id:
         return call()
     try:
@@ -184,7 +184,7 @@ def capture_call(call, *, context, module_key, input_payload, recorder=None,
         output = result.model_dump(mode='json') if isinstance(result, BaseModel) else deepcopy(result)
         return result # 3. 返回结果
     except Exception as exc: # 4. 原样返回执行模块内的异常
-        error = type(exc).__name__
+        error = classify_error(exc) if classify_error else type(exc).__name__
         raise
     finally:
         try:

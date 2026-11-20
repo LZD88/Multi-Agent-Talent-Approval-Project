@@ -22,10 +22,13 @@ def build_verification(dimensions, assessments, claims, reviews):
         trigger = assessment["task_id"]
         reason = assessment.get("reason_code")
         if assessment["evidence_status"] == "failed" and reason != "score_grounding_rejected":
+            question = (f"{dimension['name']}取证暂未完成，请重新发起评估。"
+                        if reason == "extraction_failed"
+                        else f"{dimension['name']}评分暂未完成，需要重试。")
             group["technical_actions"].append({"item_id": stable_id(trigger, "technical"),
                 "candidate_id": candidate, "dimension_numbers": [number], "trigger_ids": [trigger],
                 "reason_type": "technical", "reason_code": reason or "evaluation_failed",
-                "question": f"{dimension['name']}评分暂未完成，需要重试。"})
+                "question": question})
             continue
         triggers = []
         if assessment["conflicts"]:
