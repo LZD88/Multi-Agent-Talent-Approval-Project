@@ -1,0 +1,40 @@
+name: Assessment regression
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-assessment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+      - name: Sync pinned Python dependencies
+        run: uv sync --frozen --python 3.12
+      - name: Check assessment and frozen replay behavior
+        run: >-
+          uv run --frozen pytest -q
+          tests/test_assessment_grounding.py tests/test_assessment_retry.py
+          tests/test_assessment_metrics.py tests/test_assessment_benchmark.py
+      - name: Run frozen fixtures and evidence recall
+        env:
+          PYTHONPATH: .
+        run: uv run --frozen python scripts/benchmark_assessment.py --check-offline --output output/assessment-regression.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: assessment-regression
+          path: backend/output/assessment-regression.json
+          if-no-files-found: ignore

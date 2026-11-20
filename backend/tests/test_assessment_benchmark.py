@@ -1,6 +1,9 @@
 from copy import deepcopy
+from uuid import uuid4
 
-from scripts.benchmark_assessment import load_cases, execute_case, compare
+import pytest
+
+from scripts.benchmark_assessment import load_cases, execute_case, compare, hash_json, validate_confirmed
 
 
 def test_manifest_split_and_offline_run_without_model_factory(monkeypatch):
@@ -23,3 +26,37 @@ def test_fault_incompatible_and_common_sample_comparison():
     assert comparison['common_case_ids'] == [cases[0]['case_id']]
     assert comparison['changed_case_ids'] == [cases[0]['case_id']]
     assert comparison['incompatible_case_ids'] == [cases[1]['case_id']]
+
+
+def test_frozen_label_export_rejects_tampering_and_wrong_dataset():
+    manifest, cases = load_cases()
+    row = cases[0]
+    labels = {row['case_id']: {
+        'output': row['proposed_output'], 'input_hash': hash_json(row['input_payload']),
+        'confirmation': {'dataset_item_id': str(uuid4()), 'source_case_id': str(uuid4()),
+                         'confirmed_at': '2026-11-20T00:00:00+00:00'},
+    }}
+    payload = {'dataset_version': manifest['dataset_version'], 'cases_sha256': manifest['cases_sha256'],
+               'labels': labels, 'labels_hash': hash_json(labels)}
+    assert validate_confirmed(payload, manifest, cases) == labels
+    with pytest.raises(ValueError, match='confirmed_dataset_mismatch'):
+        validate_confirmed({**payload, 'cases_sha256': 'stale'}, manifest, cases)
+    modified = deepcopy(payload)
+    modified['labels'][row['case_id']]['input_hash'] = 'other'
+    with pytest.raises(ValueError, match='confirmed_labels_hash_mismatch'):
+        validate_confirmed(modified, manifest, cases)
+    modified['labels_hash'] = hash_json(modified['labels'])
+    with pytest.raises(ValueError, match='confirmed_input_mismatch'):
+        validate_confirmed(modified, manifest, cases)
+
+
+def test_comparison_requires_same_confirmed_labels():
+    manifest, cases = load_cases()
+    item = execute_case(cases[0])
+    def report(label_hash, value):
+        return {'items': [item], 'mode': 'live', 'dataset': manifest, 'confirmed_labels_hash': label_hash,
+                'quality_metrics': {'metrics': {'published_claim_support': {'value': value}}}}
+
+    assert 'formal_metric_deltas' not in compare(report('old', .5), report('new', 1))
+    delta = compare(report('same', .5), report('same', 1))
+    assert delta['formal_metric_deltas']['published_claim_support'] == .5

@@ -1,0 +1,41 @@
+{
+  "version": "synthetic-retrieval-v1",
+  "cases": [
+    {
+      "case_id": "prototype-vs-production",
+      "query": "RAG production rollout",
+      "documents": [
+        "# 项目范围\n\nAtlas 项目仅验证 RAG 原型，未负责 production rollout。\n\n# 其他项目\n\n维护过一个内网工单表单。",
+        "# 项目总结\n\nBoreal 项目构建 embedding 实验。"
+      ],
+      "expected_quotes": ["Atlas 项目仅验证 RAG 原型，未负责 production rollout。"]
+    },
+    {
+      "case_id": "conflicting-roles",
+      "query": "Flink migration lead Cedar",
+      "documents": [
+        "# 项目履历\n\nCedar 项目期间担任 Flink migration lead，负责迁移验收。",
+        "# 面试补记\n\nCedar 项目的 Flink migration 由另一个小组 lead，本人只维护 Flink 作业。"
+      ],
+      "expected_quotes": [
+        "Cedar 项目期间担任 Flink migration lead，负责迁移验收。",
+        "Cedar 项目的 Flink migration 由另一个小组 lead，本人只维护 Flink 作业。"
+      ]
+    },
+    {
+      "case_id": "no-mention",
+      "query": "Kubernetes cluster ownership",
+      "documents": ["# 项目职责\n\n参与 Spring Boot API 开发并编写接口文档。"],
+      "expected_quotes": []
+    },
+    {
+      "case_id": "specific-time-window",
+      "query": "Delta OpenSearch 2025",
+      "documents": [
+        "# 2024\n\nDelta 项目使用 MySQL，负责新增索引。\n\n# 2025\n\n2025 年在 Delta 项目接入 OpenSearch 日志查询。",
+        "# 其他经历\n\n维护 Elasticsearch 集群告警。"
+      ],
+      "expected_quotes": ["2025 年在 Delta 项目接入 OpenSearch 日志查询。"]
+    }
+  ]
+}

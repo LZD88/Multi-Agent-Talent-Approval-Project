@@ -21,10 +21,22 @@ python scripts/benchmark_assessment.py --export-confirmed samples/assessment-gro
 人工在现有评测中心核验并确认后导出，导出保留 dataset_item_id、确认时间、输入 hash，整体标签另有 hash。
 正式使用 `--confirmed confirmed.json`；标签必须匹配冻结输入。没有确认文件时 quality_metrics 保持 incomplete。
 
+在评测中心按合成 Run `synthetic-assessment-v1-dev` 或 `synthetic-assessment-v1-test` 查找案例。详情的 Golden 区域并排展示命题与原文，改变标签或编辑评分后可人工确认入集。导出会校验数据集清单、标签和每例输入的 hash。旧版确认文件需要从数据库重新导出。
+
+GitHub Actions 的 Assessment regression 会检查固定回放与切块后的本地关键词召回，并保存 JSON 报告。可在本地用同一命令运行：
+
+```text
+python scripts/benchmark_assessment.py --check-offline --output output/assessment-regression.json
+```
+
+召回集为独立的 4 个虚构查询。Recall@K 统计前 K 个切块覆盖的预先标注原文，并记录缺失样本是否误召回。这个检查覆盖本地关键词检索，评估 Milvus 混合检索精度需要单独的索引基准。可用 `--chunk-size`、`--chunk-overlap`、`--retrieval-k` 对照切分参数。
+
 ```text
 python scripts/benchmark_assessment.py --live --split test --baseline --output samples/assessment-grounding-v1/results/live-baseline.json
 python scripts/benchmark_assessment.py --live --split test --compare samples/assessment-grounding-v1/results/live-baseline.json --output samples/assessment-grounding-v1/results/live-current.json
 ```
+
+正式对照在两次命令中添加同一份 `--confirmed /path/to/confirmed.json`。报告只有在样本、输入 hash、人工标签 hash 和运行模式一致时才给出正式质量差值。完整 test 的验收可加 `--require-passing`，标签未齐或未达阈值时返回非零状态并保留报告。
 
 只有显式 `--live` 才发送所选虚构材料。也可通过重复 `--case-id` 指定案例。
 baseline 使用精简审查提示词，current 使用 v1 严格提示词，两者模型和评分器保持相同；这不是原版完整产品的招聘准确率对照。
