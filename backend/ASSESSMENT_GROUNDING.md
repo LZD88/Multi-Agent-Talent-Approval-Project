@@ -17,7 +17,7 @@
 命题审查为 supported / contradicted / insufficient / conflicting / error。
 原文明示“未负责该项目管理”支持同范围的否定命题，属于 supported。
 “没有提及管理”不能推出“没有管理能力”。错误候选人、未知引用等先由代码拒绝，不发送给模型。
-审查返回缺失、额外或重复 claim ID、额外 anchor 时整批协议失败，有限重试后 fail closed。
+审查返回缺失、额外或重复 claim ID、非法引用时，只保留能独立验证的原请求结果。失败命题至多进入一轮更小的请求，最终未完成的判断仍保持未发布。
 
 ## 精确来源与协议
 
@@ -52,16 +52,20 @@ JSON 使用 UTF-8、无多余空格。区间为 Python 字符偏移 `[start,end)
 | GROUNDING_MODEL | 空，使用 CHAT_MODEL |
 | GROUNDING_REQUEST_TIMEOUT | 30 秒 |
 | GROUNDING_BATCH_TIMEOUT | 60 秒 |
-| GROUNDING_MAX_ATTEMPTS | 2 次 |
+| GROUNDING_MAX_ATTEMPTS | 2 轮 |
 | GROUNDING_CONCURRENCY | 4 批 |
 
 使用 CHAT_API_KEY/CHAT_BASE_URL，回退到原有百炼凭据。独立客户端 `max_retries=0`，避免 SDK 隐式重试叠加。
-默认每批 6 命题，协议上限 24、按候选人隔离；报告每人最多 8 条主要依据加 8 条事实风险。
+默认每批 6 命题，协议上限 24、按候选人隔离；报告每人最多 8 条主要依据加 8 条事实风险。第二轮至多两个请求，与首轮共享批次截止时间。
 有效的非 supported 标签不重试。请求/批次超时取消异步调用，Run 取消向下传播。
+
+报告的“可重试事项”提供失败阶段、候选人、维度和公开错误原因。局部补跑使用原轮次证据，保留其他有效评分。修订成功后可从历史读取；修订冲突需刷新后重新选择事项。
 普通日志只记录策略、阶段、数量、结果分布和耗时；原文仅保存在已有评测输入和历史快照中。
 评测采集失败独立记录，不改变已经完成的业务评分或审查。
 
 ## 数据库部署与回滚
+
+应用 `database/migrations/026_assessment_retry.sql` 后再升级后端。新生成的报告保存可重试输入，已有报告保持可读。清理运行历史时同一行的重试输入一并删除。
 
 先执行 `database/migrations/025_assessment_grounding.sql`，再发布后端，最后发布前端。
 迁移只增加可空 JSON 列，可重复执行；`scripts/verify_grounding_migration.py` 在隔离 PostgreSQL schema 中执行两次并回滚测试数据。

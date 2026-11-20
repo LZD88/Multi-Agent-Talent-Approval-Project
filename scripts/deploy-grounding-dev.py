@@ -11,14 +11,18 @@ import paramiko
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stderr.reconfigure(encoding='utf-8')
 root = Path(__file__).resolve().parents[1]
+frontend_dist = Path(os.environ.get('TALENT_FRONTEND_DIST', root / 'frontend/dist')).resolve()
+if not (frontend_dist / 'index.html').is_file():
+    raise SystemExit('Frontend build is missing index.html')
 release = 'grounding-'+datetime.now().strftime('%Y%m%d-%H%M%S')
 archive = io.BytesIO()
 with tarfile.open(fileobj=archive, mode='w:gz') as bundle:
     for directory in ('backend/app', 'backend/tests', 'backend/scripts', 'backend/samples', 'backend/utils',
-                      'frontend/src', 'frontend/dist', 'database/migrations'):
+                      'frontend/src', 'database/migrations'):
         for path in (root / directory).rglob('*'):
             if path.is_file() and not any(part in {'__pycache__', '.pytest_cache'} for part in path.parts):
                 bundle.add(path, arcname=path.relative_to(root).as_posix())
+    bundle.add(frontend_dist, arcname='frontend/dist')
     for file in ('backend/ASSESSMENT_GROUNDING.md', '.env.example'):
         bundle.add(root / file, arcname=file)
 client = paramiko.SSHClient()
@@ -54,6 +58,7 @@ EOF
 docker build -t {image}:latest -f {remote}/backend.Dockerfile {remote}
 docker build -t {frontimage}:latest -f {remote}/frontend.Dockerfile {remote}
 docker exec -i talent-eval-agents-course_postgres_1 psql -v ON_ERROR_STOP=1 -U talent -d talent_docs < {remote}/database/migrations/025_assessment_grounding.sql
+docker exec -i talent-eval-agents-course_postgres_1 psql -v ON_ERROR_STOP=1 -U talent -d talent_docs < {remote}/database/migrations/026_assessment_retry.sql
 tar xzf {remote}.tar.gz -C {base}
 docker cp {remote}/backend/app/. {backend}:/app/app
 docker cp {remote}/backend/scripts/. {backend}:/app/scripts
