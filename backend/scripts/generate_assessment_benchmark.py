@@ -98,7 +98,8 @@ def generate():
             proposed_output=output, human_confirmation=None))
     DEST.mkdir(parents=True, exist_ok=True)
     path = DEST / 'cases.jsonl'
-    path.write_text(''.join(json.dumps(row, ensure_ascii=False, sort_keys=True)+'\n' for row in cases), encoding='utf-8')
+    path.write_text(''.join(json.dumps(row, ensure_ascii=False, sort_keys=True)+'\n' for row in cases),
+                    encoding='utf-8', newline='\r\n')
     manifest = dict(schema_version='1.0', dataset_version='synthetic-assessment-v1.1', synthetic=True,
         provenance='所有材料及候选标签由本项目为回归测试构造，无真实个人信息；尚无人工确认。',
         split_counts={key: sum(row['split'] == key for row in cases) for key in ('dev', 'test')},

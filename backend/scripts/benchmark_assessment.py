@@ -29,7 +29,10 @@ def hash_json(value):
 def load_cases(directory=DATA):
     raw = (directory / 'cases.jsonl').read_bytes()
     manifest = json.loads((directory / 'manifest.json').read_text(encoding='utf-8'))
-    assert hashlib.sha256(raw).hexdigest() == manifest['cases_sha256'], 'dataset_hash_mismatch'
+    # The published manifest was hashed with CRLF. Restore that representation
+    # when Git checks out the same JSONL records with LF.
+    hash_input = raw.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n')
+    assert hashlib.sha256(hash_input).hexdigest() == manifest['cases_sha256'], 'dataset_hash_mismatch'
     cases = [json.loads(line) for line in raw.decode().splitlines()]
     assert len(cases) >= 60 and len({row['case_id'] for row in cases}) == len(cases)
     assert Counter(row['split'] for row in cases) == {'dev': 40, 'test': 20}
