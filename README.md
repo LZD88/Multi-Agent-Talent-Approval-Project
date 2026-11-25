@@ -2,6 +2,32 @@
 
 课程贯穿项目的统一代码根目录
 
+## 架构
+
+```mermaid
+flowchart TD
+    Request["自然语言招聘需求 / 岗位名称"] --> Interpret["需求理解与岗位匹配"]
+    Interpret -->|岗位匹配有歧义| Confirm["人工选择岗位<br/>interrupt / resume"]
+    Interpret -->|需求明确| Plan["执行计划<br/>TalentRequest + QueryPlan"]
+    Confirm -->|确认岗位| Plan
+    Plan -->|条件可执行| Filter["候选人筛选<br/>PostgreSQL · 参数化 SQL"]
+    Plan -->|条件待澄清| Revise["人工澄清与要求修订<br/>interrupt / resume"]
+    Filter -->|没有候选人| Revise
+    Revise -->|提交修订| Interpret
+    Filter -->|找到候选人| Dimensions["动态生成与校验评估维度"]
+    Dimensions --> Dispatch["候选人 × 维度<br/>LangGraph Send 并行分发"]
+    Dispatch --> Evidence["检索与取证<br/>混合检索 · 重排 · 事实提取"]
+
+    Upload["上传简历与人才材料"] --> Parse["Redis Worker<br/>MinerU 等解析器 · 文档切块"]
+    Parse --> Index["证据索引<br/>Milvus 向量与全文检索"]
+    Index --> Evidence
+
+    Evidence --> Score["维度评分与依据审查<br/>保留材料版本和原文区间"]
+    Score --> Aggregate["一致性检查、候选人汇总与结论审查"]
+    Aggregate --> Report["评估报告<br/>原文引用 · 待核实事项 · 局部重试"]
+    Report --> History["React 展示与历史回看<br/>SSE 实时进度 · PostgreSQL 持久化"]
+```
+
 ## 当前目录
 
 | 路径 | 用途 |
